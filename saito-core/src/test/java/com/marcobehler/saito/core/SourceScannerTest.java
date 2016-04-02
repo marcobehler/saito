@@ -1,16 +1,11 @@
 package com.marcobehler.saito.core;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.processing.SourceScanner;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -20,19 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class SourceScannerTest {
-
-    private FileSystem fs;
-
-    @Before
-    public void before() {
-        fs = Jimfs.newFileSystem(Configuration.unix());
-    }
-
-    @After
-    public void after() throws IOException {
-        fs.close();
-    }
+public class SourceScannerTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void scanner_finds_valid_layouts() throws IOException {

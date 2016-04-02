@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -72,7 +71,7 @@ public class SaitoTest {
 
     @Test
     public void build_should_create_directory() {
-        Path workingDirectory = Paths.get(".");
+        Path workingDirectory = fs.getPath("/");
         Saito saito = new Saito();
         saito.init(workingDirectory, "nested");
         saito.build(workingDirectory.resolve("nested"));
