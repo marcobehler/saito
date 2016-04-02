@@ -17,14 +17,20 @@ import java.nio.file.Path;
 @Slf4j
 public class Saito {
 
-    public void init(Path workingDirectory, String subDirectory) {
-        Path workingDir = subDirectory != null ? workingDirectory.resolve(subDirectory) : workingDirectory;
+    /**
+     * Creates the full Site Structure for a Saito project, including example files.
+     *
+     * @param targetDirectory the target directory
+     * @param subDirectory optional subdirectory
+     */
+    public void init(Path targetDirectory, String subDirectory) {
+        Path projectDirectory = subDirectory != null ? targetDirectory.resolve(subDirectory) : targetDirectory;
         try {
-            createDirectories(workingDir);
-            createFiles(workingDir);
+            createDirectories(projectDirectory);
+            createFiles(projectDirectory);
 
             log.info("Init complete!");
-            log.info("Use 'saito process' to process your new site");
+            log.info("Use 'saito build' to build your new site");
         } catch (IOException e) {
             log.warn("Error creating directory", e);
         }
@@ -54,29 +60,28 @@ public class Saito {
         log.info("create {}", Files.write(targetDir.resolve(classPathResource), content.getBytes()));
     }
 
-    public void build(Path workingDirectory) {
+    /**
+     * Builds a Saito project, i.e. taking in all the source files, templates, images etc. , processing them and putting them in the "build" directory.
+     *
+     * @param projectDir the target directory
+     */
+    public void build(Path projectDir) {
         try {
-            Path configFile = workingDirectory.resolve("config.yaml");
+            Path configFile = projectDir.resolve("config.yaml");
             SaitoConfig config = SaitoConfig.getOrDefault(configFile);
 
             // 1. scan-in ALL source files
-            SaitoModel saitoModel = new SourceScanner().scan(workingDirectory);
+            SaitoModel saitoModel = new SourceScanner().scan(projectDir);
 
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
-            Path buildDir = getOrCreateDirectory(workingDirectory, "build");
+            Path buildDir = projectDir.resolve("build");
+            if (!Files.exists(buildDir)) {
+                log.info("create {}", Files.createDirectories(buildDir));
+            }
             saitoModel.process(config, buildDir);
-
         } catch (IOException e) {
             log.warn("Error building site", e);
         }
-    }
-
-    private Path getOrCreateDirectory(Path parent, String subdir) throws IOException {
-        Path directory = parent.resolve(subdir);
-        if (!Files.exists(directory)) {
-            log.info("create {}", Files.createDirectories(directory));
-        }
-        return directory;
     }
 
     public void clean(Path currentWorkingDir) {
