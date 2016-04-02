@@ -15,6 +15,7 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -70,13 +71,16 @@ public class SaitoCLI {
             return;
         }
 
-        // TODO proper values here
         if (version) {
+            Properties properties = new Properties();
+            properties.load(SaitoCLI.class.getResourceAsStream("/project.properties"));
+            System.out.println("");
             System.out.println("------------------------------------------------------------");
-            System.out.println("Saito 0.1");
+            System.out.println("Saito " + properties.get("PROJECT_VERSION"));
             System.out.println("------------------------------------------------------------");
             System.out.println("");
-            System.out.println("Build time: " + "whenever");
+            System.out.println("Build time: " + properties.get("PROJECT_BUILD_DATE"));
+            System.out.println("");
             return;
         }
 

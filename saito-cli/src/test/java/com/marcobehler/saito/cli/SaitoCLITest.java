@@ -80,7 +80,7 @@ public class SaitoCLITest {
         PrintStream out = mock(PrintStream.class);
         System.setOut(out);
         saitoCLI.run(new String[]{"-version"});
-        verify(out).println(contains("Saito 0.1"));
+        verify(out).println(contains("Saito 1.0-SNAPSHOT"));
     }
 
 }

@@ -5,9 +5,26 @@ plugins {
 // ================ CONFIGURATION =======================
 
 
-jar {
+tasks.withType(Jar).all { Jar jar ->
+
     manifest {
         attributes 'Main-Class': 'com.marcobehler.saito.cli.SaitoCLI'
+    }
+
+    jar.doFirst {
+        String fileName = "project.properties"
+
+        ant.propertyfile(file: "${jar.temporaryDir}/${fileName}") {
+            entry(key: "PROJECT_GROUP", value: project.group)
+            entry(key: "PROJECT_ARTIFACT", value: project.archivesBaseName)
+            entry(key: "PROJECT_VERSION", value: project.version)
+            entry(key: "PROJECT_BUILD_DATE", value: new Date())
+        }
+
+        jar.from(jar.temporaryDir) {
+            include fileName
+            into("/")
+        }
     }
 }
 
