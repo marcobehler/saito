@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.PrintStream;
 
+import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -47,7 +48,7 @@ public class SaitoCLITest {
     public void cli_can_run_help() {
         PrintStream out = mock(PrintStream.class);
         System.setOut(out);
-        saitoCLI.run(new String[]{"--help"});
+        saitoCLI.run(new String[]{"-help"});
         verify(out).println(startsWith("Usage:"));
     }
 
@@ -72,4 +73,14 @@ public class SaitoCLITest {
         saitoCLI.run(new String[]{"clean"});
         verify(saito).clean(saitoCLI.getCurrentWorkingDir());
     }
+
+
+    @Test
+    public void cli_can_show_version() {
+        PrintStream out = mock(PrintStream.class);
+        System.setOut(out);
+        saitoCLI.run(new String[]{"-version"});
+        verify(out).println(contains("Saito 0.1"));
+    }
+
 }

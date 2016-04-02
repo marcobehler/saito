@@ -6,7 +6,7 @@ import com.beust.jcommander.Parameter;
 import com.marcobehler.saito.cli.jetty.JettyServer;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,11 +15,14 @@ import java.nio.file.Paths;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-@Slf4j
+
 public class SaitoCLI {
 
-    @Parameter(names = "--help", help = true)
+    @Parameter(names = {"-help", "-h"}, help = true)
     private boolean help;
+
+    @Parameter(names = {"-version", "-v"})
+    private boolean version;
 
     private InitCommand initCommand = new InitCommand();
     private BuildCommand buildCommand = new BuildCommand();
@@ -44,6 +47,7 @@ public class SaitoCLI {
         saitoCLI.run(args);
     }
 
+    @SneakyThrows
     void run(String[] args) {
         if ((args == null || args.length == 0)) {
             jc.usage();
@@ -59,6 +63,16 @@ public class SaitoCLI {
 
         if (help) {
             jc.usage();
+            return;
+        }
+
+        // TODO proper values here
+        if (version) {
+            System.out.println("------------------------------------------------------------");
+            System.out.println("Saito 0.1");
+            System.out.println("------------------------------------------------------------");
+            System.out.println("");
+            System.out.println("Build time: " + "whenever");
             return;
         }
 
@@ -81,7 +95,7 @@ public class SaitoCLI {
                 try {
                     new SourceWatcher(workingDirectory.resolve("source"), true).processEvents();
                 } catch (IOException e) {
-                    log.error("Error watching directory" , e);
+                    e.printStackTrace();
                 }
             }).start();
 
