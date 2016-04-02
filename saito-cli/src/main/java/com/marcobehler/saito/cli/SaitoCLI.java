@@ -29,17 +29,22 @@ public class SaitoCLI {
     @Parameter(names = {"-version", "-v"})
     private boolean version;
 
-    private InitCommand initCommand = new InitCommand();
-    private BuildCommand buildCommand = new BuildCommand();
-    private CleanCommand cleanCommand = new CleanCommand();
-    private ServerCommand serverCommand = new ServerCommand();
-
+    private InitCommand initCommand;
     private Saito saito;
     private JCommander jc;
 
     public SaitoCLI() {
         jc = jCommander();
         saito = new Saito();
+    }
+
+    private JCommander jCommander() {
+        JCommander jc = new JCommander(this);
+        jc.addCommand("init", initCommand = new InitCommand());
+        jc.addCommand("build", new BuildCommand());
+        jc.addCommand("clean", new CleanCommand());
+        jc.addCommand("server", new ServerCommand());
+        return jc;
     }
 
     /**
@@ -72,20 +77,15 @@ public class SaitoCLI {
         }
 
         if (version) {
-            Properties properties = new Properties();
-            properties.load(SaitoCLI.class.getResourceAsStream("/project.properties"));
-            System.out.println("");
-            System.out.println("------------------------------------------------------------");
-            System.out.println("Saito " + properties.get("PROJECT_VERSION"));
-            System.out.println("------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("Build time: " + properties.get("PROJECT_BUILD_DATE"));
-            System.out.println("");
+            printVersionInformation();
             return;
         }
 
         Path workingDirectory = getCurrentWorkingDir();
+        handleCommand(workingDirectory);
+    }
 
+    private void handleCommand(Path workingDirectory) {
         if ("init".equals(jc.getParsedCommand())) {
             saito.init(workingDirectory, initCommand.getTarget());
 
@@ -97,27 +97,39 @@ public class SaitoCLI {
         }
          else if ("server".equals(jc.getParsedCommand())) {
             saito.build(workingDirectory);
-            String buildDir = workingDirectory.resolve("build").toAbsolutePath().normalize().toString();
 
-            new Thread(() -> {
-                try {
-                    new SourceWatcher(workingDirectory.resolve("source"), true).processEvents();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            Path sourceDir = workingDirectory.resolve("source");
+            startFileWatcher(sourceDir);
 
-            new JettyServer().run(buildDir, 8820);
+            Path buildDir = workingDirectory.resolve("build");
+            startWebServer(buildDir);
         }
     }
 
-    private JCommander jCommander() {
-        JCommander jc = new JCommander(this);
-        jc.addCommand("init", initCommand);
-        jc.addCommand("build", buildCommand);
-        jc.addCommand("clean", cleanCommand);
-        jc.addCommand("server", serverCommand);
-        return jc;
+    private void startFileWatcher(Path dir) {
+        new Thread(() -> {
+            try {
+                new SourceWatcher(dir, true).processEvents();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void startWebServer(Path dir) {
+        new JettyServer().run(dir.toString(), 8820);
+    }
+
+    private void printVersionInformation() throws IOException {
+        Properties properties = new Properties();
+        properties.load(SaitoCLI.class.getResourceAsStream("/project.properties"));
+        System.out.println("");
+        System.out.println("------------------------------------------------------------");
+        System.out.println("Saito " + properties.get("PROJECT_VERSION"));
+        System.out.println("------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("Build time: " + properties.get("PROJECT_BUILD_DATE"));
+        System.out.println("");
     }
 
     Path getCurrentWorkingDir() {
