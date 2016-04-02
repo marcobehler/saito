@@ -4,6 +4,7 @@ plugins {
 
 // ================ CONFIGURATION =======================
 
+apply plugin: 'distribution'
 
 tasks.withType(Jar).all { Jar jar ->
 
@@ -44,6 +45,18 @@ shadowJar {
     classifier = ''
     version = ''
 }
+
+distributions {
+    main {
+        baseName = 'saito'
+        contents {
+            from { 'build/libs' }
+        }
+    }
+}
+
+distTar.dependsOn 'shadowJar'
+distZip.dependsOn 'shadowJar'
 
 // ================ TASKS =======================
 
