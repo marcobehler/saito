@@ -19,7 +19,7 @@ import java.nio.file.Path;
 public class SaitoConfig {
 
     private boolean directoryIndexes = false;
-    // private boolean relativeLinks = false;
+    private boolean relativeLinks = false;
 
     public static SaitoConfig getOrDefault(Path path) {
         SaitoConfig config = new SaitoConfig();
