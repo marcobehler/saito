@@ -1,0 +1,1 @@
+<p><strong>DAS IST MEIN GANZ TOLLER FOOTER</strong></p>
