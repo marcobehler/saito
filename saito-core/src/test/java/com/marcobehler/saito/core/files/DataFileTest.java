@@ -34,7 +34,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
 
         Map<String, Object> expected = new HashMap<>();
-        expected.put("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")));
+        expected.put("dummy", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")));
 
         Map<String,Object> data = dataFile.parseData();
         assertThat(data).isEqualTo(expected);
