@@ -14,8 +14,20 @@ subprojects {
         testCompile 'org.assertj:assertj-core:3.4.0'
     }
 
+    def versionPropsFile = file("${rootDir}/version.properties")
+    def versionBuild = 0
 
-    version = '1.0-SNAPSHOT'
+    println "bla"
+    if (versionPropsFile.canRead()) {
+
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+        versionProps['VERSION_BUILD'] = versionBuild.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+    }
+
+    version = '1.0.' + versionBuild
     group = 'com.marcobehler'
 
     jar {
