@@ -40,6 +40,19 @@ dependencies {
     compile 'com.beust:jcommander:1.48'
 }
 
+
+// ================ DISTRIBUTION =======================
+
+task bundleStarterScripts(type: Copy) {
+    from 'src/main/resources'
+    into 'build/libs'
+    include 'saito.bat'
+    include 'saito'
+}
+
+shadowJar.dependsOn 'bundleStarterScripts'
+
+
 shadowJar {
     baseName = 'saito'
     classifier = ''
@@ -55,17 +68,29 @@ distributions {
     }
 }
 
+distZip {
+    eachFile { file ->
+        String path = file.relativePath
+        file.setPath(path.substring(path.indexOf("/")+1,path.length()))
+    }
+}
+distTar {
+    eachFile { file ->
+        String path = file.relativePath
+        file.setPath(path.substring(path.indexOf("/")+1,path.length()))
+    }
+}
+
 distTar.dependsOn 'shadowJar'
 distZip.dependsOn 'shadowJar'
 
-// ================ TASKS =======================
+// ================ DEVELOPMENT =======================
 
-task bundleStarterScripts(type: Copy) {
-    from 'src/main/resources'
-    into 'build/libs'
-    include 'saito.bat'
-    include 'saito'
+task localInstall(type: Copy) {
+    from(zipTree('build/distributions/saito-' + version + ".zip")) { include '**' }
+    def target = System.getProperty("user.home") + '/saito'
+    print "Into ${target}"
+    into target
 }
 
-shadowJar.dependsOn 'bundleStarterScripts'
-
+localInstall.dependsOn 'distZip'
