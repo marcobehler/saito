@@ -1,4 +1,4 @@
-package com.marcobehler.saito.cli;
+package com.marcobehler.saito.cli.commands;
 
 import com.beust.jcommander.Parameters;
 
@@ -6,4 +6,4 @@ import com.beust.jcommander.Parameters;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Parameters(commandDescription = "Start the preview server")
-class ServerCommand {}
+public class ServerCommand {}

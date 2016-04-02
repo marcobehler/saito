@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 @Slf4j
 public class JettyServer {
 
-
     /**
      * Run Jetty web server serving out supplied path on supplied port
      *

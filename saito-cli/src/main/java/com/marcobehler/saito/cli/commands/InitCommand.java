@@ -1,17 +1,17 @@
-package com.marcobehler.saito.cli;
+package com.marcobehler.saito.cli.commands;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import java.util.List;
 
-import static com.marcobehler.saito.cli.InitCommand.DESCRIPTION;
+import static com.marcobehler.saito.cli.commands.InitCommand.DESCRIPTION;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Parameters(commandDescription = DESCRIPTION)
-class InitCommand {
+public class InitCommand {
 
     public static final String DESCRIPTION = "Create new project at TARGET";
 
