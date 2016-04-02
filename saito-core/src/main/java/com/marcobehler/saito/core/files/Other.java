@@ -14,7 +14,6 @@ import java.nio.file.StandardCopyOption;
 @Slf4j
 public class Other extends SaitoFile{
 
-
     public Other(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
     }

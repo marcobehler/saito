@@ -29,11 +29,11 @@ public class SaitoModel {
 
     private List<Other> others = new ArrayList<>();
 
-    public void process(SaitoConfig config, Path targetDirectory) {
+    public void process(SaitoConfig config, Path projectDirectory) {
         calculateDependencies();
         dataFiles.forEach(DataFile::process);
-        templates.forEach(t -> t.process(config, targetDirectory));
-        others.forEach(o -> o.process(config, targetDirectory));
+        templates.forEach(t -> t.process(config, projectDirectory));
+        others.forEach(o -> o.process(config, projectDirectory));
     }
 
     private void calculateDependencies() {
