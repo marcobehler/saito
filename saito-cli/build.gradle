@@ -5,6 +5,7 @@ plugins {
 // ================ CONFIGURATION =======================
 
 apply plugin: 'distribution'
+apply plugin: 'maven'
 
 tasks.withType(Jar).all { Jar jar ->
 
@@ -83,6 +84,23 @@ distTar {
 
 distTar.dependsOn 'shadowJar'
 distZip.dependsOn 'shadowJar'
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://c:/test")
+
+//            aven {
+//                url "s3://myCompanyBucket/maven2"
+//                credentials(AwsCredentials) {
+//                    accessKey "someKey"
+//                    secretKey "someSecret"
+//                }
+//            }
+        }
+    }
+}
 
 // ================ DEVELOPMENT =======================
 
