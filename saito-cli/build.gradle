@@ -2,27 +2,13 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
+// ================ CONFIGURATION =======================
+
+
 jar {
     manifest {
         attributes 'Main-Class': 'com.marcobehler.saito.cli.SaitoCLI'
     }
-}
-
-
-shadowJar {
-    baseName = 'saito'
-    classifier = ''
-    version = ''
-
-}
-
-shadowJar.dependsOn 'createStartupScripts'
-
-task createStartupScripts(type: Copy) {
-    from 'src/main/resources'
-    into 'build/libs'
-    include 'saito.bat'
-    include 'saito'
 }
 
 dependencies {
@@ -30,7 +16,26 @@ dependencies {
 
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'ch.qos.logback:logback-core:1.1.7'
+
     compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
 
     compile 'com.beust:jcommander:1.48'
 }
+
+shadowJar {
+    baseName = 'saito'
+    classifier = ''
+    version = ''
+}
+
+// ================ TASKS =======================
+
+task bundleStarterScripts(type: Copy) {
+    from 'src/main/resources'
+    into 'build/libs'
+    include 'saito.bat'
+    include 'saito'
+}
+
+shadowJar.dependsOn 'bundleStarterScripts'
+
