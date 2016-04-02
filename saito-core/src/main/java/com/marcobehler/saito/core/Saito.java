@@ -22,6 +22,7 @@ public class Saito {
         try {
             createDirectories(workingDir);
             createFiles(workingDir);
+
             log.info("Init complete!");
             log.info("Use 'saito process' to process your new site");
         } catch (IOException e) {
@@ -37,24 +38,15 @@ public class Saito {
         log.info("create {}", Files.createDirectories(workingDir.resolve("data")));
     }
 
-
-    private static final String placeHolderJson = "{\n" +
-            "  \"friends\": [\n" +
-            "    \"Tom\",\n" +
-            "    \"Dick\",\n" +
-            "    \"Harry\"\n" +
-            "  ]\n" +
-            "}";
-
     private void createFiles(Path workingDir) throws IOException {
         copyClasspathResourceToFile("index.html.ftl", workingDir.resolve("source"));
         copyClasspathResourceToFile("layout.ftl", workingDir.resolve("source/layouts"));
-        //copyClasspathResourceToFile(/.gitignore", workingDir);
+        copyClasspathResourceToFile("dummy.json", workingDir.resolve("data"));
 
         log.info("create {}", Files.write(workingDir.resolve("source/stylesheets/all.css"), "".getBytes()));
         log.info("create {}", Files.write(workingDir.resolve("source/javascripts/all.js"), "".getBytes()));
-        log.info("create {}", Files.write(workingDir.resolve("data/people.json"), placeHolderJson.getBytes()));
     }
+
 
     private void copyClasspathResourceToFile(String classPathResource, Path targetDir) throws IOException {
         URL url = Resources.getResource(classPathResource);

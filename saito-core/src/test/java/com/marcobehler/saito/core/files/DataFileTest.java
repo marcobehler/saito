@@ -28,10 +28,10 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
 
     @Test
     public void dataFile_can_return_data_as_map() throws IOException {
-        Path peopleJson = fs.getPath("/people.json");
+        Path peopleJson = fs.getPath("/dummy.json");
         Files.write(peopleJson, json.getBytes());
 
-        DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("people.json"));
+        DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
 
         Map<String, Object> expected = new HashMap<>();
         expected.put("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")));

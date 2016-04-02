@@ -1,34 +1,15 @@
 package com.marcobehler.saito.core;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class SaitoTest {
-
-    FileSystem fs;
-
-    @Before
-    public void before() {
-        fs = Jimfs.newFileSystem(Configuration.unix());
-    }
-
-    @After
-    public void after() throws IOException {
-        if (fs != null) {
-            fs.close();
-        }
-    }
+public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_directories() {
@@ -69,7 +50,8 @@ public class SaitoTest {
     }
 
 
-    @Test
+    @Test@
+            Ignore
     public void build_should_create_directory() {
         Path workingDirectory = fs.getPath("/");
         Saito saito = new Saito();
