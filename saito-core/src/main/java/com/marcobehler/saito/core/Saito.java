@@ -58,7 +58,7 @@ public class Saito {
     private void copyClasspathResourceToFile(String classPathResource, Path targetDir) throws IOException {
         URL url = Resources.getResource(classPathResource);
         String content = Resources.toString(url, Charsets.UTF_8);
-        log.info("create {}", Files.write(targetDir.resolve(classPathResource), content.getBytes()));
+        log.info("create {}", Files.write(targetDir.resolve(classPathResource), content.getBytes("UTF-8")));
     }
 
     /**

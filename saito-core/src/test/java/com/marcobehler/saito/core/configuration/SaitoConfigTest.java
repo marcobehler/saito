@@ -40,7 +40,7 @@ public class SaitoConfigTest extends AbstractInMemoryFileSystemTest {
 
     @Test
     public void get_config_from_path() throws IOException {
-        Path configFile = Files.write(fs.getPath("/test.yaml"), "directoryIndexes : true\nrelativeLinks: true".getBytes());
+        Path configFile = Files.write(fs.getPath("/test.yaml"), "directoryIndexes : true\nrelativeLinks: true".getBytes("UTF-8"));
 
         SaitoConfig defaultConfig = SaitoConfig.getOrDefault(configFile);
 

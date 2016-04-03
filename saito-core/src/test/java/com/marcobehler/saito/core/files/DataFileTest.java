@@ -29,7 +29,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
     @Test
     public void dataFile_can_return_data_as_map() throws IOException {
         Path peopleJson = fs.getPath("/dummy.json");
-        Files.write(peopleJson, json.getBytes());
+        Files.write(peopleJson, json.getBytes("UTF-8"));
 
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
 
@@ -44,7 +44,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
     public void dataFile_can_return_data_as_map_with_deeper_filename() throws IOException {
         Path peopleJson = fs.getPath("/usa/texas/people.json");
         Files.createDirectories(peopleJson.getParent());
-        Files.write(peopleJson, json.getBytes());
+        Files.write(peopleJson, json.getBytes("UTF-8"));
 
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("usa/texas/people.json"));
 

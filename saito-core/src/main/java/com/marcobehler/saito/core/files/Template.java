@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,9 +51,11 @@ public class Template extends SaitoFile {
         }
 
         String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
+
         Path targetFile = isDirectoryIndexEnabled(config, relativePath)
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
+
         writeTargetFile(targetFile);
     }
 
@@ -80,10 +83,13 @@ public class Template extends SaitoFile {
     }
 
     @SneakyThrows
+    // TODO refactor
     private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath) {
-        relativePath = PathUtils.stripExtension(relativePath, ".html");
+        relativePath = PathUtils.stripExtension(Paths.get(relativePath), ".html");
+
         Path dir = targetDir.resolve(relativePath);
         Path targetSubDir = Files.createDirectories(dir);
+
         return targetSubDir.resolve("index.html");
     }
 
