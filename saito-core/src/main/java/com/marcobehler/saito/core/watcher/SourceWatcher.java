@@ -119,7 +119,7 @@ public class SourceWatcher {
                     if (nowLastModified - previouslyModified > 750) {
                         log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
                         lastModified.put(child.toString(), nowLastModified);
-                        new Saito().incrementalBuild(dir, child);
+                        new Saito().incrementalBuild(dir.getParent(), dir.resolve(child));
                     }
                 }
 
