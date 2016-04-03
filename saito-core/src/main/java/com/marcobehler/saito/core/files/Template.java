@@ -42,8 +42,8 @@ public class Template extends SaitoFile  {
 
     public Template(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
-        this.frontmatter = parseFrontMatter(getContent());
-        this.template = parseTemplate(getContent());
+        this.frontmatter = parseFrontMatter(getDataAsString());
+        this.template = parseTemplate(getDataAsString());
     }
 
 

@@ -62,7 +62,7 @@ public class DataFile extends SaitoFile {
 
     private Map<? extends String, ?> doParse() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(getContent(), new TypeReference<HashMap<String, Object>>() {
+        return mapper.readValue(getData(), new TypeReference<HashMap<String, Object>>() {
         });
     }
 

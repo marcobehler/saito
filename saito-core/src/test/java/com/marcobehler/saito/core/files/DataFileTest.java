@@ -21,7 +21,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
     private String json = "{\n" +
             "  \"friends\": [\n" +
             "    \"Tom\",\n" +
-            "    \"Dick\",\n" +
+            "    \"Hänsel\",\n" +
             "    \"Harry\"\n" +
             "  ]\n" +
             "}";
@@ -34,7 +34,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
 
         Map<String, Object> expected = new HashMap<>();
-        expected.put("dummy", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")));
+        expected.put("dummy", Collections.singletonMap("friends", Arrays.asList("Tom", "Hänsel", "Harry")));
 
         Map<String,Object> data = dataFile.parse();
         assertThat(data).isEqualTo(expected);
@@ -49,7 +49,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("usa/texas/people.json"));
 
         Map<String, Object> expected = new HashMap<>();
-        expected.put("usa", Collections.singletonMap("texas", Collections.singletonMap("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")))));
+        expected.put("usa", Collections.singletonMap("texas", Collections.singletonMap("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Hänsel", "Harry")))));
 
         Map<String,Object> data = dataFile.parse();
         assertThat(data).isEqualTo(expected);

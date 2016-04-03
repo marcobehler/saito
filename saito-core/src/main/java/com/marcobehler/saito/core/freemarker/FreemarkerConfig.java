@@ -63,7 +63,7 @@ public class FreemarkerConfig {
 
     @SneakyThrows
     public Template getFreemarkerTemplate(Layout layout) {
-        return new Template(layout.getName(), layout.getContent(), cfg);
+        return new Template(layout.getName(), layout.getDataAsString(), cfg);
     }
 
     @SuppressWarnings("unchecked")
