@@ -14,12 +14,18 @@ import java.nio.file.StandardCopyOption;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
-public class Other extends SaitoFile{
+public class Other extends SaitoFile {
 
     public Other(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
     }
 
+    /**
+     * Other files get copied as is, without any processing done to them.
+     *
+     * @param config the SaitoConfig
+     * @param targetDirectory the targetDirectory
+     */
     public void process(SaitoConfig config, Path targetDirectory) {
         try {
             Path sourceFile = getSourceDirectory().resolve(getRelativePath());

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
-public class Template extends SaitoFile {
+public class Template extends SaitoFile  {
 
     private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
 
@@ -58,6 +58,7 @@ public class Template extends SaitoFile {
         }
         return null;
     }
+
 
 
     public void process(SaitoConfig config, Path targetDir) {
