@@ -10,8 +10,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -39,7 +37,6 @@ public class SourceWatcher {
         private final Path relativePath;
     }
 
-    private static Queue<FileChange> changes = new LinkedBlockingQueue<>();
     /**
      * Register the given directory with the WatchService
      */
@@ -80,6 +77,9 @@ public class SourceWatcher {
         }
     }
 
+
+    private Map<String, Long> lastModified = new HashMap<>();
+
     /**
      * Process all events for keys queued to the watcher
      */
@@ -100,8 +100,6 @@ public class SourceWatcher {
                 continue;
             }
 
-
-
             for (WatchEvent<?> event : key.pollEvents()) {
                 WatchEvent.Kind kind = event.kind();
 
@@ -113,9 +111,16 @@ public class SourceWatcher {
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
-                if  (kind == ENTRY_MODIFY ) {
-                    log.info("{} {}", event.kind().name(), child);
-                    changes.add(new FileChange(dir, name));
+                if (kind == ENTRY_MODIFY && isNotTemporaryJetbrainsFile(child)) {
+                    Long previouslyModified = lastModified.getOrDefault(child.toString(), 0L);
+                    long nowLastModified = child.toFile().lastModified();
+
+                    if (nowLastModified - previouslyModified > 750) {
+                        log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
+                        lastModified.put(child.toString(), nowLastModified);
+
+                        // TODO do something
+                    }
                 }
 
                 // if directory is created, and watching recursively, then
@@ -126,7 +131,7 @@ public class SourceWatcher {
                             registerAll(child);
                         }
                     } catch (IOException x) {
-                        // ignore to keep sample readbale
+                        log.error("Error registering new sub-dir", x);
                     }
                 }
             }
@@ -142,5 +147,9 @@ public class SourceWatcher {
                 }
             }
         }
+    }
+
+    private boolean isNotTemporaryJetbrainsFile(Path path) {
+        return !path.toString().contains("___jb_tmp___") && !path.toString().contains("___jb_old___");
     }
 }
