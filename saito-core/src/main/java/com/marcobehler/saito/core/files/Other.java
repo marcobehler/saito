@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
+ * Every file in the project/source dir, that is not a layout or template.
+ *
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j

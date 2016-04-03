@@ -3,6 +3,7 @@ package com.marcobehler.saito.core;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.processing.SourceScanner;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +70,8 @@ public class Saito {
         try {
             Path configFile = projectDir.resolve("config.yaml");
             SaitoConfig config = SaitoConfig.getOrDefault(configFile);
+
+            FreemarkerConfig.getInstance().initClassLoaders(projectDir);
 
             // 1. scan-in ALL source files
             SaitoModel saitoModel = new SourceScanner().scan(projectDir);

@@ -4,10 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.util.PathUtils;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultMapAdapter;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -32,21 +28,8 @@ public class DataFile extends SaitoFile {
      * Parses the .json file this class represents and makes its data available in Freemarker, as a shared variable.
      */
     public void process() {
-        Configuration freemarkerConfig = FreemarkerConfig.getInstance(getSourceDirectory().getParent()).getCfg();
-        TemplateModel data = freemarkerConfig.getSharedVariable("data");
-        if (data == null) {
-            try {
-                freemarkerConfig.setSharedVariable("data", new HashMap<>());
-            } catch (TemplateModelException e) {
-                log.error("Problem setting shared variable", e);
-            }
-        }
-
-        data = freemarkerConfig.getSharedVariable("data");
-        if (data instanceof DefaultMapAdapter) {
-            Map<String, Object> underlyingMap = (Map<String, Object>) ((DefaultMapAdapter) data).getWrappedObject();
-            underlyingMap.putAll(parse());
-        }
+        Map<String, Object> parsedData = parse();
+        FreemarkerConfig.getInstance().mergeSharedVariableMap("data", parsedData);
     }
 
     /**

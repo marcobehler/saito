@@ -24,6 +24,12 @@ public class SaitoConfig {
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
 
+    /**
+     * Returns the Saito Config used to build your project
+     *
+     * @param path the path to the .yaml - config file
+     * @return a default config if the path is null or non-existing. Otherwise the parsed config
+     */
     public static SaitoConfig getOrDefault(Path path) {
         SaitoConfig result = INSTANCE;
         if (result == null) {

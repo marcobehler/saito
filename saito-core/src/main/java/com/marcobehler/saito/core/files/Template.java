@@ -78,12 +78,12 @@ public class Template extends SaitoFile {
         try (BufferedWriter writer = Files.newBufferedWriter(targetFile, Charset.forName("UTF-8"))) {
             Map<String, Object> data = new HashMap<>();
 
-            FreemarkerConfig i = FreemarkerConfig.getInstance(targetDir.getParent());
+            FreemarkerConfig i = FreemarkerConfig.getInstance();
             StringWriter w = new StringWriter();
             new freemarker.template.Template(getRelativePath().getFileName().toString(), template, i.getCfg()).process(Collections.emptyMap(), w);
 
             data.put("_saito_content_", w.toString());
-            FreemarkerConfig.getInstance(targetDir.getParent())
+            FreemarkerConfig.getInstance()
                     .getFreemarkerTemplate(layout)
                     .process(data, writer);
             log.info("created {}", targetFile);
