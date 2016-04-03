@@ -1,10 +1,12 @@
 package com.marcobehler.saito.core;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -50,10 +52,10 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
     }
 
 
-    @Test@
-            Ignore
-    public void build_should_create_directory() {
-        Path workingDirectory = fs.getPath("/");
+    @Test
+    public void build_should_create_directory() throws IOException {
+        Path workingDirectory = Paths.get("./a");
+        Files.createDirectories(workingDirectory);
         Saito saito = new Saito();
         saito.init(workingDirectory, "nested");
         saito.build(workingDirectory.resolve("nested"));

@@ -25,6 +25,6 @@ public class Layout extends SaitoFile {
      * @return the name of the layout
      */
     public String getName() {
-        return PathUtils.stripExtension(getRelativePath(), LAYOUT_FILE_EXTENSION);
+        return PathUtils.stripExtension(getRelativePath().getFileName(), LAYOUT_FILE_EXTENSION);
     }
 }

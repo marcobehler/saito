@@ -68,6 +68,7 @@ public class Saito {
      */
     public void build(Path projectDir) {
         try {
+            log.info("Working dir {} ", projectDir);
             Path configFile = projectDir.resolve("config.yaml");
             SaitoConfig config = SaitoConfig.getOrDefault(configFile);
 
