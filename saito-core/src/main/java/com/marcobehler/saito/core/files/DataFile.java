@@ -28,6 +28,9 @@ public class DataFile extends SaitoFile {
         super(sourceDirectory, relativePath);
     }
 
+    /**
+     * Parses the .json file this class represents and makes its data available in Freemarker, as a shared variable.
+     */
     public void process() {
         Configuration freemarkerConfig = FreemarkerConfig.getInstance(getSourceDirectory().getParent()).getCfg();
         TemplateModel data = freemarkerConfig.getSharedVariable("data");
@@ -47,7 +50,7 @@ public class DataFile extends SaitoFile {
     }
 
     /**
-     * Parses a data.json file and return its content as a map.
+     * Parses the .json file and return its content as a map.
      * <p>
      * If the data file has the following path /data/my/dear/friends.json , the resulting map will look like
      * { my :{ dear: { friends: [content]}}}
