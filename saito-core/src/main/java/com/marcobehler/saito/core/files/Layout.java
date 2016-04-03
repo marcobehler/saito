@@ -19,6 +19,11 @@ public class Layout extends SaitoFile {
         super(sourceDirectory, relativePath);
     }
 
+    /**
+     * In the yaml frontmatter of your template files, you are able to use this name.
+     *
+     * @return the name of the layout
+     */
     public String getName() {
         return PathUtils.stripExtension(getRelativePath(), LAYOUT_FILE_EXTENSION);
     }
