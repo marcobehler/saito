@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.watcher;
 
+import com.marcobehler.saito.core.Saito;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -111,15 +112,14 @@ public class SourceWatcher {
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
-                if (kind == ENTRY_MODIFY && isNotTemporaryJetbrainsFile(child)) {
+                if (kind == ENTRY_MODIFY && isNotTemporaryJetbrainsFile(child) && isNotDirectory(child)) {
                     Long previouslyModified = lastModified.getOrDefault(child.toString(), 0L);
                     long nowLastModified = child.toFile().lastModified();
 
                     if (nowLastModified - previouslyModified > 750) {
                         log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
                         lastModified.put(child.toString(), nowLastModified);
-
-                        // TODO do something
+                        new Saito().incrementalBuild(dir, child);
                     }
                 }
 
@@ -147,6 +147,10 @@ public class SourceWatcher {
                 }
             }
         }
+    }
+
+    private boolean isNotDirectory(Path child) {
+        return !Files.isDirectory(child);
     }
 
     private boolean isNotTemporaryJetbrainsFile(Path path) {

@@ -88,6 +88,15 @@ public class Saito {
         }
     }
 
+
+    public void incrementalBuild(Path projectDir, Path singleFile) {
+        if (Files.isDirectory(singleFile)) {
+            throw new IllegalArgumentException("You are trying to incrementally build a directory");
+        }
+        // TODO a real incremental build, at the moment i am cheating :D
+        build(projectDir);
+    }
+
     public void clean(Path currentWorkingDir) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
