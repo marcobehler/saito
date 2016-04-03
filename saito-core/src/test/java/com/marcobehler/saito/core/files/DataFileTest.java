@@ -36,7 +36,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put("dummy", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")));
 
-        Map<String,Object> data = dataFile.parseData();
+        Map<String,Object> data = dataFile.parse();
         assertThat(data).isEqualTo(expected);
     }
 
@@ -51,7 +51,7 @@ public class DataFileTest extends AbstractInMemoryFileSystemTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put("usa", Collections.singletonMap("texas", Collections.singletonMap("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Dick", "Harry")))));
 
-        Map<String,Object> data = dataFile.parseData();
+        Map<String,Object> data = dataFile.parse();
         assertThat(data).isEqualTo(expected);
     }
 }
