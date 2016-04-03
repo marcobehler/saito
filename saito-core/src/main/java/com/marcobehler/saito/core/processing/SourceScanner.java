@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.util.PathUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -27,35 +28,21 @@ public class SourceScanner {
         SaitoModel result = new SaitoModel();
 
         Path sourcesDir = directory.resolve("source");
-        scanSources(sourcesDir, result);
+        scanSourceDirectory(sourcesDir, result);
 
         Path dataDir = directory.resolve("data");
-        scanData(dataDir, result);
+        scanDataDirectory(dataDir, result);
 
         return result;
     }
 
-    private void scanData(Path directory, SaitoModel result) {
+
+    private void scanSourceDirectory(Path directory, SaitoModel result) {
         Path absoluteDirectory = directory.toAbsolutePath().normalize();
 
         try {
             Files.walk(directory).parallel().forEach(p -> {
-                Path relativePath = getRelativePath(absoluteDirectory, p);
-                if (dataPattern.matcher(relativePath.toString()).matches()) {
-                    result.getDataFiles().add(new DataFile(directory, relativePath));
-                }
-            });
-        } catch (IOException e) {
-            log.error("Problem walking {}", directory, e);
-        }
-    }
-
-    private void scanSources(Path directory, SaitoModel result) {
-        Path absoluteDirectory = directory.toAbsolutePath().normalize();
-
-        try {
-            Files.walk(directory).parallel().forEach(p -> {
-                Path relativePath = getRelativePath(absoluteDirectory, p);
+                Path relativePath = PathUtils.relativize(absoluteDirectory, p);
                 if (layoutPattern.matcher(relativePath.toString()).matches()) {
                     result.getLayouts().add(new Layout(directory, relativePath));
                 } else if (templatePattern.matcher(relativePath.toString()).matches()) {
@@ -69,8 +56,20 @@ public class SourceScanner {
         }
     }
 
-    private Path getRelativePath(Path absoluteDirectory, Path p) {
-        Path fileAbsolute = p.toAbsolutePath().normalize();
-        return absoluteDirectory.relativize(fileAbsolute);
+    private void scanDataDirectory(Path directory, SaitoModel result) {
+        Path absoluteDirectory = directory.toAbsolutePath().normalize();
+
+        try {
+            Files.walk(directory).parallel().forEach(p -> {
+                Path relativePath = PathUtils.relativize(absoluteDirectory, p);
+                if (dataPattern.matcher(relativePath.toString()).matches()) {
+                    result.getDataFiles().add(new DataFile(directory, relativePath));
+                }
+            });
+        } catch (IOException e) {
+            log.error("Problem walking {}", directory, e);
+        }
     }
+
+
 }

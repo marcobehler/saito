@@ -1,13 +1,14 @@
 package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
+import com.marcobehler.saito.core.util.PathUtils;
 import freemarker.template.TemplateException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,24 +28,24 @@ import java.util.regex.Pattern;
 @Slf4j
 public class Template extends SaitoFile  {
 
+    private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
+
     private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
 
     @Getter
-    private final Map<String, Object> frontmatter;
+    private final FrontMatter frontmatter;
 
     @Getter
     private String template; // can be  HTML, asciidoc, md
 
     @Setter
-
     private Layout layout;
 
     public Template(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
-        this.frontmatter = parseFrontMatter(getDataAsString());
+        this.frontmatter = FrontMatter.parse(getDataAsString());
         this.template = parseTemplate(getDataAsString());
     }
-
 
     private String parseTemplate(final String content) {
         if (content == null) {
@@ -60,13 +60,12 @@ public class Template extends SaitoFile  {
     }
 
 
-
     public void process(SaitoConfig config, Path targetDir) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
 
-        String relativePath = stripExtension(getRelativePath(), ".ftl");
+        String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
         Path targetFile;
 
         if (config.isDirectoryIndexes() && !relativePath.endsWith("index.html")) {
@@ -95,16 +94,10 @@ public class Template extends SaitoFile  {
 
     @SneakyThrows
     private Path getDirectoryIndexFile(Path targetDir, String relativePath) {
-        relativePath = stripExtension(Paths.get(relativePath), ".html");
+        relativePath = PathUtils.stripExtension(relativePath, ".html");
         Path dir = targetDir.resolve(relativePath);
         Path targetSubDir = Files.createDirectories(dir);
         return targetSubDir.resolve("index.html");
-    }
-
-    private String stripExtension(Path path, String extension) {
-        String pathString = path.toString();
-        pathString = pathString.substring(0, pathString.toLowerCase().indexOf(extension));
-        return pathString;
     }
 
     private Path getTargetFile(Path targetDir, String relativePath) {
@@ -122,24 +115,6 @@ public class Template extends SaitoFile  {
     public String getLayout() {
         Map<String, Object> frontMatter = getFrontmatter();
         return (String) frontMatter.getOrDefault("layout", "layout");
-    }
-
-    private Map<String, Object> parseFrontMatter(final String content) {
-        if (content == null) {
-            return null;
-        }
-        Map<String, Object> result = new HashMap<>();
-        Matcher matcher = pattern.matcher(content);
-
-        if (matcher.find()) {
-            String yamlString = matcher.group(1);
-            Yaml yaml = new Yaml();
-            Map<String, Object> matter = (Map<String, Object>) yaml.load(yamlString);
-            if (matter != null) {
-                result.putAll(matter);
-            }
-        }
-        return result;
     }
 
 }

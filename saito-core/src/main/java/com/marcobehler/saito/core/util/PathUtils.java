@@ -17,4 +17,8 @@ public class PathUtils {
     public static List<String> splitByFileSeparator(String path) {
         return Arrays.asList(path.split("[\\\\|/]"));
     }
+
+    public static Path relativize(Path absoluteDirectory, Path subDirectory) {
+        return absoluteDirectory.relativize(subDirectory.toAbsolutePath().normalize());
+    }
 }
