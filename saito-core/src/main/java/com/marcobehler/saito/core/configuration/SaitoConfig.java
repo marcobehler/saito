@@ -18,12 +18,28 @@ import java.nio.file.Path;
 @Slf4j
 public class SaitoConfig {
 
+    private static final Object lock = new Object();
+    private static volatile SaitoConfig INSTANCE;
+
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
 
     public static SaitoConfig getOrDefault(Path path) {
-        SaitoConfig config = new SaitoConfig();
-        return Files.exists(path) ? parseYaml(path) : config;
+        SaitoConfig result = INSTANCE;
+        if (result == null) {
+            synchronized (lock) {
+                result = INSTANCE;
+                if (result == null) {
+                    SaitoConfig config = path != null && Files.exists(path) ? parseYaml(path) : new SaitoConfig();
+                    INSTANCE = result = config;
+                }
+            }
+        }
+        return result;
+    }
+
+    static void reset() {
+        INSTANCE = null;
     }
 
     @SneakyThrows
