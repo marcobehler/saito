@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
+import com.marcobehler.saito.core.domain.TemplateContent;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.util.PathUtils;
 import freemarker.template.TemplateException;
@@ -19,24 +20,20 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
-public class Template extends SaitoFile  {
+public class Template extends SaitoFile {
 
     private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
-
-    private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
 
     @Getter
     private final FrontMatter frontmatter;
 
     @Getter
-    private String template; // can be  HTML, asciidoc, md
+    private final TemplateContent content; // can be  HTML, asciidoc, md
 
     @Setter
     private Layout layout;
@@ -44,21 +41,8 @@ public class Template extends SaitoFile  {
     public Template(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
         this.frontmatter = FrontMatter.parse(getDataAsString());
-        this.template = parseTemplate(getDataAsString());
+        this.content = TemplateContent.parseTemplate(getDataAsString());
     }
-
-    private String parseTemplate(final String content) {
-        if (content == null) {
-            return null;
-        }
-
-        Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            return matcher.group(2).trim();
-        }
-        return null;
-    }
-
 
     public void process(SaitoConfig config, Path targetDir) {
         if (layout == null) {
@@ -66,21 +50,24 @@ public class Template extends SaitoFile  {
         }
 
         String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
-        Path targetFile;
+        Path targetFile = isDirectoryIndexEnabled(config, relativePath)
+                ? getDirectoryIndexTargetFile(targetDir, relativePath)
+                : getTargetFile(targetDir, relativePath);
+        writeTargetFile(targetFile);
+    }
 
-        if (config.isDirectoryIndexes() && !relativePath.endsWith("index.html")) {
-            targetFile = getDirectoryIndexFile(targetDir, relativePath);
-        } else {
-            targetFile = getTargetFile(targetDir, relativePath);
-        }
+    private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
+        return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
+    }
 
+    private void writeTargetFile(Path targetFile) {
         // TODO refactor
         try (BufferedWriter writer = Files.newBufferedWriter(targetFile, Charset.forName("UTF-8"))) {
             Map<String, Object> data = new HashMap<>();
 
             FreemarkerConfig i = FreemarkerConfig.getInstance();
             StringWriter w = new StringWriter();
-            new freemarker.template.Template(getRelativePath().getFileName().toString(), template, i.getCfg()).process(Collections.emptyMap(), w);
+            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), i.getCfg()).process(Collections.emptyMap(), w);
 
             data.put("_saito_content_", w.toString());
             FreemarkerConfig.getInstance()
@@ -93,7 +80,7 @@ public class Template extends SaitoFile  {
     }
 
     @SneakyThrows
-    private Path getDirectoryIndexFile(Path targetDir, String relativePath) {
+    private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath) {
         relativePath = PathUtils.stripExtension(relativePath, ".html");
         Path dir = targetDir.resolve(relativePath);
         Path targetSubDir = Files.createDirectories(dir);

@@ -18,6 +18,7 @@ public class FrontMatter extends HashMap<String, Object> {
         if (content == null) {
             return null;
         }
+
         FrontMatter result = new FrontMatter();
         Matcher matcher = pattern.matcher(content);
 
