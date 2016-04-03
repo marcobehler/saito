@@ -57,6 +57,11 @@ public class SourceScanner {
     }
 
     private void scanDataDirectory(Path directory, SaitoModel result) {
+        if (Files.exists(directory)) {
+            log.info("No 'data' directory found in project dir, skipping...");
+            return;
+        }
+
         Path absoluteDirectory = directory.toAbsolutePath().normalize();
 
         try {
