@@ -28,6 +28,7 @@ import java.util.Map;
 @Slf4j
 public class Template extends SaitoFile {
 
+    private static final String LIVE_RELOAD_TAG = "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script>";
     private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
     @Getter
@@ -76,7 +77,7 @@ public class Template extends SaitoFile {
             FreemarkerConfig.getInstance()
                     .getFreemarkerTemplate(layout, template -> {
                         if (config.isLiveReloadEnabled()) {
-                            return template.replace("</head>", "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script></head>");
+                            return template.replace("</head>", LIVE_RELOAD_TAG + "</head>");
                         } else {
                             return template;
                         }
