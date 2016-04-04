@@ -49,6 +49,7 @@ public class Saito {
         copyClasspathResourceToFile("index.html.ftl", workingDir.resolve("source"));
         copyClasspathResourceToFile("layout.ftl", workingDir.resolve("source/layouts"));
         copyClasspathResourceToFile("dummy.json", workingDir.resolve("data"));
+        copyClasspathResourceToFile("cover.css", workingDir.resolve("source/stylesheets"));
 
         log.info("create {}", Files.write(workingDir.resolve("source/stylesheets/all.css"), "".getBytes()));
         log.info("create {}", Files.write(workingDir.resolve("source/javascripts/all.js"), "".getBytes()));
