@@ -56,14 +56,14 @@ public class Template extends SaitoFile {
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 
-        writeTargetFile(targetFile);
+        writeTargetFile(config, targetFile);
     }
 
     private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
         return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
     }
 
-    private void writeTargetFile(Path targetFile) {
+    private void writeTargetFile(SaitoConfig config, Path targetFile) {
         // TODO refactor
         try (BufferedWriter writer = Files.newBufferedWriter(targetFile, Charset.forName("UTF-8"))) {
             Map<String, Object> data = new HashMap<>();
@@ -74,7 +74,13 @@ public class Template extends SaitoFile {
 
             data.put("_saito_content_", w.toString());
             FreemarkerConfig.getInstance()
-                    .getFreemarkerTemplate(layout)
+                    .getFreemarkerTemplate(layout, template -> {
+                        if (config.isLiveReloadEnabled()) {
+                            return template.replace("</head>", "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script></head>");
+                        } else {
+                            return template;
+                        }
+                    })
                     .process(data, writer);
             log.info("created {}", targetFile);
         } catch (IOException | TemplateException e) {

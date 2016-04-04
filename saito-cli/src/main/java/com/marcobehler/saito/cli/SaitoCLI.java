@@ -9,8 +9,11 @@ import com.marcobehler.saito.cli.commands.InitCommand;
 import com.marcobehler.saito.cli.commands.ServerCommand;
 import com.marcobehler.saito.cli.jetty.JettyServer;
 import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.devtools.livereload.LiveReloadServer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -21,6 +24,7 @@ import java.util.Properties;
  * @author Marco Behler <marco@marcobehler.com>
  */
 
+@Slf4j
 public class SaitoCLI {
 
     @Parameter(names = {"-help", "-h"}, help = true)
@@ -98,18 +102,36 @@ public class SaitoCLI {
          else if ("server".equals(jc.getParsedCommand())) {
             saito.build(workingDirectory);
 
+            LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded(workingDirectory);
+
             Path sourceDir = workingDirectory.resolve("source");
-            startFileWatcher(sourceDir);
+            startFileWatcher(sourceDir, liveReloadServer);
 
             Path buildDir = workingDirectory.resolve("build");
             startWebServer(buildDir);
         }
     }
 
-    private void startFileWatcher(Path dir) {
+    private LiveReloadServer enableLiveReloadIfNeeded(Path workingDirectory) {
+        LiveReloadServer liveReloadServer = null;
+        // todo refactor with SaitoConfig.get in Saito
+        SaitoConfig cfg = SaitoConfig.getOrDefault(workingDirectory.resolve("config.yaml"));
+        if (cfg.isLiveReloadEnabled()) {
+            try {
+                liveReloadServer = new LiveReloadServer();
+                liveReloadServer.start();
+            } catch (IOException e) {
+                log.error("Problem starting LiveReload", e);
+            }
+        }
+        return liveReloadServer;
+    }
+
+    private void startFileWatcher(Path dir, LiveReloadServer liveReloadServer) {
         new Thread(() -> {
             try {
-                new SourceWatcher(dir, true).processEvents();
+                new SourceWatcher(dir, true).setLiveReload(liveReloadServer).processEvents();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -65,6 +66,16 @@ public class FreemarkerConfig {
     public Template getFreemarkerTemplate(Layout layout) {
         return new Template(layout.getName(), layout.getDataAsString(), cfg);
     }
+
+    @SneakyThrows
+    public Template getFreemarkerTemplate(Layout layout, Function<String,String> modificationFunction) {
+        String template = layout.getDataAsString();
+        String modifiedTemplate = modificationFunction.apply(template);
+        return new Template(layout.getName(), modifiedTemplate, cfg);
+    }
+
+
+
 
     @SuppressWarnings("unchecked")
     public synchronized void mergeSharedVariableMap(String key, Map<String, Object> parsedData) {

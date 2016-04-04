@@ -23,6 +23,7 @@ public class SaitoConfig {
 
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
+    private boolean liveReloadEnabled = true;
 
     /**
      * Returns the Saito Config used to build your project

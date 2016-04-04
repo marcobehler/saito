@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.devtools.livereload.LiveReloadServer;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -28,6 +29,14 @@ public class SourceWatcher {
     @SuppressWarnings("unchecked")
     static <T> WatchEvent<T> cast(WatchEvent<?> event) {
         return (WatchEvent<T>) event;
+    }
+
+
+    private LiveReloadServer server;
+
+    public SourceWatcher setLiveReload(LiveReloadServer liveReloadServer) {
+        this.server = liveReloadServer;
+        return this;
     }
 
     @EqualsAndHashCode
@@ -120,6 +129,9 @@ public class SourceWatcher {
                         log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
                         lastModified.put(child.toString(), nowLastModified);
                         new Saito().incrementalBuild(dir.getParent(), dir.resolve(child));
+                        if (server != null) {
+                            server.triggerReload();
+                        }
                     }
                 }
 
