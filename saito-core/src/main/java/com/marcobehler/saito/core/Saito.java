@@ -31,7 +31,9 @@ public class Saito {
             createFiles(projectDirectory);
 
             log.info("Init complete!");
-            log.info("Use 'saito build' to build your new site");
+
+            String subDir = subDirectory != null ? "'cd " + subDirectory + "' &&" : "";
+            log.info("Use {} 'saito build' to build your new site", subDir);
         } catch (IOException e) {
             log.warn("Error creating directory", e);
         }
