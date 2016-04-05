@@ -22,6 +22,7 @@ import java.nio.file.Path;
 @Slf4j
 public class Saito {
 
+    @Getter
     private Path workingDir;
 
     @Getter

@@ -19,14 +19,16 @@ import java.net.URISyntaxException;
 @Slf4j
 public class JettyServer {
 
+    private Server server;
+
     /**
      * Run Jetty web server serving out supplied path on supplied port
      *
      * @param dir
      * @param port
      */
-    public void run(String dir, Integer port) {
-        Server server = new Server();
+    public void start(String dir, Integer port) {
+        server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(port);
         server.addConnector(connector);

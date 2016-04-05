@@ -91,18 +91,15 @@ public class SaitoCLI {
             return;
         }
 
-        Path workingDirectory = getCurrentWorkingDir();
-        handleCommand(workingDirectory);
+
+        handleCommand();
     }
 
-    private void handleCommand(Path workingDirectory) {
-
+    private void handleCommand() {
         if ("init".equals(jc.getParsedCommand())) {
             saito.init(initCommand.getTarget());
-
         } else if ("build".equals(jc.getParsedCommand())) {
             saito.build();
-
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean();
         } else if ("server".equals(jc.getParsedCommand())) {
@@ -110,10 +107,10 @@ public class SaitoCLI {
 
             LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded();
 
-            Path sourceDir = workingDirectory.resolve("source");
+            Path sourceDir = saito.getWorkingDir().resolve("source");
             startFileWatcher(sourceDir, liveReloadServer);
 
-            Path buildDir = workingDirectory.resolve("build");
+            Path buildDir = saito.getWorkingDir().resolve("build");
             startWebServer(buildDir);
         }
     }
@@ -144,7 +141,7 @@ public class SaitoCLI {
     }
 
     private void startWebServer(Path dir) {
-        new JettyServer().run(dir.toString(), 8820);
+        new JettyServer().start(dir.toString(), 8820);
     }
 
     private void printVersionInformation() throws IOException {
@@ -157,9 +154,5 @@ public class SaitoCLI {
         System.out.println("");
         System.out.println("Build time: " + properties.get("PROJECT_BUILD_DATE"));
         System.out.println("");
-    }
-
-    Path getCurrentWorkingDir() {
-        return Paths.get(".").toAbsolutePath().normalize();
     }
 }
