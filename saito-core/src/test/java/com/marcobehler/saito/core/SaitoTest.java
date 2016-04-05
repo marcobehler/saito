@@ -30,7 +30,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_directories_in_sub_folder() {
-        new Saito(null, workingDirectory.resolve("nested")).init("nested");
+        new Saito(null, workingDirectory).init("nested");
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/nested/source/images")).exists();

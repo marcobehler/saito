@@ -1,9 +1,11 @@
 package com.marcobehler.saito.core.configuration;
 
+import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 @Getter
 @Setter
 @Singleton
+@Slf4j
 public class SaitoConfig {
 
     private final Path configFile;
@@ -38,8 +41,10 @@ public class SaitoConfig {
     }
 
     @SneakyThrows
-    private void initializeFromYaml(@Named("configFile") Path configFile) {
-        if (!Files.exists(configFile)) return;
+    private void initializeFromYaml(@Named(PathsModule.CONFIG_FILE) Path configFile) {
+        if (!Files.exists(configFile)) {
+            log.info("No config file {} found - using defaults", configFile);
+        }
         Representer r = new Representer();
         r.represent(this);
         Yaml yaml = new Yaml(r);
