@@ -17,13 +17,13 @@ public class SaitoModule {
 
     @Singleton
     @Provides
-    public static SaitoConfig saitoConfig(@Named("configFile") Path configFile, FreemarkerConfig freemarkerConfig) {
+    public static SaitoConfig saitoConfig(@Named(PathsModule.CONFIG_FILE) Path configFile, FreemarkerConfig freemarkerConfig) {
         return new SaitoConfig(configFile, freemarkerConfig);
     }
 
     @Singleton
     @Provides
-    public static FreemarkerConfig freemarkerConfig(@Named("workingDir") Path workingDir) {
+    public static FreemarkerConfig freemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
         return new FreemarkerConfig(workingDir);
     }
 

@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.devtools.livereload.LiveReloadServer;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,9 +37,10 @@ public class SaitoCLI {
     private Saito saito;
     private JCommander jc;
 
-    public SaitoCLI() {
+    @Inject
+    public SaitoCLI(Saito saito) {
         jc = jCommander();
-        saito = new Saito(null, null);
+        this.saito = saito;
     }
 
     private JCommander jCommander() {
@@ -56,7 +58,16 @@ public class SaitoCLI {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SaitoCLI saitoCLI = new SaitoCLI();
+
+   /*     DaggerSa
+                .dripCoffeeModule(new DripCoffeeModule())
+                .build();
+*/
+
+
+
+
+        SaitoCLI saitoCLI = new SaitoCLI(null);
         saitoCLI.run(args);
     }
 
@@ -92,7 +103,6 @@ public class SaitoCLI {
         Path projectDirectory = initCommand.getTarget() != null ? workingDirectory.resolve(initCommand.getTarget()) : workingDirectory;
 
         if ("init".equals(jc.getParsedCommand())) {
-            // TODO
             saito.init();
 
         } else if ("build".equals(jc.getParsedCommand())) {
