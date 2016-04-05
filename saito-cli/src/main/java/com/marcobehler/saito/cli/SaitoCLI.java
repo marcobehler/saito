@@ -20,7 +20,6 @@ import org.springframework.boot.devtools.livereload.LiveReloadServer;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 /**

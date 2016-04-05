@@ -76,7 +76,7 @@ public class SourceWatcher {
      */
     public SourceWatcher(Path dir, boolean recursive) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
-        this.keys = new HashMap<WatchKey, Path>();
+        this.keys = new HashMap<>();
         this.recursive = recursive;
 
         if (recursive) {
