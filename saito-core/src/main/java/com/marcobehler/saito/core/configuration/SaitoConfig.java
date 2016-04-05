@@ -5,8 +5,11 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,43 +19,23 @@ import java.nio.file.Path;
 @Getter
 @Setter
 @Slf4j
+@Singleton
 public class SaitoConfig {
-
-    private static final Object lock = new Object();
-    private static volatile SaitoConfig INSTANCE;
 
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
     private boolean liveReloadEnabled = true;
 
-    /**
-     * Returns the Saito Config used to build your project
-     *
-     * @param path the path to the .yaml - config file
-     * @return a default config if the path is null or non-existing. Otherwise the parsed config
-     */
-    public static SaitoConfig getOrDefault(Path path) {
-        SaitoConfig result = INSTANCE;
-        if (result == null) {
-            synchronized (lock) {
-                result = INSTANCE;
-                if (result == null) {
-                    SaitoConfig config = path != null && Files.exists(path) ? parseYaml(path) : new SaitoConfig();
-                    INSTANCE = result = config;
-                }
-            }
-        }
-        return result;
-    }
+    private final Path configFile;
 
-    static void reset() {
-        INSTANCE = null;
-    }
-
+    @Inject
     @SneakyThrows
-    private static SaitoConfig parseYaml(Path path) {
-        Yaml yaml = new Yaml(new Constructor(SaitoConfig.class));
-        return (SaitoConfig) yaml.load(new String(Files.readAllBytes(path), "UTF-8"));
-    }
+    public SaitoConfig(@Named("configFile") Path configFile) {
+        this.configFile = configFile;
 
+        Representer r = new Representer();
+        r.represent(this);
+        Yaml yaml = new Yaml(r);
+        yaml.load(new String(Files.readAllBytes(configFile), "UTF-8"));
+    }
 }

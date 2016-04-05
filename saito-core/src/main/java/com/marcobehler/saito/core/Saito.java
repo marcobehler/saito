@@ -22,10 +22,12 @@ import java.nio.file.Path;
 public class Saito {
 
     private final Path workingDir;
+    private final SaitoConfig saitoConfig;
 
     @Inject
-    public Saito(final @Named("workingDir") Path workDirectory) {
+    public Saito(final SaitoConfig saitoConfig, final @Named("workingDir") Path workDirectory) {
         this.workingDir = workDirectory;
+        this.saitoConfig = saitoConfig;
     }
 
     /**
@@ -77,7 +79,6 @@ public class Saito {
         try {
             log.info("Working dir {} ", workingDir);
             Path configFile = workingDir.resolve("config.yaml");
-            SaitoConfig config = SaitoConfig.getOrDefault(configFile);
 
             FreemarkerConfig.getInstance().initClassLoaders(workingDir);
 
@@ -89,7 +90,7 @@ public class Saito {
             if (!Files.exists(buildDir)) {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
-            saitoModel.process(config, buildDir);
+            saitoModel.process(null, buildDir);
         } catch (IOException e) {
             log.warn("Error building site", e);
         }

@@ -9,7 +9,6 @@ import com.marcobehler.saito.cli.commands.InitCommand;
 import com.marcobehler.saito.cli.commands.ServerCommand;
 import com.marcobehler.saito.cli.jetty.JettyServer;
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +38,7 @@ public class SaitoCLI {
 
     public SaitoCLI() {
         jc = jCommander();
-        saito = new Saito(null);
+        saito = new Saito(null, null);
     }
 
     private JCommander jCommander() {
@@ -118,15 +117,15 @@ public class SaitoCLI {
     private LiveReloadServer enableLiveReloadIfNeeded(Path workingDirectory) {
         LiveReloadServer liveReloadServer = null;
         // todo refactor with SaitoConfig.get in Saito
-        SaitoConfig cfg = SaitoConfig.getOrDefault(workingDirectory.resolve("config.yaml"));
-        if (cfg.isLiveReloadEnabled()) {
+       // SaitoConfig cfg = SaitoConfig.getOrDefault(workingDirectory.resolve("config.yaml"));
+       /* if (cfg.isLiveReloadEnabled()) {
             try {
                 liveReloadServer = new LiveReloadServer();
                 liveReloadServer.start();
             } catch (IOException e) {
                 log.error("Problem starting LiveReload", e);
             }
-        }
+        }*/
         return liveReloadServer;
     }
 

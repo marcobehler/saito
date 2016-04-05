@@ -128,7 +128,7 @@ public class SourceWatcher {
                     if (nowLastModified - previouslyModified > 750) {
                         log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
                         lastModified.put(child.toString(), nowLastModified);
-                        new Saito(null).incrementalBuild(dir.getParent(), dir.resolve(child));
+                        new Saito(null, null).incrementalBuild(dir.getParent(), dir.resolve(child));
                         if (server != null) {
                             server.triggerReload();
                         }
