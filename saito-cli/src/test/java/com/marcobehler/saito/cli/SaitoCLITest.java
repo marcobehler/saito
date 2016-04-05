@@ -71,7 +71,7 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_clean_command() {
         saitoCLI.run(new String[]{"clean"});
-        verify(saito).clean(saitoCLI.getCurrentWorkingDir());
+        verify(saito).clean();
     }
 
 

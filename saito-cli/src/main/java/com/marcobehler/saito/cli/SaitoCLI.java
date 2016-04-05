@@ -99,7 +99,7 @@ public class SaitoCLI {
             saito.build();
 
         } else if ("clean".equals(jc.getParsedCommand())) {
-            saito.clean(workingDirectory);
+            saito.clean();
         }
          else if ("server".equals(jc.getParsedCommand())) {
             saito.build();

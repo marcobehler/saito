@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -21,20 +23,21 @@ import java.util.function.Function;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
+@Singleton
 public class FreemarkerConfig {
 
     @Getter
     private final Configuration cfg;
 
-    private static final Object lock = new Object();
-    private static volatile FreemarkerConfig instance;
-
-    private FreemarkerConfig() {
+    @Inject
+    public FreemarkerConfig(Path workingDir) {
         this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
         cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         cfg.addAutoImport("saito", "saito.ftl");
         cfg.setDefaultEncoding("UTF-8");
         cfg.setLogTemplateExceptions(false);
+
+        initClassLoaders(workingDir);
     }
 
     public void initClassLoaders(Path workingDirectory) {
@@ -48,19 +51,7 @@ public class FreemarkerConfig {
         }
     }
 
-    public static FreemarkerConfig getInstance() {
-        FreemarkerConfig freemarkerConfig = instance;
-        if (freemarkerConfig == null) {
-            synchronized (lock) {
-                freemarkerConfig = instance;
-                if (freemarkerConfig == null) {
-                    freemarkerConfig = new FreemarkerConfig();
-                    instance = freemarkerConfig;
-                }
-            }
-        }
-        return freemarkerConfig;
-    }
+
 
     @SneakyThrows
     public Template getFreemarkerTemplate(Layout layout) {
@@ -75,11 +66,8 @@ public class FreemarkerConfig {
     }
 
 
-
-
     @SuppressWarnings("unchecked")
     public synchronized void mergeSharedVariableMap(String key, Map<String, Object> parsedData) {
-        Configuration cfg = FreemarkerConfig.getInstance().getCfg();
         TemplateModel data = cfg.getSharedVariable(key);
 
         if (data == null) {

@@ -3,7 +3,6 @@ package com.marcobehler.saito.core.files;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
-import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.util.PathUtils;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -69,12 +68,12 @@ public class Template extends SaitoFile {
         try (BufferedWriter writer = Files.newBufferedWriter(targetFile, Charset.forName("UTF-8"))) {
             Map<String, Object> data = new HashMap<>();
 
-            FreemarkerConfig i = FreemarkerConfig.getInstance();
+
             StringWriter w = new StringWriter();
-            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), i.getCfg()).process(Collections.emptyMap(), w);
+            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), config.getFreemarkerConfig().getCfg()).process(Collections.emptyMap(), w);
 
             data.put("_saito_content_", w.toString());
-            FreemarkerConfig.getInstance()
+            config.getFreemarkerConfig()
                     .getFreemarkerTemplate(layout, template -> {
                         if (config.isLiveReloadEnabled()) {
                             return template.replace("</head>", LIVE_RELOAD_TAG + "</head>");

@@ -3,7 +3,6 @@ package com.marcobehler.saito.core;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.processing.SourceScanner;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,9 +77,6 @@ public class Saito {
     public void build() {
         try {
             log.info("Working dir {} ", workingDir);
-            Path configFile = workingDir.resolve("config.yaml");
-
-            FreemarkerConfig.getInstance().initClassLoaders(workingDir);
 
             // 1. scan-in ALL source files
             SaitoModel saitoModel = new SourceScanner().scan(workingDir);
@@ -90,14 +86,15 @@ public class Saito {
             if (!Files.exists(buildDir)) {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
-            saitoModel.process(null, buildDir);
+
+            saitoModel.process(saitoConfig, buildDir);
         } catch (IOException e) {
             log.warn("Error building site", e);
         }
     }
 
 
-    public void incrementalBuild(Path projectDir, Path singleFile) {
+    public void incrementalBuild(Path singleFile) {
         if (Files.isDirectory(singleFile)) {
             throw new IllegalArgumentException("You are trying to incrementally build a directory");
         }
@@ -105,7 +102,7 @@ public class Saito {
         build();
     }
 
-    public void clean(Path currentWorkingDir) {
+    public void clean() {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

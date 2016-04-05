@@ -31,7 +31,7 @@ public class SaitoModel {
 
     public void process(SaitoConfig config, Path projectDirectory) {
         calculateDependencies();
-        dataFiles.forEach(DataFile::process);
+        dataFiles.forEach(d -> d.process(config));
         templates.forEach(t -> t.process(config, projectDirectory));
         others.forEach(o -> o.process(config, projectDirectory));
     }

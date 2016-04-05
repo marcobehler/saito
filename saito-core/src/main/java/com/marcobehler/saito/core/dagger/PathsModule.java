@@ -1,4 +1,4 @@
-package com.marcobehler.saito.core;
+package com.marcobehler.saito.core.dagger;
 
 import dagger.Module;
 import dagger.Provides;
