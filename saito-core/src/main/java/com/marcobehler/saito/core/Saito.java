@@ -5,18 +5,34 @@ import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.processing.SourceScanner;
+
+import dagger.Component;
+import dagger.Provides;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
 public class Saito {
+
+    private Path workDirectory;
+
+    @Inject
+    public Saito(final Path workDirectory) {
+        this.workDirectory = workDirectory;
+    }
 
     /**
      * Creates the full Site Structure for a Saito project, including example files.
@@ -103,4 +119,5 @@ public class Saito {
     public void clean(Path currentWorkingDir) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
 }

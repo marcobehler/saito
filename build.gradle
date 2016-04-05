@@ -10,8 +10,24 @@ if (versionPropsFile.canRead()) {
 }
 
 
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.6"
+    }
+}
+
+
 subprojects {
+
     apply plugin: 'java'
+    apply plugin: "net.ltgt.apt"
+    apply plugin: "idea"
+
     compileJava.options.encoding = 'UTF-8'
 
     sourceCompatibility = 1.8
@@ -22,6 +38,12 @@ subprojects {
     }
 
     dependencies {
+        apt 'com.google.dagger:dagger-compiler:2.2'
+        apt 'org.projectlombok:lombok:1.16.8'
+
+        compile 'com.google.dagger:dagger:2.2'
+        compile 'javax.inject:javax.inject:1'
+
         testCompile 'junit:junit:4.12'
         testCompile 'org.mockito:mockito-core:2.0.44-beta'
         testCompile 'org.assertj:assertj-core:3.4.0'

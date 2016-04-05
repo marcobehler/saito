@@ -39,7 +39,7 @@ public class SaitoCLI {
 
     public SaitoCLI() {
         jc = jCommander();
-        saito = new Saito();
+        saito = new Saito(null);
     }
 
     private JCommander jCommander() {
