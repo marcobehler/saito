@@ -11,6 +11,7 @@ import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
 import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
 import com.marcobehler.saito.cli.jetty.JettyServer;
 import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,9 @@ public class SaitoCLI {
     @Parameter(names = {"-version", "-v"})
     private boolean version;
 
+    private final Saito saito;
+
     private InitCommand initCommand;
-    private Saito saito;
     private JCommander jc;
 
     @Inject
@@ -60,11 +62,9 @@ public class SaitoCLI {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         SaitoCLIComponent cliComponent = DaggerSaitoCLIComponent.builder().build();
         SaitoCLI saitoCli = cliComponent.saitoCLI();
         saitoCli.run(args);
-
     }
 
     @SneakyThrows
@@ -96,21 +96,19 @@ public class SaitoCLI {
     }
 
     private void handleCommand(Path workingDirectory) {
-        Path projectDirectory = initCommand.getTarget() != null ? workingDirectory.resolve(initCommand.getTarget()) : workingDirectory;
 
         if ("init".equals(jc.getParsedCommand())) {
-            saito.init();
+            saito.init(initCommand.getTarget());
 
         } else if ("build".equals(jc.getParsedCommand())) {
             saito.build();
 
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean();
-        }
-         else if ("server".equals(jc.getParsedCommand())) {
+        } else if ("server".equals(jc.getParsedCommand())) {
             saito.build();
 
-            LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded(workingDirectory);
+            LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded();
 
             Path sourceDir = workingDirectory.resolve("source");
             startFileWatcher(sourceDir, liveReloadServer);
@@ -120,18 +118,17 @@ public class SaitoCLI {
         }
     }
 
-    private LiveReloadServer enableLiveReloadIfNeeded(Path workingDirectory) {
+    private LiveReloadServer enableLiveReloadIfNeeded() {
         LiveReloadServer liveReloadServer = null;
-        // todo refactor with SaitoConfig.get in Saito
-       // SaitoConfig cfg = SaitoConfig.getOrDefault(workingDirectory.resolve("config.yaml"));
-       /* if (cfg.isLiveReloadEnabled()) {
+        SaitoConfig config = saito.getSaitoConfig();
+        if (config.isLiveReloadEnabled()) {
             try {
                 liveReloadServer = new LiveReloadServer();
                 liveReloadServer.start();
             } catch (IOException e) {
                 log.error("Problem starting LiveReload", e);
             }
-        }*/
+        }
         return liveReloadServer;
     }
 

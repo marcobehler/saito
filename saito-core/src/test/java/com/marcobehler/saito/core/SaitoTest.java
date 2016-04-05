@@ -15,10 +15,9 @@ import java.nio.file.Paths;
 public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
 
-
     @Test
     public void init_should_create_directories() {
-        new Saito(null, workingDirectory).init();
+        new Saito(null, workingDirectory).init(null);
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/source/images")).exists();
@@ -31,7 +30,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_directories_in_sub_folder() {
-        new Saito(null, workingDirectory.resolve("nested")).init();
+        new Saito(null, workingDirectory.resolve("nested")).init("nested");
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/nested/source/images")).exists();
@@ -44,7 +43,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_layouts() {
-        new Saito(null, workingDirectory).init();
+        new Saito(null, workingDirectory).init(null);
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/source/layouts/layout.ftl")).exists();
@@ -58,7 +57,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
         Path workingDirectory = Paths.get("./a");
         Files.createDirectories(workingDirectory);
         Saito saito = new Saito(null, workingDirectory);
-        saito.init();
+        saito.init(null);
         saito.build();
     }
 }

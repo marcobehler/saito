@@ -29,13 +29,13 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_inits() {
         saitoCLI.run(new String[]{"init"});
-        verify(saito).init();
+        verify(saito).init(null);
     }
 
     @Test
     public void cli_can_run_inits_in_subfolder() {
         saitoCLI.run(new String[]{"init", "mySubFolder"});
-        verify(saito).init();
+        verify(saito).init("mySubFolder");
     }
 
     @Test

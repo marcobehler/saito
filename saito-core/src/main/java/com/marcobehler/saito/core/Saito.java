@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.processing.SourceScanner;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
@@ -21,7 +22,9 @@ import java.nio.file.Path;
 @Slf4j
 public class Saito {
 
-    private final Path workingDir;
+    private Path workingDir;
+
+    @Getter
     private final SaitoConfig saitoConfig;
 
     @Inject
@@ -32,15 +35,20 @@ public class Saito {
 
     /**
      * Creates the full Site Structure for a Saito project, including example files.
+     * @param
      */
-    public void init() {
+    public void init(String subDirectory) {
+        if (subDirectory != null) {
+            workingDir = workingDir.resolve(subDirectory);
+        }
 
         try {
             createDirectories();
             createFiles();
 
             log.info("Init complete!");
-            log.info("Use {} 'saito build' to build your new site");
+            String subDir = subDirectory != null ? "'cd " + subDirectory + "' &&" : "";
+            log.info("Use {} 'saito build' to build your new site", subDir);
         } catch (IOException e) {
             log.warn("Error creating directory", e);
         }
