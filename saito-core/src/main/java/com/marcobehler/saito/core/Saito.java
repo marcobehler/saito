@@ -5,20 +5,14 @@ import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import com.marcobehler.saito.core.processing.SourceScanner;
-
-import dagger.Component;
-import dagger.Provides;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 
 
 /**
@@ -27,35 +21,30 @@ import javax.inject.Singleton;
 @Slf4j
 public class Saito {
 
-    private Path workDirectory;
+    private final Path workingDir;
 
     @Inject
-    public Saito(final Path workDirectory) {
-        this.workDirectory = workDirectory;
+    public Saito(final @Named("workingDir") Path workDirectory) {
+        this.workingDir = workDirectory;
     }
 
     /**
      * Creates the full Site Structure for a Saito project, including example files.
-     *
-     * @param targetDirectory the target directory
-     * @param subDirectory optional subdirectory
      */
-    public void init(Path targetDirectory, String subDirectory) {
-        Path projectDirectory = subDirectory != null ? targetDirectory.resolve(subDirectory) : targetDirectory;
+    public void init() {
+
         try {
-            createDirectories(projectDirectory);
-            createFiles(projectDirectory);
+            createDirectories();
+            createFiles();
 
             log.info("Init complete!");
-
-            String subDir = subDirectory != null ? "'cd " + subDirectory + "' &&" : "";
-            log.info("Use {} 'saito build' to build your new site", subDir);
+            log.info("Use {} 'saito build' to build your new site");
         } catch (IOException e) {
             log.warn("Error creating directory", e);
         }
     }
 
-    private void createDirectories(Path workingDir) throws IOException {
+    private void createDirectories() throws IOException {
         log.info("create {}", Files.createDirectories(workingDir.resolve("source/images")));
         log.info("create {}", Files.createDirectories(workingDir.resolve("source/javascripts")));
         log.info("create {}", Files.createDirectories(workingDir.resolve("source/stylesheets")));
@@ -63,7 +52,7 @@ public class Saito {
         log.info("create {}", Files.createDirectories(workingDir.resolve("data")));
     }
 
-    private void createFiles(Path workingDir) throws IOException {
+    private void createFiles() throws IOException {
         copyClasspathResourceToFile("index.html.ftl", workingDir.resolve("source"));
         copyClasspathResourceToFile("layout.ftl", workingDir.resolve("source/layouts"));
         copyClasspathResourceToFile("dummy.json", workingDir.resolve("data"));
@@ -83,21 +72,20 @@ public class Saito {
     /**
      * Builds a Saito project, i.e. taking in all the source files, templates, images etc. , processing them and putting them in the "build" directory.
      *
-     * @param projectDir the target directory
      */
-    public void build(Path projectDir) {
+    public void build() {
         try {
-            log.info("Working dir {} ", projectDir);
-            Path configFile = projectDir.resolve("config.yaml");
+            log.info("Working dir {} ", workingDir);
+            Path configFile = workingDir.resolve("config.yaml");
             SaitoConfig config = SaitoConfig.getOrDefault(configFile);
 
-            FreemarkerConfig.getInstance().initClassLoaders(projectDir);
+            FreemarkerConfig.getInstance().initClassLoaders(workingDir);
 
             // 1. scan-in ALL source files
-            SaitoModel saitoModel = new SourceScanner().scan(projectDir);
+            SaitoModel saitoModel = new SourceScanner().scan(workingDir);
 
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
-            Path buildDir = projectDir.resolve("build");
+            Path buildDir = workingDir.resolve("build");
             if (!Files.exists(buildDir)) {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
@@ -113,7 +101,7 @@ public class Saito {
             throw new IllegalArgumentException("You are trying to incrementally build a directory");
         }
         // TODO a real incremental build, at the moment i am cheating :D
-        build(projectDir);
+        build();
     }
 
     public void clean(Path currentWorkingDir) {

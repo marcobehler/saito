@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Path;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -15,9 +16,12 @@ public class AbstractInMemoryFileSystemTest {
 
     protected FileSystem fs;
 
+    protected Path workingDirectory;
+
     @Before
     public void before() {
         fs = Jimfs.newFileSystem(Configuration.unix());
+        workingDirectory = fs.getPath("/");
     }
 
     @After

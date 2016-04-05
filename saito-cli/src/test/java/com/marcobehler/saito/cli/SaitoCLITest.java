@@ -29,19 +29,19 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_inits() {
         saitoCLI.run(new String[]{"init"});
-        verify(saito).init(saitoCLI.getCurrentWorkingDir(), null);
+        verify(saito).init();
     }
 
     @Test
     public void cli_can_run_inits_in_subfolder() {
         saitoCLI.run(new String[]{"init", "mySubFolder"});
-        verify(saito).init(saitoCLI.getCurrentWorkingDir(), "mySubFolder");
+        verify(saito).init();
     }
 
     @Test
     public void cli_can_run_builds() {
         saitoCLI.run(new String[]{"build"});
-        verify(saito).build(saitoCLI.getCurrentWorkingDir());
+        verify(saito).build();
     }
 
     @Test

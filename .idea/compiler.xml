@@ -15,9 +15,6 @@
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true">
-        <sourceOutputDir name="build/generated/source/apt/main" />
-        <sourceTestOutputDir name="build/generated/source/apt/test" />
-        <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>

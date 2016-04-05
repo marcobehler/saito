@@ -90,17 +90,20 @@ public class SaitoCLI {
     }
 
     private void handleCommand(Path workingDirectory) {
+        Path projectDirectory = initCommand.getTarget() != null ? workingDirectory.resolve(initCommand.getTarget()) : workingDirectory;
+
         if ("init".equals(jc.getParsedCommand())) {
-            saito.init(workingDirectory, initCommand.getTarget());
+            // TODO
+            saito.init();
 
         } else if ("build".equals(jc.getParsedCommand())) {
-            saito.build(workingDirectory);
+            saito.build();
 
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean(workingDirectory);
         }
          else if ("server".equals(jc.getParsedCommand())) {
-            saito.build(workingDirectory);
+            saito.build();
 
             LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded(workingDirectory);
 

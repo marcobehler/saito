@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,10 +14,11 @@ import java.nio.file.Paths;
  */
 public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
+
+
     @Test
     public void init_should_create_directories() {
-        Path workingDirectory = fs.getPath("/");
-        new Saito(null).init(workingDirectory, null);
+        new Saito(workingDirectory).init();
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/source/images")).exists();
@@ -29,8 +31,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_directories_in_sub_folder() {
-        Path workingDirectory = fs.getPath("/");
-        new Saito(null).init(workingDirectory, "nested");
+        new Saito(workingDirectory.resolve("nested")).init();
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/nested/source/images")).exists();
@@ -43,8 +44,7 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
     @Test
     public void init_should_create_layouts() {
-        Path workingDirectory = fs.getPath("/");
-        new Saito(null).init(workingDirectory, null);
+        new Saito(workingDirectory).init();
 
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(fs.getPath("/source/layouts/layout.ftl")).exists();
@@ -53,11 +53,12 @@ public class SaitoTest extends AbstractInMemoryFileSystemTest{
 
 
     @Test
+    @Ignore
     public void build_should_create_directory() throws IOException {
         Path workingDirectory = Paths.get("./a");
         Files.createDirectories(workingDirectory);
-        Saito saito = new Saito(null);
-        saito.init(workingDirectory, "nested");
-        saito.build(workingDirectory.resolve("nested"));
+        Saito saito = new Saito(workingDirectory);
+        saito.init();
+        saito.build();
     }
 }
