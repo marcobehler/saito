@@ -3,6 +3,7 @@ package com.marcobehler.saito.core;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.processing.SourceScanner;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class Saito {
     private final SaitoConfig saitoConfig;
 
     @Inject
-    public Saito(final SaitoConfig saitoConfig, final @Named("workingDir") Path workDirectory) {
+    public Saito(final SaitoConfig saitoConfig, final @Named(PathsModule.WORKING_DIR) Path workDirectory) {
         this.workingDir = workDirectory;
         this.saitoConfig = saitoConfig;
     }

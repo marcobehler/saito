@@ -11,7 +11,6 @@ import org.yaml.snakeyaml.representer.Representer;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -24,25 +23,24 @@ import java.nio.file.Path;
 @Singleton
 public class SaitoConfig {
 
+    private final Path configFile;
+    private final FreemarkerConfig freemarkerConfig;
+
+    // configuration properties
+
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
     private boolean liveReloadEnabled = true;
 
-    private final Path configFile;
-    private final FreemarkerConfig freemarkerConfig;
-
     @Inject
-    @SneakyThrows
     public SaitoConfig(@Named("configFile") Path configFile, FreemarkerConfig freemarkerConfig) {
-
         this.freemarkerConfig = freemarkerConfig;
-
         this.configFile = configFile;
-
-        parseYaml(configFile);
+        initializeFromYaml(configFile);
     }
 
-    private void parseYaml(@Named("configFile") Path configFile) throws IOException {
+    @SneakyThrows
+    private void initializeFromYaml(@Named("configFile") Path configFile) {
         Representer r = new Representer();
         r.represent(this);
         Yaml yaml = new Yaml(r);
