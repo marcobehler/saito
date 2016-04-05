@@ -70,10 +70,10 @@ public class Template extends SaitoFile {
 
 
             StringWriter w = new StringWriter();
-            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), config.getFreemarkerConfig().getCfg()).process(Collections.emptyMap(), w);
+            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), config.getFreemarkerConfig().get().getCfg()).process(Collections.emptyMap(), w);
 
             data.put("_saito_content_", w.toString());
-            config.getFreemarkerConfig()
+            config.getFreemarkerConfig().get()
                     .getFreemarkerTemplate(layout, template -> {
                         if (config.isLiveReloadEnabled()) {
                             return template.replace("</head>", LIVE_RELOAD_TAG + "</head>");

@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.configuration;
 
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
+import dagger.Lazy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -25,7 +26,7 @@ import java.nio.file.Path;
 public class SaitoConfig {
 
     private final Path configFile;
-    private final FreemarkerConfig freemarkerConfig;
+    private final Lazy<FreemarkerConfig> freemarkerConfig;
 
     // configuration properties
 
@@ -34,7 +35,7 @@ public class SaitoConfig {
     private boolean liveReloadEnabled = true;
 
     @Inject
-    public SaitoConfig(@Named("configFile") Path configFile, FreemarkerConfig freemarkerConfig) {
+    public SaitoConfig(@Named("configFile") Path configFile, Lazy<FreemarkerConfig> freemarkerConfig) {
         this.freemarkerConfig = freemarkerConfig;
         this.configFile = configFile;
         initializeFromYaml(configFile);

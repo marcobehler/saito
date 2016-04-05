@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.dagger;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,7 +18,7 @@ public class SaitoModule {
 
     @Singleton
     @Provides
-    public static SaitoConfig saitoConfig(@Named(PathsModule.CONFIG_FILE) Path configFile, FreemarkerConfig freemarkerConfig) {
+    public static SaitoConfig saitoConfig(@Named(PathsModule.CONFIG_FILE) Path configFile, Lazy<FreemarkerConfig> freemarkerConfig) {
         return new SaitoConfig(configFile, freemarkerConfig);
     }
 
