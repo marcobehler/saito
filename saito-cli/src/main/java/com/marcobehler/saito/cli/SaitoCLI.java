@@ -81,7 +81,7 @@ public class SaitoCLI {
             return;
         }
 
-        if (help) {
+        if (help) {cd
             jc.usage();
             return;
         }

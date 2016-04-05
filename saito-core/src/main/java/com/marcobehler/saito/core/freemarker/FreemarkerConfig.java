@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.freemarker;
 
 import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.Layout;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -12,6 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,7 +32,7 @@ public class FreemarkerConfig {
     private final Configuration cfg;
 
     @Inject
-    public FreemarkerConfig(Path workingDir) {
+    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
         this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
         cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         cfg.addAutoImport("saito", "saito.ftl");
