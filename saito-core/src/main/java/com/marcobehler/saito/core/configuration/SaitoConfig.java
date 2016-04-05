@@ -4,7 +4,6 @@ import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -19,7 +18,6 @@ import java.nio.file.Path;
  */
 @Getter
 @Setter
-@Slf4j
 @Singleton
 public class SaitoConfig {
 

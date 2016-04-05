@@ -52,12 +52,6 @@ public class FreemarkerConfig {
     }
 
 
-
-    @SneakyThrows
-    public Template getFreemarkerTemplate(Layout layout) {
-        return new Template(layout.getName(), layout.getDataAsString(), cfg);
-    }
-
     @SneakyThrows
     public Template getFreemarkerTemplate(Layout layout, Function<String,String> modificationFunction) {
         String template = layout.getDataAsString();
