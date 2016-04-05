@@ -45,6 +45,7 @@ public class SaitoConfig {
     private void initializeFromYaml(@Named(PathsModule.CONFIG_FILE) Path configFile) {
         if (!Files.exists(configFile)) {
             log.info("No config file {} found - using defaults", configFile);
+            return;
         }
         Representer r = new Representer();
         r.represent(this);
