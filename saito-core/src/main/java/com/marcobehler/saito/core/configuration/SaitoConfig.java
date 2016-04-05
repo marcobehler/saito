@@ -39,6 +39,7 @@ public class SaitoConfig {
 
     @SneakyThrows
     private void initializeFromYaml(@Named("configFile") Path configFile) {
+        if (!Files.exists(configFile)) return;
         Representer r = new Representer();
         r.represent(this);
         Yaml yaml = new Yaml(r);

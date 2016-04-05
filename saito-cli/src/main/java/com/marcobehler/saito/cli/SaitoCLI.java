@@ -7,6 +7,8 @@ import com.marcobehler.saito.cli.commands.BuildCommand;
 import com.marcobehler.saito.cli.commands.CleanCommand;
 import com.marcobehler.saito.cli.commands.InitCommand;
 import com.marcobehler.saito.cli.commands.ServerCommand;
+import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
+import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
 import com.marcobehler.saito.cli.jetty.JettyServer;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
@@ -59,16 +61,10 @@ public class SaitoCLI {
      */
     public static void main(String[] args) {
 
-   /*     DaggerSa
-                .dripCoffeeModule(new DripCoffeeModule())
-                .build();
-*/
+        SaitoCLIComponent cliComponent = DaggerSaitoCLIComponent.builder().build();
+        SaitoCLI saitoCli = cliComponent.saitoCLI();
+        saitoCli.run(args);
 
-
-
-
-        SaitoCLI saitoCLI = new SaitoCLI(null);
-        saitoCLI.run(args);
     }
 
     @SneakyThrows

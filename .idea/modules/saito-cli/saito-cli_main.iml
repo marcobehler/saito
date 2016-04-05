@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":saito-cli:main" external.linked.project.path="$MODULE_DIR$/../../../saito-cli" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.marcobehler" external.system.module.type="sourceSet" external.system.module.version="1.0.89" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":saito-cli:main" external.linked.project.path="$MODULE_DIR$/../../../saito-cli" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.marcobehler" external.system.module.type="sourceSet" external.system.module.version="1.0.133" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../../../saito-cli/build/classes/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../saito-cli/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../../saito-cli/src/main/generated" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../saito-cli/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../saito-cli/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.google.dagger:dagger-compiler:2.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.dagger:dagger:2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.projectlombok:lombok:1.16.8" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.dagger:dagger:2.2" level="project" />
     <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="module" module-name="saito-core_main" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
@@ -41,14 +42,5 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-expression:4.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../saito-cli/build/classes/main/generated" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>
