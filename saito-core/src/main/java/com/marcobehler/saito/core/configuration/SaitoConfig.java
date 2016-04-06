@@ -33,6 +33,7 @@ public class SaitoConfig {
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
     private boolean liveReloadEnabled = true;
+    private Integer port = 8820;
 
     @Inject
     public SaitoConfig(@Named("configFile") Path configFile, Lazy<FreemarkerConfig> freemarkerConfig) {

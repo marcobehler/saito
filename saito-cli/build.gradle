@@ -36,7 +36,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'ch.qos.logback:logback-core:1.1.7'
 
-    compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
+
 
     compile 'com.beust:jcommander:1.48'
 }

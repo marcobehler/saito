@@ -23,6 +23,7 @@ public class SaitoCLITest {
     @Mock
     private Saito saito;
 
+
     @InjectMocks
     private SaitoCLI saitoCLI;
 

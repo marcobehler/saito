@@ -11,6 +11,8 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
 
 
+    compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
+
     // todo exclude all not needed spring dependencies, apart from livereload
     compile("org.springframework.boot:spring-boot-devtools:1.3.3.RELEASE")
 

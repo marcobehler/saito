@@ -9,9 +9,10 @@ import com.marcobehler.saito.cli.commands.InitCommand;
 import com.marcobehler.saito.cli.commands.ServerCommand;
 import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
 import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
-import com.marcobehler.saito.cli.jetty.JettyServer;
+import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -29,6 +32,7 @@ import java.util.Properties;
 @Slf4j
 public class SaitoCLI {
 
+
     @Parameter(names = {"-help", "-h"}, help = true)
     private boolean help;
 
@@ -36,14 +40,16 @@ public class SaitoCLI {
     private boolean version;
 
     private final Saito saito;
+    private final Set<Plugin> plugins;
 
     private InitCommand initCommand;
     private JCommander jc;
 
     @Inject
-    public SaitoCLI(Saito saito) {
+    public SaitoCLI(Saito saito, Set<Plugin> plugins) {
         jc = jCommander();
         this.saito = saito;
+        this.plugins = plugins;
     }
 
     private JCommander jCommander() {
@@ -90,7 +96,6 @@ public class SaitoCLI {
             return;
         }
 
-
         handleCommand();
     }
 
@@ -104,44 +109,14 @@ public class SaitoCLI {
         } else if ("server".equals(jc.getParsedCommand())) {
             saito.build();
 
-            LiveReloadServer liveReloadServer = enableLiveReloadIfNeeded();
-
-            Path sourceDir = saito.getWorkingDir().resolve("source");
-            startFileWatcher(sourceDir, liveReloadServer);
-
-            Path buildDir = saito.getWorkingDir().resolve("build");
-            startWebServer(buildDir);
-        }
-    }
-
-    private LiveReloadServer enableLiveReloadIfNeeded() {
-        LiveReloadServer liveReloadServer = null;
-        SaitoConfig config = saito.getSaitoConfig();
-        if (config.isLiveReloadEnabled()) {
-            try {
-                liveReloadServer = new LiveReloadServer();
-                liveReloadServer.start();
-            } catch (IOException e) {
-                log.error("Problem starting LiveReload", e);
+            if (plugins != null) {
+                new TreeSet<>(plugins)
+                        .stream()
+                        .forEach(plugin -> plugin.start(saito));
             }
         }
-        return liveReloadServer;
     }
 
-    private void startFileWatcher(Path dir, LiveReloadServer liveReloadServer) {
-        new Thread(() -> {
-            try {
-                new SourceWatcher(dir, true).setLiveReload(liveReloadServer).processEvents();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    private void startWebServer(Path dir) {
-        new JettyServer().start(dir.toString(), 8820);
-    }
 
     private void printVersionInformation() throws IOException {
         Properties properties = new Properties();
