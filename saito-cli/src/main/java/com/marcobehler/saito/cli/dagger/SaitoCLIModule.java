@@ -29,19 +29,23 @@ public class SaitoCLIModule {
     }
 
     @Provides(type = SET)
-    @Singleton
     Plugin jettyPlugin() {
         return new JettyPlugin();
     }
-    
+
     @Provides(type = SET)
-    @Singleton
+    Plugin liveReloadPluginSetParam() {
+        return new LiveReloadPlugin();
+    }
+
+
+    @Provides(type = SET)
     Plugin liveReloadPlugin() {
         return new LiveReloadPlugin();
     }
 
+
     @Provides(type = SET)
-    @Singleton
     Plugin fileWatcherPlugin() {
         return new FileWatcherPlugin();
     }

@@ -30,4 +30,6 @@ public class PluginTest {
         assertThat(sortedPlugins.first()).isEqualTo(jettyPlugin);
         assertThat(sortedPlugins.last()).isEqualTo(liveReloadPlugin);
     }
+
+
 }

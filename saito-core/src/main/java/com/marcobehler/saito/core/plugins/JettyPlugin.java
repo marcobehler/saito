@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
+import javax.inject.Singleton;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
+@Singleton
 public class JettyPlugin implements Plugin {
 
     private Server server;
