@@ -31,26 +31,31 @@ public class SaitoCLIModule {
     }
 
     @Provides(type = SET)
+    @Singleton
     static Plugin jettyPlugin() {
         return new JettyPlugin();
     }
 
     @Provides(type = SET)
+    @Singleton
     static Plugin liveReloadPluginAsSet(LiveReloadPlugin liveReloadPlugin) {
         return liveReloadPlugin;
     }
 
     @Provides(type = SET)
+    @Singleton
     static FileEventSubscriber liveReloadAsFileEventSubscriber(LiveReloadPlugin liveReloadPlugin) {
         return liveReloadPlugin;
     }
 
     @Provides
+    @Singleton
     static LiveReloadPlugin liveReloadPlugin() {
         return new LiveReloadPlugin();
     }
 
     @Provides(type = SET)
+    @Singleton
     static Plugin fileWatcherPlugin(Set<FileEventSubscriber> fileEventSubscribers) {
         return new FileWatcherPlugin(fileEventSubscribers);
     }

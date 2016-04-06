@@ -21,10 +21,15 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
     @Getter
     private LiveReloadServer liveReloadServer;
 
+    private Boolean isEnabled = false;
+
     @Override
     public void start(Saito saito) {
+        log.info("Starting Livereload");
         SaitoConfig config = saito.getSaitoConfig();
-        if (config.isLiveReloadEnabled()) {
+        isEnabled = config.isLiveReloadEnabled();
+
+        if (isEnabled) {
             try {
                 liveReloadServer = new LiveReloadServer();
                 liveReloadServer.start();
@@ -36,7 +41,9 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
 
     @Override
     public void onFileEvent(FileEvent event) {
-        liveReloadServer.triggerReload();
+        if (isEnabled) {
+            liveReloadServer.triggerReload();
+        }
     }
 
     @Override
