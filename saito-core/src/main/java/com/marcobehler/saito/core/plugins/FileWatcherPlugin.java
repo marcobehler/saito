@@ -1,8 +1,8 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.files.FileEvent;
-import com.marcobehler.saito.core.files.FileEventSubscriber;
+import com.marcobehler.saito.core.events.FileEvent;
+import com.marcobehler.saito.core.events.FileEventSubscriber;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.extern.slf4j.Slf4j;
 

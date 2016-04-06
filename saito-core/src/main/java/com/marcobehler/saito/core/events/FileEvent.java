@@ -1,4 +1,4 @@
-package com.marcobehler.saito.core.files;
+package com.marcobehler.saito.core.events;
 
 import lombok.Getter;
 

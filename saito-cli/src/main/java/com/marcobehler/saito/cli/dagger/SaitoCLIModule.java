@@ -3,7 +3,7 @@ package com.marcobehler.saito.cli.dagger;
 import com.marcobehler.saito.cli.SaitoCLI;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.SaitoModule;
-import com.marcobehler.saito.core.files.FileEventSubscriber;
+import com.marcobehler.saito.core.events.FileEventSubscriber;
 import com.marcobehler.saito.core.plugins.FileWatcherPlugin;
 import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
@@ -13,7 +13,6 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-import java.util.Collections;
 import java.util.Set;
 
 import static dagger.Provides.Type.SET;
