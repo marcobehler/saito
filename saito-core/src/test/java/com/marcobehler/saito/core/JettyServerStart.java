@@ -1,4 +1,4 @@
-package com.marcobehler.saito.cli.jetty;
+package com.marcobehler.saito.core;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
