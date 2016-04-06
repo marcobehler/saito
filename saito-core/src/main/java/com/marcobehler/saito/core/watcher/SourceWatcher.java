@@ -1,11 +1,9 @@
 package com.marcobehler.saito.core.watcher;
 
-import com.marcobehler.saito.core.Saito;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.devtools.livereload.LiveReloadServer;
 
 import java.io.IOException;
 import java.nio.file.*;
