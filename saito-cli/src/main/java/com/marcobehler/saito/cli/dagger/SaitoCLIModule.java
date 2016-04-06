@@ -38,13 +38,6 @@ public class SaitoCLIModule {
         return new LiveReloadPlugin();
     }
 
-
-    @Provides(type = SET)
-    Plugin liveReloadPlugin() {
-        return new LiveReloadPlugin();
-    }
-
-
     @Provides(type = SET)
     Plugin fileWatcherPlugin() {
         return new FileWatcherPlugin();
