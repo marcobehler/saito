@@ -32,7 +32,7 @@ public class JettyPlugin implements Plugin {
     @Override
     public void start(Saito saito) {
         SaitoConfig cfg = saito.getSaitoConfig();
-        String dir = saito.getWorkingDir().toString();
+        String dir = saito.getWorkingDir().resolve("build").toString();
 
         server = new Server();
         ServerConnector connector = new ServerConnector(server);
@@ -63,7 +63,7 @@ public class JettyPlugin implements Plugin {
 
     @Override
     public Integer getOrder() {
-        return 10;
+        return 30;
     }
 
     private void openBrowserIfPossible(Integer port) throws IOException, URISyntaxException {

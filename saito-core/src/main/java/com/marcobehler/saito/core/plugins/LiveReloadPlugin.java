@@ -34,6 +34,6 @@ public class LiveReloadPlugin implements Plugin {
 
     @Override
     public Integer getOrder() {
-        return 30;
+        return 10;
     }
 }

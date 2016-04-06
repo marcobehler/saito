@@ -27,8 +27,8 @@ public class PluginTest {
         plugins.add(liveReloadPlugin);
 
         TreeSet<Plugin> sortedPlugins = new TreeSet<>(plugins);
-        assertThat(sortedPlugins.first()).isEqualTo(jettyPlugin);
-        assertThat(sortedPlugins.last()).isEqualTo(liveReloadPlugin);
+        assertThat(sortedPlugins.first()).isEqualTo(liveReloadPlugin);
+        assertThat(sortedPlugins.last()).isEqualTo(jettyPlugin);
     }
 
 
