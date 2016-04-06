@@ -3,7 +3,6 @@ package com.marcobehler.saito.cli;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
 import com.beust.jcommander.Parameter;
-import com.marcobehler.saito.cli.commands.*;
 import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
 import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
 import com.marcobehler.saito.core.Saito;
@@ -33,7 +32,7 @@ public class SaitoCLI {
     private final Saito saito;
     private final Set<Plugin> cliPlugins;
 
-    private Commands.InitCommand initCommand;
+    private SaitoCLICommands.InitCommand initCommand;
     private JCommander jc;
 
     @Inject
@@ -45,10 +44,10 @@ public class SaitoCLI {
 
     private JCommander jCommander() {
         JCommander jc = new JCommander(this);
-        jc.addCommand("init", initCommand = new Commands.InitCommand());
-        jc.addCommand("build", new Commands.BuildCommand());
-        jc.addCommand("clean", new Commands.CleanCommand());
-        jc.addCommand("server", new Commands.ServerCommand());
+        jc.addCommand("init", initCommand = new SaitoCLICommands.InitCommand());
+        jc.addCommand("build", new SaitoCLICommands.BuildCommand());
+        jc.addCommand("clean", new SaitoCLICommands.CleanCommand());
+        jc.addCommand("server", new SaitoCLICommands.ServerCommand());
         return jc;
     }
 

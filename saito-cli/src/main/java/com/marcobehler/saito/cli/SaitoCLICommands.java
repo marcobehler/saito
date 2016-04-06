@@ -1,4 +1,4 @@
-package com.marcobehler.saito.cli.commands;
+package com.marcobehler.saito.cli;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public interface Commands {
+public interface SaitoCLICommands {
 
     @Parameters(commandDescription = "Cleans the process directory")
     class CleanCommand {}
