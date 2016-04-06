@@ -46,12 +46,12 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_builds() {
         saitoCLI.run(new String[]{"build"});
-        verify(saito).build(plugins);
+        verify(saito).build();
     }
 
     @Test
     public void cli_can_run_server() {
-        saitoCLI.run(new String[]{"build"});
+        saitoCLI.run(new String[]{"server"});
         verify(saito).build(plugins);
     }
 
