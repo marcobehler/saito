@@ -34,7 +34,7 @@ public class SaitoCLIModule {
     }
 
     @Provides(type = SET)
-    Plugin liveReloadPluginSetParam() {
+    Plugin liveReloadPlugin() {
         return new LiveReloadPlugin();
     }
 
