@@ -31,14 +31,6 @@ public class SourceWatcher {
         return (WatchEvent<T>) event;
     }
 
-
-    private LiveReloadServer server;
-
-    public SourceWatcher setLiveReload(LiveReloadServer liveReloadServer) {
-        this.server = liveReloadServer;
-        return this;
-    }
-
     @EqualsAndHashCode
     @Getter
     @RequiredArgsConstructor
@@ -93,7 +85,7 @@ public class SourceWatcher {
     /**
      * Process all events for keys queued to the watcher
      */
-    public void processEvents() {
+    public void start() {
         for (; ; ) {
 
             // wait for key to be signalled
@@ -128,10 +120,7 @@ public class SourceWatcher {
                     if (nowLastModified - previouslyModified > 750) {
                         log.trace("{} {} {}", event.kind().name(), child, nowLastModified);
                         lastModified.put(child.toString(), nowLastModified);
-                        new Saito(null, null).incrementalBuild(dir.resolve(child));
-                        if (server != null) {
-                            server.triggerReload();
-                        }
+                        onFileModified(dir.resolve(child));
                     }
                 }
 
@@ -160,6 +149,17 @@ public class SourceWatcher {
             }
         }
     }
+
+    /**
+     * Override in subclasses for custom behaviour
+     *
+     * @param modifiedFile
+     */
+    protected void onFileModified(Path modifiedFile) {
+       log.info("Modified file {}", modifiedFile);
+    }
+
+
 
     private boolean isNotDirectory(Path child) {
         return !Files.isDirectory(child);

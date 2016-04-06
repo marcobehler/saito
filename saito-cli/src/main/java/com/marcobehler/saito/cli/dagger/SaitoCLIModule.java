@@ -3,6 +3,7 @@ package com.marcobehler.saito.cli.dagger;
 import com.marcobehler.saito.cli.SaitoCLI;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.SaitoModule;
+import com.marcobehler.saito.core.files.FileEventSubscriber;
 import com.marcobehler.saito.core.plugins.FileWatcherPlugin;
 import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
@@ -12,6 +13,7 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static dagger.Provides.Type.SET;
@@ -24,22 +26,32 @@ public class SaitoCLIModule {
 
     @Singleton
     @Provides
-    public static SaitoCLI saitoCLI(Saito saito, Set<Plugin> plugins) {
+    static SaitoCLI saitoCLI(Saito saito, Set<Plugin> plugins) {
         return new SaitoCLI(saito, plugins);
     }
 
     @Provides(type = SET)
-    Plugin jettyPlugin() {
+    static Plugin jettyPlugin() {
         return new JettyPlugin();
     }
 
     @Provides(type = SET)
-    Plugin liveReloadPlugin() {
+    static Plugin liveReloadPluginAsSet(LiveReloadPlugin liveReloadPlugin) {
+        return liveReloadPlugin;
+    }
+
+    @Provides(type = SET)
+    static FileEventSubscriber liveReloadAsFileEventSubscriber(LiveReloadPlugin liveReloadPlugin) {
+        return liveReloadPlugin;
+    }
+
+    @Provides
+    static LiveReloadPlugin liveReloadPlugin() {
         return new LiveReloadPlugin();
     }
 
     @Provides(type = SET)
-    Plugin fileWatcherPlugin() {
-        return new FileWatcherPlugin();
+    static Plugin fileWatcherPlugin(Set<FileEventSubscriber> fileEventSubscribers) {
+        return new FileWatcherPlugin(fileEventSubscribers);
     }
 }

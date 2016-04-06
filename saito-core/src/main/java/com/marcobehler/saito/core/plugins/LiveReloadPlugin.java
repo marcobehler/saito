@@ -2,6 +2,8 @@ package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.files.FileEvent;
+import com.marcobehler.saito.core.files.FileEventSubscriber;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.devtools.livereload.LiveReloadServer;
@@ -14,7 +16,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Singleton
-public class LiveReloadPlugin implements Plugin {
+public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
 
     @Getter
     private LiveReloadServer liveReloadServer;
@@ -30,6 +32,11 @@ public class LiveReloadPlugin implements Plugin {
                 log.error("Problem starting LiveReload", e);
             }
         }
+    }
+
+    @Override
+    public void onFileEvent(FileEvent event) {
+        liveReloadServer.triggerReload();
     }
 
     @Override

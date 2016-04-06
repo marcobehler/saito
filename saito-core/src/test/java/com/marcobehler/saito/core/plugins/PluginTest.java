@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.plugins;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,7 +18,7 @@ public class PluginTest {
     public void test_ordering() {
         Set<Plugin> plugins = new HashSet<>();
 
-        FileWatcherPlugin fileWatcherPlugin = new FileWatcherPlugin();
+        FileWatcherPlugin fileWatcherPlugin = new FileWatcherPlugin(Collections.emptySet());
         plugins.add(fileWatcherPlugin);
 
         JettyPlugin jettyPlugin = new JettyPlugin();

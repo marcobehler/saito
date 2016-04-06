@@ -15,6 +15,6 @@ public class SourceWatcherTest {
     @Ignore
     public void test() throws IOException {
         SourceWatcher s = new SourceWatcher(Paths.get("c:\\Users\\marco\\temp\\"), true);
-        s.processEvents();
+        s.start();
     }
 }
