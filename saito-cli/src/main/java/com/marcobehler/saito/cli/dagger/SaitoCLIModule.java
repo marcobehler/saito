@@ -33,7 +33,7 @@ public class SaitoCLIModule {
     Plugin jettyPlugin() {
         return new JettyPlugin();
     }
-
+    
     @Provides(type = SET)
     @Singleton
     Plugin liveReloadPlugin() {

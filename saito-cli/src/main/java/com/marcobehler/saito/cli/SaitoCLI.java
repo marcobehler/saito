@@ -34,16 +34,16 @@ public class SaitoCLI {
     private boolean version;
 
     private final Saito saito;
-    private final Set<Plugin> defaultCLIPlugins;
+    private final Set<Plugin> cliPlugins;
 
     private InitCommand initCommand;
     private JCommander jc;
 
     @Inject
-    public SaitoCLI(Saito saito, Set<Plugin> defaultCLIPlugins) {
+    public SaitoCLI(Saito saito, Set<Plugin> cliPlugins) {
         jc = jCommander();
         this.saito = saito;
-        this.defaultCLIPlugins = defaultCLIPlugins;
+        this.cliPlugins = cliPlugins;
     }
 
     private JCommander jCommander() {
@@ -101,7 +101,7 @@ public class SaitoCLI {
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean();
         } else if ("server".equals(jc.getParsedCommand())) {
-            saito.build(defaultCLIPlugins);
+            saito.build(cliPlugins);
         }
     }
 
