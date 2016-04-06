@@ -1,6 +1,7 @@
 package com.marcobehler.saito.cli;
 
 import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.plugins.Plugin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.PrintStream;
+import java.util.Set;
 
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
@@ -23,6 +25,8 @@ public class SaitoCLITest {
     @Mock
     private Saito saito;
 
+    @Mock
+    private Set<Plugin> plugins;
 
     @InjectMocks
     private SaitoCLI saitoCLI;
@@ -42,7 +46,13 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_builds() {
         saitoCLI.run(new String[]{"build"});
-        verify(saito).build();
+        verify(saito).build(plugins);
+    }
+
+    @Test
+    public void cli_can_run_server() {
+        saitoCLI.run(new String[]{"build"});
+        verify(saito).build(plugins);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
+import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -80,11 +84,16 @@ public class Saito {
         log.info("create {}", Files.write(targetDir.resolve(classPathResource), content.getBytes("UTF-8")));
     }
 
+
+    public void build() {
+        build(Collections.emptySet());
+    }
+
     /**
      * Builds a Saito project, i.e. taking in all the source files, templates, images etc. , processing them and putting them in the "build" directory.
      *
      */
-    public void build() {
+    public void build(Set<Plugin> plugins) {
         try {
             log.info("Working dir {} ", workingDir);
 
@@ -98,6 +107,13 @@ public class Saito {
             }
 
             saitoModel.process(saitoConfig, buildDir);
+
+            if (plugins != null) {
+                new TreeSet<>(plugins)
+                        .stream()
+                        .forEach(plugin -> plugin.start(this));
+            }
+
         } catch (IOException e) {
             log.warn("Error building site", e);
         }

@@ -9,21 +9,15 @@ import com.marcobehler.saito.cli.commands.InitCommand;
 import com.marcobehler.saito.cli.commands.ServerCommand;
 import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
 import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
-import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.plugins.Plugin;
-import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.devtools.livereload.LiveReloadServer;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -40,16 +34,16 @@ public class SaitoCLI {
     private boolean version;
 
     private final Saito saito;
-    private final Set<Plugin> plugins;
+    private final Set<Plugin> defaultCLIPlugins;
 
     private InitCommand initCommand;
     private JCommander jc;
 
     @Inject
-    public SaitoCLI(Saito saito, Set<Plugin> plugins) {
+    public SaitoCLI(Saito saito, Set<Plugin> defaultCLIPlugins) {
         jc = jCommander();
         this.saito = saito;
-        this.plugins = plugins;
+        this.defaultCLIPlugins = defaultCLIPlugins;
     }
 
     private JCommander jCommander() {
@@ -107,16 +101,9 @@ public class SaitoCLI {
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean();
         } else if ("server".equals(jc.getParsedCommand())) {
-            saito.build();
-
-            if (plugins != null) {
-                new TreeSet<>(plugins)
-                        .stream()
-                        .forEach(plugin -> plugin.start(saito));
-            }
+            saito.build(defaultCLIPlugins);
         }
     }
-
 
     private void printVersionInformation() throws IOException {
         Properties properties = new Properties();
