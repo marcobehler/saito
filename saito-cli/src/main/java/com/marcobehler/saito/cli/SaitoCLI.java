@@ -11,6 +11,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
@@ -20,6 +22,7 @@ import java.util.Set;
  */
 
 @Slf4j
+@Singleton
 public class SaitoCLI {
 
 

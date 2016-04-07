@@ -9,7 +9,7 @@ import javax.inject.Singleton;
  *
  */
 @Singleton
-@Component(modules = { SaitoModule.class })
+@Component(modules = { PathsModule.class })
 public interface Saito$$ {
     Saito saito();
 }

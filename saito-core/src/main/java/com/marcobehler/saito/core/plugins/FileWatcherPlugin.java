@@ -15,8 +15,9 @@ import java.util.Set;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-@Singleton
+
 @Slf4j
+@Singleton
 public class FileWatcherPlugin implements Plugin {
 
     private final Set<FileEventSubscriber> subscribers;

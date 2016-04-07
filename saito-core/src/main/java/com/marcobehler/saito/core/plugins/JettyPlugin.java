@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
 import java.io.IOException;
@@ -24,6 +25,10 @@ import java.net.URISyntaxException;
 public class JettyPlugin implements Plugin {
 
     private Server server;
+
+    @Inject
+    public JettyPlugin() {
+    }
 
     /**
      * Run Jetty web server serving out supplied path on the supplied port on SaitoConfig

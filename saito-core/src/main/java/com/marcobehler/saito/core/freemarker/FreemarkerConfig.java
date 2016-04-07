@@ -29,7 +29,8 @@ import java.util.function.Function;
 public class FreemarkerConfig {
 
     @Getter
-    private final Configuration cfg;
+    private Configuration cfg;
+
 
     @Inject
     public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
