@@ -5,13 +5,9 @@
 [/#macro]
 
 [#macro stylesheet_link_tag files]
-[#list files as f]
-    <link rel="stylesheet" href="/stylesheets/${f}.css"/>
-[/#list]
+${saitoLinkHelper.styleSheet(files)}
 [/#macro]
 
 [#macro javascript_include_tag files]
-[#list files as f]
-    <script src="/javascripts/${f}.js" ></script>
-[/#list]
+${saitoLinkHelper.javascript(files)}
 [/#macro]

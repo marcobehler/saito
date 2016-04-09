@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.*;
+import com.marcobehler.saito.core.util.LinkHelper;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -59,11 +60,15 @@ public class FreemarkerConfig {
     @Inject
     public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
         this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-        cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-        cfg.addAutoImport("saito", "saito.ftl");
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setLogTemplateExceptions(false);
-
+        try {
+            cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+            cfg.addAutoImport("saito", "saito.ftl");
+            cfg.setSharedVariable("saitoLinkHelper", new LinkHelper());
+            cfg.setDefaultEncoding("UTF-8");
+            cfg.setLogTemplateExceptions(false);
+        } catch (TemplateModelException e) {
+            log.error("Error creating config",  e);
+        }
         initClassLoaders(workingDir);
     }
 
