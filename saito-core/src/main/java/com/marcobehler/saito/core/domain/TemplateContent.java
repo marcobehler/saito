@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.regex.Matcher;
@@ -9,6 +10,7 @@ import java.util.regex.Pattern;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Getter
+@EqualsAndHashCode
 public class TemplateContent {
 
     private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
