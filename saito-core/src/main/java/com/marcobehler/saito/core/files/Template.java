@@ -39,8 +39,8 @@ public class Template extends SaitoFile {
 
     public Template(Path sourceDirectory, Path relativePath) {
         super(sourceDirectory, relativePath);
-        this.frontmatter = FrontMatter.parse(getDataAsString());
-        this.content = TemplateContent.parseTemplate(getDataAsString());
+        this.frontmatter = FrontMatter.of(getDataAsString());
+        this.content = TemplateContent.of(getDataAsString());
     }
 
     public void process(SaitoConfig config, Path targetDir, RenderingEngine engine) {
