@@ -1,13 +1,17 @@
 package com.marcobehler.saito.core.freemarker;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.files.Layout;
+import com.marcobehler.saito.core.files.*;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.*;
+import freemarker.template.Template;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,6 +35,25 @@ public class FreemarkerConfig {
 
     @Getter
     private Configuration cfg;
+
+    // wow, what a mess ;(
+    private LoadingCache<com.marcobehler.saito.core.files.Template, Template> templateCache = CacheBuilder.newBuilder()
+            .build(
+                    new CacheLoader<com.marcobehler.saito.core.files.Template, Template>() {
+                        public Template load(com.marcobehler.saito.core.files.Template template) throws IOException {
+                            String templatName = template.getRelativePath().getFileName().toString();
+                            return new Template(templatName, template.getContent().getText(), cfg);
+                        }
+                    });
+
+
+    private LoadingCache<Layout, Template> layoutCache = CacheBuilder.newBuilder()
+            .build(
+                    new CacheLoader<Layout, Template>() {
+                        public Template load(Layout layout) throws IOException {
+                            return new Template(layout.getName(), layout.getDataAsString(), cfg);
+                        }
+                    });
 
 
     @Inject
@@ -56,10 +80,13 @@ public class FreemarkerConfig {
 
 
     @SneakyThrows
-    public Template getFreemarkerTemplate(Layout layout, Function<String,String> modificationFunction) {
-        String template = layout.getDataAsString();
-        String modifiedTemplate = modificationFunction.apply(template);
-        return new Template(layout.getName(), modifiedTemplate, cfg);
+    public Template getFreemarkerTemplate(Layout layout) {
+        return layoutCache.get(layout);
+    }
+
+    @SneakyThrows
+    public Template getFreemarkerTemplate(com.marcobehler.saito.core.files.Template template) {
+        return templateCache.get(template);
     }
 
 

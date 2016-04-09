@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
 import com.marcobehler.saito.core.rendering.RenderingEngine;
 import com.marcobehler.saito.core.util.PathUtils;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
+@EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
 
     private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
