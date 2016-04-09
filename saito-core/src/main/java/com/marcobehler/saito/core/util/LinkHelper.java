@@ -7,6 +7,9 @@ import java.util.List;
  */
 public class LinkHelper {
 
+    // TODO relative paths
+    // TODO minification triggering
+
     public String styleSheet(List<String> styleSheets) {
         StringBuilder builder = new StringBuilder();
         styleSheets.forEach(s -> builder.append("<link rel=\"stylesheet\" href=\"/stylesheets/").append(s).append(".css\"/>\n"));
