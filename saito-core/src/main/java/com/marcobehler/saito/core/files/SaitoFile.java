@@ -1,6 +1,5 @@
 package com.marcobehler.saito.core.files;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.ToString;
@@ -16,7 +15,6 @@ import java.nio.file.Path;
 @Slf4j
 @ToString
 @Getter
-@EqualsAndHashCode
 public class SaitoFile {
 
     private final Path sourceDirectory;
