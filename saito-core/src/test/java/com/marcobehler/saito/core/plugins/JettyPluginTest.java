@@ -1,8 +1,7 @@
-package com.marcobehler.saito.core;
+package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.plugins.JettyPlugin;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -23,29 +22,31 @@ import static org.mockito.Mockito.when;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class JettyServerStart {
+public class JettyPluginTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
- /*   @Test
+    @Test
     public void start_jetty() throws IOException {
 
         Saito saito = mock(Saito.class);
-        when(saito.getWorkingDir()).thenReturn(Paths.get(folder.toString()));
-        when(saito.getSaitoConfig()).thenReturn(mock(SaitoConfig.class));
+        when(saito.getWorkingDir()).thenReturn(Paths.get(folder.getRoot().toString()));
 
-        File indexHtml = folder.newFile("index.html");
+        SaitoConfig saitoConfig = mock(SaitoConfig.class);
+        when(saito.getSaitoConfig()).thenReturn(saitoConfig);
+        when(saitoConfig.getPort()).thenReturn(1111);
+
+        File buildFolder = folder.newFolder("build");
+
         String htmlContent = "<p>Hello World</p>";
-        final int port = 1111;
-
-        Files.write(indexHtml.toPath(), htmlContent.getBytes());
+        Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(indexHtml.getParent(), port);
+            new JettyPlugin().start(saito);
         }).start();
 
-        String inputLine = httpGet(port);
+        String inputLine = httpGet(saitoConfig.getPort());
         assertThat(inputLine).isEqualToIgnoringWhitespace(htmlContent);
     }
 
@@ -57,6 +58,6 @@ public class JettyServerStart {
         String inputLine = in.readLine();
         in.close();
         return inputLine;
-    }*/
+    }
 
 }
