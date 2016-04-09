@@ -2,7 +2,6 @@ package com.marcobehler.saito.core.rendering;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Template;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
@@ -21,6 +20,7 @@ public class RenderingEngine {
     private static final String LIVE_RELOAD_TAG = "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script>";
 
     private final SaitoConfig config;
+
     private final Set<Renderer> renderers;
 
 
@@ -30,17 +30,24 @@ public class RenderingEngine {
         this.renderers = renderers;
     }
 
-    @SneakyThrows
     public void render(Template template, Path targetFile) {
         Renderer renderer = renderers.stream()
                 .filter(r -> r.canRender(template))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
 
-        String rendered = renderer.render(template);
-        String postProcess = postProcess(rendered);
-        Files.write(targetFile, postProcess.getBytes("UTF-8"));
-        log.info("created {}", targetFile);
+        doRender(template, targetFile, renderer);
+    }
+
+    private void doRender(Template template, Path targetFile, Renderer renderer) {
+        try {
+            String rendered = renderer.render(template);
+            String postProcess = postProcess(rendered);
+            Files.write(targetFile, postProcess.getBytes("UTF-8"));
+            log.info("created {}", targetFile);
+        } catch (Exception e) {
+            log.error("error creating file {}", targetFile, e);
+        }
     }
 
 
