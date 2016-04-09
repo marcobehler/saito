@@ -14,6 +14,7 @@ import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
 import com.marcobehler.saito.core.plugins.Plugin;
 
+import com.marcobehler.saito.core.rendering.RenderingModule;
 import dagger.Module;
 import dagger.Provides;
 import static dagger.Provides.Type.SET_VALUES;
@@ -21,7 +22,7 @@ import static dagger.Provides.Type.SET_VALUES;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-@Module(includes = PathsModule.class)
+@Module(includes =  {PathsModule.class, RenderingModule.class})
 public class SaitoCLIModule {
 
     // plugins

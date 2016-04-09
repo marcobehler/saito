@@ -6,6 +6,7 @@ import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
+import com.marcobehler.saito.core.rendering.RenderingEngine;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,20 +27,26 @@ import java.util.TreeSet;
 @Slf4j
 public class Saito {
 
+
     @Getter
     private Path workingDir;
 
     @Getter
     private final SaitoConfig saitoConfig;
 
+    @Getter
+    private final RenderingEngine engine;
+
     @Inject
-    public Saito(final SaitoConfig saitoConfig, final @Named(PathsModule.WORKING_DIR) Path workDirectory) {
+    public Saito(final SaitoConfig saitoConfig, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
         this.workingDir = workDirectory;
         this.saitoConfig = saitoConfig;
+        this.engine = engine;
     }
 
     /**
      * Creates the full Site Structure for a Saito project, including example files.
+     *
      * @param
      */
     public void init(String subDirectory) {
@@ -91,7 +98,6 @@ public class Saito {
 
     /**
      * Builds a Saito project, i.e. taking in all the source files, templates, images etc. , processing them and putting them in the "build" directory.
-     *
      */
     public void build(Set<Plugin> plugins) {
         try {
@@ -106,11 +112,10 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            saitoModel.process(saitoConfig, buildDir);
+            saitoModel.process(saitoConfig, buildDir, engine);
 
             if (plugins != null) {
-                new TreeSet<>(plugins)
-                        .stream()
+                plugins.stream()
                         .forEach(plugin -> plugin.start(this));
             }
 

@@ -7,6 +7,7 @@ import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.rendering.RenderingEngine;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,10 +30,10 @@ public class SaitoModel {
 
     private List<Other> others = new ArrayList<>();
 
-    public void process(SaitoConfig config, Path projectDirectory) {
+    public void process(SaitoConfig config, Path projectDirectory, RenderingEngine engine) {
         calculateDependencies();
         dataFiles.forEach(d -> d.process(config));
-        templates.forEach(t -> t.process(config, projectDirectory));
+        templates.forEach(t -> t.process(config, projectDirectory, engine));
         others.forEach(o -> o.process(config, projectDirectory));
     }
 
@@ -40,9 +41,9 @@ public class SaitoModel {
         ImmutableMap<String, Layout> layoutsByName = Maps.uniqueIndex(layouts, Layout::getName);
 
         for (Template template : templates) {
-            String layoutName = template.getLayout();
-            if (!layoutsByName.containsKey(template.getLayout())) {
-                throw new IllegalStateException("There is no layout file for " + template.getLayout() + ".ftl for layout: " + template.getLayout());
+            String layoutName = template.getLayoutName();
+            if (!layoutsByName.containsKey(template.getLayoutName())) {
+                throw new IllegalStateException("There is no layout file for " + template.getLayoutName() + ".ftl for layout: " + template.getLayoutName());
             }
             Layout layout = layoutsByName.get(layoutName);
             template.setLayout(layout);

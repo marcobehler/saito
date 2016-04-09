@@ -3,22 +3,18 @@ package com.marcobehler.saito.core.files;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
+import com.marcobehler.saito.core.rendering.RenderingEngine;
 import com.marcobehler.saito.core.util.PathUtils;
-import freemarker.template.TemplateException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedWriter;
+
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +23,6 @@ import java.util.Map;
 @Slf4j
 public class Template extends SaitoFile {
 
-    private static final String LIVE_RELOAD_TAG = "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script>";
     private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
     @Getter
@@ -37,6 +32,7 @@ public class Template extends SaitoFile {
     private final TemplateContent content; // can be  HTML, asciidoc, md
 
     @Setter
+    @Getter
     private Layout layout;
 
     public Template(Path sourceDirectory, Path relativePath) {
@@ -45,7 +41,7 @@ public class Template extends SaitoFile {
         this.content = TemplateContent.parseTemplate(getDataAsString());
     }
 
-    public void process(SaitoConfig config, Path targetDir) {
+    public void process(SaitoConfig config, Path targetDir, RenderingEngine engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -56,40 +52,15 @@ public class Template extends SaitoFile {
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 
-        writeTargetFile(config, targetFile);
+        engine.render(this, targetFile);
     }
 
     private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
         return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
     }
 
-    private void writeTargetFile(SaitoConfig config, Path targetFile) {
-        // TODO refactor
-        try (BufferedWriter writer = Files.newBufferedWriter(targetFile, Charset.forName("UTF-8"))) {
-            Map<String, Object> data = new HashMap<>();
-
-
-            StringWriter w = new StringWriter();
-            new freemarker.template.Template(getRelativePath().getFileName().toString(), content.getText(), config.getFreemarkerConfig().get().getCfg()).process(Collections.emptyMap(), w);
-
-            data.put("_saito_content_", w.toString());
-            config.getFreemarkerConfig().get()
-                    .getFreemarkerTemplate(layout, template -> {
-                        if (config.isLiveReloadEnabled()) {
-                            return template.replace("</head>", LIVE_RELOAD_TAG + "</head>");
-                        } else {
-                            return template;
-                        }
-                    })
-                    .process(data, writer);
-            log.info("created {}", targetFile);
-        } catch (IOException | TemplateException e) {
-            log.error("Error processing file", e);
-        }
-    }
 
     @SneakyThrows
-    // TODO refactor
     private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath) {
         relativePath = PathUtils.stripExtension(Paths.get(relativePath), ".html");
 
@@ -111,7 +82,7 @@ public class Template extends SaitoFile {
         return targetFile;
     }
 
-    public String getLayout() {
+    public String getLayoutName() {
         Map<String, Object> frontMatter = getFrontmatter();
         return (String) frontMatter.getOrDefault("layout", "layout");
     }
