@@ -1,7 +1,6 @@
 package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.util.PathUtils;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.nio.file.Path;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @ToString
-@EqualsAndHashCode(callSuper = true)
 public class Layout extends SaitoFile {
 
     private static final String LAYOUT_FILE_EXTENSION = ".ftl";
