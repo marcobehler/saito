@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class SourceScannerTest extends AbstractInMemoryFileSystemTest{
+public class SourceScannerTest extends BaseInMemoryFSTest {
 
     @Test
     public void scanner_finds_valid_layouts() throws IOException {

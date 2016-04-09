@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class SaitoTest extends AbstractInMemoryFileSystemTest{
+public class SaitoTest extends BaseInMemoryFSTest {
 
 
     @Test

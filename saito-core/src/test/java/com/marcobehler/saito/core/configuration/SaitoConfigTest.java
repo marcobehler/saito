@@ -1,7 +1,6 @@
 package com.marcobehler.saito.core.configuration;
 
-import com.marcobehler.saito.core.AbstractInMemoryFileSystemTest;
-import org.junit.Before;
+import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,7 +13,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class SaitoConfigTest extends AbstractInMemoryFileSystemTest {
+public class SaitoConfigTest extends BaseInMemoryFSTest {
 
     @Test
     public void get_default_config_with_null_path_returns_default() {

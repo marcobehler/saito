@@ -12,7 +12,7 @@ import java.nio.file.Path;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class AbstractInMemoryFileSystemTest {
+public abstract class BaseInMemoryFSTest {
 
     protected FileSystem fs;
 

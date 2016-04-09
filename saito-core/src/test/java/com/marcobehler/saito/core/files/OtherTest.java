@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.files;
 
-import com.marcobehler.saito.core.AbstractInMemoryFileSystemTest;
+import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class OtherTest extends AbstractInMemoryFileSystemTest{
+public class OtherTest extends BaseInMemoryFSTest {
 
     @Test
     public void saitoFile_getDataAsString() throws IOException {
