@@ -1,8 +1,9 @@
-package com.marcobehler.saito.core;
+package com.marcobehler.saito.core.processing;
 
+import com.marcobehler.saito.core.BaseInMemoryFSTest;
+import com.marcobehler.saito.core.SaitoModel;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.processing.SourceScanner;
 import org.junit.Test;
 
 import java.io.IOException;

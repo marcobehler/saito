@@ -13,8 +13,10 @@ public class SourceWatcherTest {
 
     @Test
     @Ignore
+    // TODO
     public void test() throws IOException {
         SourceWatcher s = new SourceWatcher(Paths.get("c:\\Users\\marco\\temp\\"), true);
         s.start();
+        throw new UnsupportedOperationException("not yet implemented");
     }
 }
