@@ -22,10 +22,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -58,12 +56,12 @@ public class FreemarkerConfig {
 
 
     @Inject
-    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
+    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir, LinkHelper helper) {
         this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
         try {
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
             cfg.addAutoImport("saito", "saito.ftl");
-            cfg.setSharedVariable("saitoLinkHelper", new LinkHelper());
+            cfg.setSharedVariable("saitoLinkHelper", helper);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setLogTemplateExceptions(false);
         } catch (TemplateModelException e) {

@@ -1,23 +1,23 @@
 package com.marcobehler.saito.core.configuration;
 
-import com.marcobehler.saito.core.Saito;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.yaml.snakeyaml.Yaml;
+
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
+
 import dagger.Lazy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.representer.Representer;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -33,8 +33,8 @@ public class SaitoConfig {
 
     // configuration properties
 
-    private boolean directoryIndexes = false;
-    private boolean relativeLinks = false;
+    private boolean directoryIndexes = true;
+    private boolean relativeLinks = true;
     private boolean liveReloadEnabled = true;
     private Integer port = 8820;
 

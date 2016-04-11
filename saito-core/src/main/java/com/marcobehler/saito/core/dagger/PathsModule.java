@@ -5,14 +5,15 @@ import dagger.Provides;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 
 @Module
 public class PathsModule {
 
     public static final String WORKING_DIR = "workingDir";
+    public static final String BUILD_DIR = "buildDir";
     public static final String CONFIG_FILE = "configFile";
 
     @Singleton
@@ -22,11 +23,17 @@ public class PathsModule {
         return Paths.get(".").toAbsolutePath().normalize();
     }
 
-
     @Singleton
     @Named(CONFIG_FILE)
     @Provides
     public static Path configFile() {
         return Paths.get("./config.yaml").toAbsolutePath().normalize();
+    }
+
+    @Singleton
+    @Named(BUILD_DIR)
+    @Provides
+    public static Path buildDir(@Named(WORKING_DIR) Path workingDir) {
+        return workingDir.resolve("build").toAbsolutePath().normalize();
     }
 }

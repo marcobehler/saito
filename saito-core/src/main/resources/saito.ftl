@@ -5,9 +5,9 @@
 [/#macro]
 
 [#macro stylesheet_link_tag files]
-${saitoLinkHelper.styleSheet(files)}
+${saitoLinkHelper.styleSheet(files, saito_internal.targetFile)}
 [/#macro]
 
 [#macro javascript_include_tag files]
-${saitoLinkHelper.javascript(files)}
+${saitoLinkHelper.javascript(files, saito_internal.targetFile)}
 [/#macro]

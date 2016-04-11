@@ -1,5 +1,7 @@
 package com.marcobehler.saito.core.rendering;
 
+import java.util.Map;
+
 import com.marcobehler.saito.core.files.Template;
 
 /**
@@ -7,7 +9,7 @@ import com.marcobehler.saito.core.files.Template;
  */
 public interface Renderer {
 
-    String render(Template template);
+    String render(Template template, final Map<String, Object> renderContext);
 
     boolean canRender(Template template);
 }
