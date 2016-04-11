@@ -26,6 +26,8 @@ public class LinkHelper {
         this.buildDir = buildDir;
     }
 
+    // TODO tests, cleanup
+
     public String styleSheet(List<String> styleSheets, Path targetFile) {
         StringBuilder builder = new StringBuilder();
         styleSheets.forEach(s -> {
@@ -34,8 +36,8 @@ public class LinkHelper {
 
             if (config.isRelativeLinks()) {
                 final Path cssFile = buildDir.resolve("stylesheets/" + s + ".css");
-                final Path relativize = targetFile.relativize(cssFile);
-                href = relativize.toString();
+                final Path relativize = targetFile.getParent().relativize(cssFile);
+                href = relativize.toString().replaceAll("\\\\", "/");
             } else {
                 href = "/stylesheets/" + s + ".css";
             }
@@ -53,8 +55,8 @@ public class LinkHelper {
             String src = null;
             if (config.isRelativeLinks()) {
                 final Path javascriptFile = buildDir.resolve("javascripts/" + s + ".css");
-                final Path relativize = targetFile.relativize(javascriptFile);
-                src = relativize.toString();
+                final Path relativize = targetFile.getParent().relativize(javascriptFile);
+                src = relativize.toString().replaceAll("\\\\", "/");
             } else {
                 src = "/javascripts/" + s + ".js";
             }
