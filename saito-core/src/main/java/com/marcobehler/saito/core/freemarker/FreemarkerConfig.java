@@ -15,6 +15,7 @@ import freemarker.template.*;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import sun.awt.image.ImageWatched;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,12 +56,12 @@ public class FreemarkerConfig {
 
 
     @Inject
-    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir) {
+    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir, LinkHelper linkHelper) {
         this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
         try {
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
             cfg.addAutoImport("saito", "saito.ftl");
-            cfg.setSharedVariable("saitoLinkHelper", new LinkHelper());
+            cfg.setSharedVariable("saitoLinkHelper", linkHelper);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setLogTemplateExceptions(false);
         } catch (TemplateModelException e) {

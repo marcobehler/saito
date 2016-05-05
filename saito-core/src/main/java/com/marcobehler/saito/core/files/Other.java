@@ -53,7 +53,6 @@ public class Other extends SaitoFile {
                 new YuiPlugin().compressJavaScript(sourceFile, compressedFile);
 
             } else {
-
                 Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
             }
             log.info("created {}", targetFile);
@@ -76,6 +75,7 @@ public class Other extends SaitoFile {
         return targetFile.getFileName().toString().toLowerCase().endsWith(".css");
     }
 
+    // TODO remove duplicate in linkhelper
     private String getCompressedSuffix(ModelSpace modelSpace) {
         String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(modelSpace.getParameters().get(ModelSpace.BUILD_TIME_PARAMETER));
         return "-" + datePart + ".min";
