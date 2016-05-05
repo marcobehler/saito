@@ -17,8 +17,6 @@ public class LinkHelper {
 
     private final ModelSpace modelSpace;
 
-    // TODO relative paths
-
     @Inject
     public LinkHelper(ModelSpace modelSpace) {
         this.modelSpace = modelSpace;
@@ -34,7 +32,6 @@ public class LinkHelper {
                 .append("\"/>\n"));
         return builder.toString();
     }
-
 
 
     public String javascript(List<String> javaScripts) {
