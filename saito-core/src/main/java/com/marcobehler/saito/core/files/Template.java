@@ -54,6 +54,9 @@ public class Template extends SaitoFile {
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 
+        ThreadLocal<Path> tl = (ThreadLocal<Path>) config.getParameters().get(ModelSpace.TEMPLATE_OUTPUT_PATH);
+        tl.set(targetFile);
+
         engine.render(this, targetFile);
     }
 
