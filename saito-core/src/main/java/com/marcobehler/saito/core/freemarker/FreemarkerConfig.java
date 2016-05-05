@@ -15,7 +15,6 @@ import freemarker.template.*;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import sun.awt.image.ImageWatched;
 
 import javax.inject.Inject;
 import javax.inject.Named;

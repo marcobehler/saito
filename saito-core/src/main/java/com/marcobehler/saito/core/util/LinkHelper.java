@@ -24,13 +24,13 @@ public class LinkHelper {
 
     public String styleSheet(List<String> styleSheets) {
         StringBuilder builder = new StringBuilder();
-        styleSheets.forEach(s -> builder.append("<link rel=\"stylesheet\" href=\"/stylesheets/").append(s).append(modelSpace.getSaitoConfig().isCompressCss() ? getCompressedSuffix(modelSpace) : "").append(".css").append("\"/>\n"));
+        styleSheets.forEach(s -> builder.append("<link rel=\"stylesheet\" href=\"").append("/stylesheets/").append(s).append(modelSpace.getSaitoConfig().isCompressCss() ? getCompressedSuffix(modelSpace) : "").append(".css").append("\"/>\n"));
         return builder.toString();
     }
 
     public String javascript(List<String> javaScripts) {
         StringBuilder builder = new StringBuilder();
-        javaScripts.forEach(s -> builder.append("<script src=\"/javascripts/").append(s).append(modelSpace.getSaitoConfig().isCompressJs() ? getCompressedSuffix(modelSpace) : "").append(".js").append("\" ></script>"));
+        javaScripts.forEach(s -> builder.append("<script src=\"").append("/javascripts/").append(s).append(modelSpace.getSaitoConfig().isCompressJs() ? getCompressedSuffix(modelSpace) : "").append(".js").append("\" ></script>"));
         return builder.toString();
     }
 
