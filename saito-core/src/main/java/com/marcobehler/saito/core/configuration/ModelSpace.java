@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import java.util.Map;
 @Getter
 public class ModelSpace {
 
+    public static final String BUILD_TIME_PARAMETER = "saito_build_time";
+
     private final SaitoConfig saitoConfig;
     private final Lazy<FreemarkerConfig> freemarkerConfig;
     private final Map<String,Object> parameters = new HashMap<>();
@@ -26,6 +29,8 @@ public class ModelSpace {
     public ModelSpace(SaitoConfig saitoConfig, Lazy<FreemarkerConfig> freemarkerConfig) {
         this.freemarkerConfig = freemarkerConfig;
         this.saitoConfig = saitoConfig;
+
+        this.parameters.put(BUILD_TIME_PARAMETER, new Date());
     }
 
 }

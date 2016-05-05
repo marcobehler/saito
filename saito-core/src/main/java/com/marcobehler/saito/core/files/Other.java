@@ -4,6 +4,7 @@ import com.marcobehler.saito.core.compression.YuiPlugin;
 import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,10 +28,10 @@ public class Other extends SaitoFile {
     /**
      * Other files get copied as is, without any processing done to them.
      *
-     * @param config the SaitoConfig
+     * @param modelSpace the SaitoConfig
      * @param targetDirectory the targetDirectory
      */
-    public void process(ModelSpace config, Path targetDirectory) {
+    public void process(ModelSpace modelSpace, Path targetDirectory) {
         try {
             Path sourceFile = getSourceDirectory().resolve(getRelativePath());
 
@@ -39,15 +40,20 @@ public class Other extends SaitoFile {
                 Files.createDirectories(targetFile.getParent());
             }
 
-            SaitoConfig saitoConfig = config.getSaitoConfig();
+            SaitoConfig saitoConfig = modelSpace.getSaitoConfig();
 
             if (saitoConfig.isCompressCss() && isCssAsset(targetFile)) {
-                Path compressedFile = getCompressedPath(targetFile, "(?i)\\.css", getCompressedSuffix() + ".css");
+
+                Path compressedFile = getCompressedPath(targetFile, "(?i)\\.css", getCompressedSuffix(modelSpace) + ".css");
                 new YuiPlugin().compressCSS(sourceFile, compressedFile);
+
             } else if (saitoConfig.isCompressJs() && isJsAsset(targetFile)) {
-                Path compressedFile = getCompressedPath(targetFile, "(?i)\\.js", getCompressedSuffix() + ".js");
+
+                Path compressedFile = getCompressedPath(targetFile, "(?i)\\.js", getCompressedSuffix(modelSpace) + ".js");
                 new YuiPlugin().compressJavaScript(sourceFile, compressedFile);
+
             } else {
+
                 Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
             }
             log.info("created {}", targetFile);
@@ -70,8 +76,8 @@ public class Other extends SaitoFile {
         return targetFile.getFileName().toString().toLowerCase().endsWith(".css");
     }
 
-    private String getCompressedSuffix() {
-        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+    private String getCompressedSuffix(ModelSpace modelSpace) {
+        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(modelSpace.getParameters().get(ModelSpace.BUILD_TIME_PARAMETER));
         return "-" + datePart + ".min";
     }
 }
