@@ -1,6 +1,5 @@
 package com.marcobehler.saito.core.configuration;
 
-import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
 import dagger.Lazy;
@@ -9,12 +8,10 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.representer.Representer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;

@@ -5,14 +5,13 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.files.*;
+import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.util.LinkHelper;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.*;
-import freemarker.template.Template;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +21,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
