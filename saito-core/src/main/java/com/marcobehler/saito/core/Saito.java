@@ -2,6 +2,7 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.plugins.Plugin;
@@ -26,20 +27,19 @@ import java.util.Set;
 @Slf4j
 public class Saito {
 
-
     @Getter
     private Path workingDir;
 
     @Getter
-    private final SaitoConfig saitoConfig;
+    private final ModelSpace modelSpace;
 
     @Getter
     private final RenderingEngine engine;
 
     @Inject
-    public Saito(final SaitoConfig saitoConfig, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
+    public Saito(final ModelSpace modelSpace, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
         this.workingDir = workDirectory;
-        this.saitoConfig = saitoConfig;
+        this.modelSpace = modelSpace;
         this.engine = engine;
     }
 
@@ -78,6 +78,7 @@ public class Saito {
         copyClasspathResourceToFile("layout.ftl", workingDir.resolve("source/layouts"));
         copyClasspathResourceToFile("dummy.json", workingDir.resolve("data"));
         copyClasspathResourceToFile("cover.css", workingDir.resolve("source/stylesheets"));
+        copyClasspathResourceToFile("config.yaml", workingDir);
 
         log.info("create {}", Files.write(workingDir.resolve("source/stylesheets/all.css"), "".getBytes()));
         log.info("create {}", Files.write(workingDir.resolve("source/javascripts/all.js"), "".getBytes()));
@@ -111,7 +112,7 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            saitoModel.process(saitoConfig, buildDir, engine);
+            saitoModel.process(modelSpace, buildDir, engine);
 
             if (plugins != null) {
                 plugins.stream()

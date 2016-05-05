@@ -1,0 +1,6 @@
+directoryIndexes : false
+relativeLinks : false
+liveReloadEnabled : true
+compressCss : false
+compressJs : false
+port: 8820

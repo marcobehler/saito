@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.compression.YuiPlugin;
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +30,7 @@ public class Other extends SaitoFile {
      * @param config the SaitoConfig
      * @param targetDirectory the targetDirectory
      */
-    public void process(SaitoConfig config, Path targetDirectory) {
+    public void process(ModelSpace config, Path targetDirectory) {
         try {
             Path sourceFile = getSourceDirectory().resolve(getRelativePath());
 
@@ -38,10 +39,12 @@ public class Other extends SaitoFile {
                 Files.createDirectories(targetFile.getParent());
             }
 
-            if (config.isCompressCss() && isCssAsset(targetFile)) {
+            SaitoConfig saitoConfig = config.getSaitoConfig();
+
+            if (saitoConfig.isCompressCss() && isCssAsset(targetFile)) {
                 Path compressedFile = getCompressedPath(targetFile, "(?i)\\.css", getCompressedSuffix() + ".css");
                 new YuiPlugin().compressCSS(sourceFile, compressedFile);
-            } else if (config.isCompressJs() && isJsAsset(targetFile)) {
+            } else if (saitoConfig.isCompressJs() && isJsAsset(targetFile)) {
                 Path compressedFile = getCompressedPath(targetFile, "(?i)\\.js", getCompressedSuffix() + ".js");
                 new YuiPlugin().compressJavaScript(sourceFile, compressedFile);
             } else {

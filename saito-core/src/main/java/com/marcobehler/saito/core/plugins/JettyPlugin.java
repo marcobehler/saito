@@ -36,7 +36,7 @@ public class JettyPlugin implements Plugin {
      */
     @Override
     public void start(Saito saito) {
-        SaitoConfig cfg = saito.getSaitoConfig();
+        SaitoConfig cfg = saito.getModelSpace().getSaitoConfig();
         String dir = saito.getWorkingDir().resolve("build").toString();
 
         server = new Server();

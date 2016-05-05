@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.files;
 
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
@@ -42,14 +43,14 @@ public class Template extends SaitoFile {
         this.content = TemplateContent.of(getDataAsString());
     }
 
-    public void process(SaitoConfig config, Path targetDir, RenderingEngine engine) {
+    public void process(ModelSpace config, Path targetDir, RenderingEngine engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
 
         String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
 
-        Path targetFile = isDirectoryIndexEnabled(config, relativePath)
+        Path targetFile = isDirectoryIndexEnabled(config.getSaitoConfig(), relativePath)
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 

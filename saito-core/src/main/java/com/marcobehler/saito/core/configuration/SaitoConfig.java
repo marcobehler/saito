@@ -1,8 +1,6 @@
 package com.marcobehler.saito.core.configuration;
 
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
-import dagger.Lazy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -26,7 +24,7 @@ import java.util.Map;
 public class SaitoConfig {
 
     private final Path configFile;
-    private final Lazy<FreemarkerConfig> freemarkerConfig;
+
 
     // configuration properties
 
@@ -39,8 +37,7 @@ public class SaitoConfig {
     private Integer port = 8820;
 
     @Inject
-    public SaitoConfig(@Named("configFile") Path configFile, Lazy<FreemarkerConfig> freemarkerConfig) {
-        this.freemarkerConfig = freemarkerConfig;
+    public SaitoConfig(@Named("configFile") Path configFile) {
         this.configFile = configFile;
         initializeFromYaml(configFile);
     }

@@ -2,6 +2,7 @@ package com.marcobehler.saito.core;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Layout;
@@ -30,7 +31,7 @@ public class SaitoModel {
 
     private List<Other> others = new ArrayList<>();
 
-    public void process(SaitoConfig config, Path projectDirectory, RenderingEngine engine) {
+    public void process(ModelSpace config, Path projectDirectory, RenderingEngine engine) {
         calculateDependencies();
         dataFiles.forEach(d -> d.process(config));
         templates.forEach(t -> t.process(config, projectDirectory, engine));
