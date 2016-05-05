@@ -21,4 +21,6 @@ public class LinkHelper {
         javaScripts.forEach(s -> builder.append("<script src=\"/javascripts/").append(s).append(".js\" ></script>"));
         return builder.toString();
     }
+
+
 }
