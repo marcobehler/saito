@@ -36,6 +36,9 @@ public class SaitoConfig {
     private boolean directoryIndexes = false;
     private boolean relativeLinks = false;
     private boolean liveReloadEnabled = true;
+    private boolean compressCss = false;
+    private boolean compressJs = false;
+
     private Integer port = 8820;
 
     @Inject
@@ -58,6 +61,8 @@ public class SaitoConfig {
         directoryIndexes = (boolean) map.getOrDefault("directoryIndexes", directoryIndexes);
         relativeLinks = (boolean) map.getOrDefault("relativeLinks", relativeLinks);
         liveReloadEnabled = (boolean) map.getOrDefault("liveReloadEnabled", liveReloadEnabled);
+        compressCss = (boolean) map.getOrDefault("compressCss", compressCss);
+        compressJs = (boolean) map.getOrDefault("compressJs", compressJs);
         port = (Integer) map.getOrDefault("port", port);
     }
 }

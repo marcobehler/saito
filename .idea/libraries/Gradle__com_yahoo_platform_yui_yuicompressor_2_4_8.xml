@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.yahoo.platform.yui:yuicompressor:2.4.8">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yahoo.platform.yui/yuicompressor/2.4.8/900a7296bb52d740418d53274c1ecac5c83c760e/yuicompressor-2.4.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yahoo.platform.yui/yuicompressor/2.4.8/dc3ec5c8cc3463219902497dec8fed0a434d00fb/yuicompressor-2.4.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
