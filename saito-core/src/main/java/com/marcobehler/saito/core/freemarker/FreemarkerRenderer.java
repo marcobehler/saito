@@ -1,16 +1,17 @@
-package com.marcobehler.saito.core.rendering;
+package com.marcobehler.saito.core.freemarker;
 
-import com.marcobehler.saito.core.files.Layout;
-import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
-
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.io.StringWriter;
+import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.StringWriter;
-import java.util.Collections;
+
+import com.marcobehler.saito.core.files.Layout;
+import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.rendering.Renderer;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>

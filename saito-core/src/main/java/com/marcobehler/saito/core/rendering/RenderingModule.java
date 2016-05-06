@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
+
 import static dagger.Provides.Type.SET_VALUES;
 
 /**
