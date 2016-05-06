@@ -16,7 +16,6 @@ import freemarker.template.Template;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * Keeps Saito layouts and templates in a guava cache, so that they do not get re-loaded on every render.
  *
@@ -30,23 +29,19 @@ public class FreemarkerTemplateLoader {
 
     // wow, what a mess ;(
     private LoadingCache<com.marcobehler.saito.core.files.Template, Template> templatesCache = CacheBuilder.newBuilder()
-            .build(
-                    new CacheLoader<com.marcobehler.saito.core.files.Template, Template>() {
-                        public Template load(com.marcobehler.saito.core.files.Template template) throws IOException {
-                            String templatName = template.getRelativePath().getFileName().toString();
-                            return new Template(templatName, template.getContent().getText(), freemarkerConfig.get());
-                        }
-                    });
-
+            .build(new CacheLoader<com.marcobehler.saito.core.files.Template, Template>() {
+                public Template load(com.marcobehler.saito.core.files.Template template) throws IOException {
+                    String templatName = template.getRelativePath().getFileName().toString();
+                    return new Template(templatName, template.getContent().getText(), freemarkerConfig.get());
+                }
+            });
 
     private LoadingCache<Layout, Template> layoutsCache = CacheBuilder.newBuilder()
-            .build(
-                    new CacheLoader<Layout, Template>() {
-                        public Template load(Layout layout) throws IOException {
-                            return new Template(layout.getName(), layout.getDataAsString(), freemarkerConfig.get());
-                        }
-                    });
-
+            .build(new CacheLoader<Layout, Template>() {
+                public Template load(Layout layout) throws IOException {
+                    return new Template(layout.getName(), layout.getDataAsString(), freemarkerConfig.get());
+                }
+            });
 
     @Inject
     public FreemarkerTemplateLoader(Lazy<Configuration> freemarkerConfig) {

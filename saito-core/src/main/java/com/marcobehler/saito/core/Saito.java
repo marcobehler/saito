@@ -3,8 +3,8 @@ package com.marcobehler.saito.core;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.configuration.ModelSpace;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
+import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
 import com.marcobehler.saito.core.rendering.RenderingEngine;
@@ -104,7 +104,7 @@ public class Saito {
             log.info("Working dir {} ", workingDir);
 
             // 1. scan-in ALL source files
-            SaitoModel saitoModel = new SourceScanner().scan(workingDir);
+            Sources sources = new SourceScanner().scan(workingDir);
 
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
             Path buildDir = workingDir.resolve("build");
@@ -112,7 +112,7 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            saitoModel.process(modelSpace, buildDir, engine);
+            sources.process(modelSpace, buildDir, engine);
 
             if (plugins != null) {
                 plugins.stream()

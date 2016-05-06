@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.processing;
 
-import com.marcobehler.saito.core.SaitoModel;
+import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Other;
@@ -24,8 +24,8 @@ public class SourceScanner {
     private static final Pattern filePattern = Pattern.compile("(?i).+\\..+");
     private static final Pattern dataPattern = Pattern.compile("(?i).+\\.json");
 
-    public SaitoModel scan(Path directory) {
-        SaitoModel result = new SaitoModel();
+    public Sources scan(Path directory) {
+        Sources result = new Sources();
 
         Path sourcesDir = directory.resolve("source");
         scanSourceDirectory(sourcesDir, result);
@@ -37,7 +37,7 @@ public class SourceScanner {
     }
 
 
-    private void scanSourceDirectory(Path directory, SaitoModel result) {
+    private void scanSourceDirectory(Path directory, Sources result) {
         Path absoluteDirectory = directory.toAbsolutePath().normalize();
 
         try {
@@ -56,7 +56,7 @@ public class SourceScanner {
         }
     }
 
-    private void scanDataDirectory(Path directory, SaitoModel result) {
+    private void scanDataDirectory(Path directory, Sources result) {
         if (Files.exists(directory)) {
             log.info("No 'data' directory found in project dir, skipping...");
             return;

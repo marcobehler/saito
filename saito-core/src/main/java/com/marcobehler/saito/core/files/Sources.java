@@ -1,4 +1,4 @@
-package com.marcobehler.saito.core;
+package com.marcobehler.saito.core.files;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Getter
-public class SaitoModel {
+public class Sources {
 
     private List<DataFile> dataFiles = new ArrayList<>();
 

@@ -1,7 +1,7 @@
 package com.marcobehler.saito.core.processing;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
-import com.marcobehler.saito.core.SaitoModel;
+import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class SourceScannerTest extends BaseInMemoryFSTest {
         Files.createFile(layoutsFolder.resolve("mySecond.fTl"));
         Files.createFile(layoutsFolder.resolve("ble_fourth.ftl"));
 
-        SaitoModel model = new SourceScanner().scan(workingDirectory);
+        Sources model = new SourceScanner().scan(workingDirectory);
 
         List<Layout> layouts = model.getLayouts();
         assertThat(layouts.size()).isEqualTo(3);
@@ -42,7 +42,7 @@ public class SourceScannerTest extends BaseInMemoryFSTest {
         Files.createFile(sourceFolder.resolve("index.hTmL.Ftl"));
         Files.createFile(sourceFolder.resolve("someDir/index.html.ftl"));
 
-        SaitoModel model = new SourceScanner().scan(workingDirectory);
+        Sources model = new SourceScanner().scan(workingDirectory);
 
         List<Template> templates = model.getTemplates();
         assertThat(templates.size()).isEqualTo(3);
@@ -56,7 +56,7 @@ public class SourceScannerTest extends BaseInMemoryFSTest {
         Path layoutsFolder = Files.createDirectories(workingDirectory.resolve("source/layouts"));
         Files.createFile(layoutsFolder.resolve("_myThird.ftl"));
 
-        SaitoModel model = new SourceScanner().scan(workingDirectory);
+        Sources model = new SourceScanner().scan(workingDirectory);
 
         List<Layout> layouts = model.getLayouts();
         assertThat(layouts.size()).isEqualTo(0);
