@@ -30,7 +30,7 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
     @Override
     public void start(Saito saito) {
         log.info("Starting Livereload");
-        SaitoConfig config = saito.getModelSpace().getSaitoConfig();
+        SaitoConfig config = saito.getRenderingModel().getSaitoConfig();
         isEnabled = config.isLiveReloadEnabled();
 
         if (isEnabled) {

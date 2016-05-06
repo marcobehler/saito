@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.files;
 
-import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
@@ -43,7 +43,7 @@ public class Template extends SaitoFile {
         this.content = TemplateContent.of(getDataAsString());
     }
 
-    public void process(ModelSpace config, Path targetDir, RenderingEngine engine) {
+    public void process(RenderingModel config, Path targetDir, RenderingEngine engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -54,7 +54,7 @@ public class Template extends SaitoFile {
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 
-        ThreadLocal<Path> tl = (ThreadLocal<Path>) config.getParameters().get(ModelSpace.TEMPLATE_OUTPUT_PATH);
+        ThreadLocal<Path> tl = (ThreadLocal<Path>) config.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
 
         engine.render(this, targetFile, config);

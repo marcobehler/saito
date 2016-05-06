@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 @Getter
-public class ModelSpace {
+public class RenderingModel {
 
     public static final String BUILD_TIME_PARAMETER = "saito_build_time";
     public static final String TEMPLATE_OUTPUT_PATH = "saito_output_path";
@@ -34,7 +34,7 @@ public class ModelSpace {
 
 
     @Inject
-    public ModelSpace(SaitoConfig saitoConfig, FreemarkerTemplateLoader freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
+    public RenderingModel(SaitoConfig saitoConfig, FreemarkerTemplateLoader freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
         this.freemarkerConfig = freemarkerConfig;
         this.saitoConfig = saitoConfig;
         this.workDirectory = workDirectory;

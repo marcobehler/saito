@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.util.PathUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +28,9 @@ public class DataFile extends SaitoFile {
     /**
      * Parses the .json file this class represents and makes its data available in Freemarker, as a shared variable.
      */
-    public void process(ModelSpace modelSpace) {
+    public void process(RenderingModel renderingModel) {
         Map<String, Object> parsedData = parse();
-        modelSpace.getParameters().put("data", parsedData);
+        renderingModel.getParameters().put("data", parsedData);
     }
 
 

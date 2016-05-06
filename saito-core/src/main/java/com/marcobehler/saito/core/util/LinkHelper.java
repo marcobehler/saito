@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.util;
 
-import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.configuration.RenderingModel;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,11 +15,11 @@ import java.util.List;
 @Singleton
 public class LinkHelper {
 
-    private final ModelSpace modelSpace;
+    private final RenderingModel renderingModel;
 
     @Inject
-    public LinkHelper(ModelSpace modelSpace) {
-        this.modelSpace = modelSpace;
+    public LinkHelper(RenderingModel renderingModel) {
+        this.renderingModel = renderingModel;
     }
 
     public String styleSheet(List<String> styleSheets) {
@@ -47,23 +47,23 @@ public class LinkHelper {
 
 
     private String getCompressedJSSuffix() {
-        return modelSpace.getSaitoConfig().isCompressJs() ? getCompressedSuffix(modelSpace) : "";
+        return renderingModel.getSaitoConfig().isCompressJs() ? getCompressedSuffix(renderingModel) : "";
     }
 
     private String getCompressedCssSuffix() {
-        return modelSpace.getSaitoConfig().isCompressCss() ? getCompressedSuffix(modelSpace) : "";
+        return renderingModel.getSaitoConfig().isCompressCss() ? getCompressedSuffix(renderingModel) : "";
     }
 
 
     private String directory(String directoryName) {
-        if (modelSpace.getSaitoConfig().isRelativeLinks()) {
+        if (renderingModel.getSaitoConfig().isRelativeLinks()) {
             // TODO cast and error check
-            ThreadLocal<Path> outputPathTL = (ThreadLocal<Path>) modelSpace.getParameters().get(ModelSpace.TEMPLATE_OUTPUT_PATH);
+            ThreadLocal<Path> outputPathTL = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
             Path outputPath = outputPathTL.get();
 
             // assets are either in /javascript/ or /stylesheets/
             // to not have two different methods, I am coming up with a fake directory "assets", which simulates one directory level
-            Path workDirectory = modelSpace.getWorkDirectory();
+            Path workDirectory = renderingModel.getWorkDirectory();
             Path buildDir = workDirectory.resolve("build/" + directoryName + "/");
             return outputPath.getParent().relativize(buildDir).toString().replaceAll("\\\\", "/") + "/";
         } else {
@@ -72,8 +72,9 @@ public class LinkHelper {
     }
 
     // TODO remove duplicate in linkhelper
-    private String getCompressedSuffix(ModelSpace modelSpace) {
-        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(modelSpace.getParameters().get(ModelSpace.BUILD_TIME_PARAMETER));
+    private String getCompressedSuffix(RenderingModel renderingModel) {
+        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(
+                renderingModel.getParameters().get(RenderingModel.BUILD_TIME_PARAMETER));
         return "-" + datePart + ".min";
     }
 

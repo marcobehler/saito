@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -36,19 +36,19 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @Override
-    public String render(Template template, final ModelSpace modelSpace) {
-        String renderedTemplate = renderTemplate(template, modelSpace);
-        return renderLayout(template.getLayout(), renderedTemplate, modelSpace);
+    public String render(Template template, final RenderingModel renderingModel) {
+        String renderedTemplate = renderTemplate(template, renderingModel);
+        return renderLayout(template.getLayout(), renderedTemplate, renderingModel);
     }
 
     @SneakyThrows
-    private String renderLayout(Layout layout, String renderedTemplate, ModelSpace modelSpace) {
+    private String renderLayout(Layout layout, String renderedTemplate, RenderingModel renderingModel) {
         StringWriter w = new StringWriter();
 
         freemarker.template.Template template = templateLoader.get(layout);
 
         Map<String,Object> dataModel = new HashMap<>();
-        dataModel.putAll(modelSpace.getParameters());
+        dataModel.putAll(renderingModel.getParameters());
         dataModel.put("_saito_content_", renderedTemplate);
         template.process(dataModel, w);
 
@@ -56,13 +56,13 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @SneakyThrows
-    private String renderTemplate(Template t, ModelSpace modelSpace) {
+    private String renderTemplate(Template t, RenderingModel renderingModel) {
         StringWriter w = new StringWriter();
 
         freemarker.template.Template template = templateLoader.get(t);
 
         Map<String,Object> dataModel = new HashMap<>();
-        dataModel.putAll(modelSpace.getParameters());
+        dataModel.putAll(renderingModel.getParameters());
         template.process(dataModel, w);
 
         return w.toString();

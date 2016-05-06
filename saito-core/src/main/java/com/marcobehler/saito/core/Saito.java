@@ -2,7 +2,7 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.plugins.Plugin;
@@ -31,15 +31,15 @@ public class Saito {
     private Path workingDir;
 
     @Getter
-    private final ModelSpace modelSpace;
+    private final RenderingModel renderingModel;
 
     @Getter
     private final RenderingEngine engine;
 
     @Inject
-    public Saito(final ModelSpace modelSpace, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
+    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
         this.workingDir = workDirectory;
-        this.modelSpace = modelSpace;
+        this.renderingModel = renderingModel;
         this.engine = engine;
     }
 
@@ -112,7 +112,7 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            sources.process(modelSpace, buildDir, engine);
+            sources.process(renderingModel, buildDir, engine);
 
             if (plugins != null) {
                 plugins.stream()
