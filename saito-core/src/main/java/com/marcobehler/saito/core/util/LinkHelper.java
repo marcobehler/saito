@@ -1,12 +1,15 @@
 package com.marcobehler.saito.core.util;
 
-import com.marcobehler.saito.core.rendering.RenderingModel;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import com.marcobehler.saito.core.dagger.PathsModule;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -15,10 +18,12 @@ import java.util.List;
 public class LinkHelper {
 
     private final RenderingModel renderingModel;
+    private final Path workingDirectory;
 
     @Inject
-    public LinkHelper(RenderingModel renderingModel) {
+    public LinkHelper(RenderingModel renderingModel, @Named(PathsModule.WORKING_DIR) Path workingDirectory) {
         this.renderingModel = renderingModel;
+        this.workingDirectory = workingDirectory;
     }
 
     public String styleSheet(List<String> styleSheets) {
@@ -62,8 +67,7 @@ public class LinkHelper {
 
             // assets are either in /javascript/ or /stylesheets/
             // to not have two different methods, I am coming up with a fake directory "assets", which simulates one directory level
-            Path workDirectory = renderingModel.getWorkDirectory();
-            Path buildDir = workDirectory.resolve("build/" + directoryName + "/");
+            Path buildDir = workingDirectory.resolve("build/" + directoryName + "/");
             return outputPath.getParent().relativize(buildDir).toString().replaceAll("\\\\", "/") + "/";
         } else {
             return "/" + directoryName + "/";
