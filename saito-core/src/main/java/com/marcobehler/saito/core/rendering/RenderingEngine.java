@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -47,13 +49,9 @@ public class RenderingEngine {
             Files.write(targetFile, postProcess.getBytes("UTF-8"));
             log.info("created {}", targetFile);
         } catch (PaginationException e) {
-            // TODO pagination
-            // ?page=2
-            // ?page=...
             throw e;
-        }
-        catch (Exception e) {
-            log.error("error creating file {}", targetFile, e);
+        } catch (IOException e) {
+            log.error("Problem rendering file", e);
         }
     }
 

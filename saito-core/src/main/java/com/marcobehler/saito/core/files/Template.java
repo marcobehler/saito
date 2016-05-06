@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.files;
 
+import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
@@ -43,21 +44,33 @@ public class Template extends SaitoFile {
         this.content = TemplateContent.of(getDataAsString());
     }
 
-    public void process(RenderingModel config, Path targetDir, RenderingEngine engine) {
+    public void process(RenderingModel renderingModel, Path targetDir, RenderingEngine engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
 
         String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
 
-        Path targetFile = isDirectoryIndexEnabled(config.getSaitoConfig(), relativePath)
+        Path targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
                 ? getDirectoryIndexTargetFile(targetDir, relativePath)
                 : getTargetFile(targetDir, relativePath);
 
-        ThreadLocal<Path> tl = (ThreadLocal<Path>) config.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
+        ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
 
-        engine.render(this, targetFile, config);
+        try {
+            engine.render(this, targetFile, renderingModel);
+        } catch (PaginationException e) {
+            log.info("Starting to paginate ", e);
+            int pages = e.getPages();
+            for (int i = 1; i < pages; i++ ) {
+                // TODO refactor
+                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
+                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), relativePath)
+                        : getTargetFile(targetDir, relativePath + ((i == 1) ? "" : "page=" + i));
+                engine.render(this, targetFile, renderingModel);
+            }
+        }
     }
 
     private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
