@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.files;
 
-import com.marcobehler.saito.core.compression.YuiPlugin;
+import com.marcobehler.saito.core.assets.YuiWrapper;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +43,12 @@ public class Other extends SaitoFile {
             if (saitoConfig.isCompressCss() && isCssAsset(targetFile)) {
 
                 Path compressedFile = getCompressedPath(targetFile, "(?i)\\.css", getCompressedSuffix(renderingModel) + ".css");
-                new YuiPlugin().compressCSS(sourceFile, compressedFile);
+                new YuiWrapper().compressCSS(sourceFile, compressedFile);
 
             } else if (saitoConfig.isCompressJs() && isJsAsset(targetFile)) {
 
                 Path compressedFile = getCompressedPath(targetFile, "(?i)\\.js", getCompressedSuffix(renderingModel) + ".js");
-                new YuiPlugin().compressJavaScript(sourceFile, compressedFile);
+                new YuiWrapper().compressJavaScript(sourceFile, compressedFile);
 
             } else {
                 Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);

@@ -1,4 +1,4 @@
-package com.marcobehler.saito.core.compression;
+package com.marcobehler.saito.core.assets;
 
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
-public class YuiPlugin {
+public class YuiWrapper {
 
     public static class Options {
         public String charset = "UTF-8";
