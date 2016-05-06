@@ -1,4 +1,4 @@
-package com.marcobehler.saito.core.configuration;
+package com.marcobehler.saito.core.rendering;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
 
@@ -25,7 +26,6 @@ public class RenderingModel {
 
     public static final String BUILD_TIME_PARAMETER = "saito_build_time";
     public static final String TEMPLATE_OUTPUT_PATH = "saito_output_path";
-
 
     private final Path workDirectory;
     private final SaitoConfig saitoConfig;

@@ -1,17 +1,15 @@
 package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.compression.YuiPlugin;
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Every file in the project/source dir, that is not a layout or template.

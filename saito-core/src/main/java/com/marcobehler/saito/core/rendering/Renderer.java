@@ -1,6 +1,5 @@
 package com.marcobehler.saito.core.rendering;
 
-import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.files.Template;
 
 /**

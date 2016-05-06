@@ -1,11 +1,10 @@
 package com.marcobehler.saito.core.util;
 
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
 

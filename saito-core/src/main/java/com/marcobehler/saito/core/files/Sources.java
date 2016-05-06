@@ -2,12 +2,7 @@ package com.marcobehler.saito.core.files;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.marcobehler.saito.core.configuration.RenderingModel;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.files.DataFile;
-import com.marcobehler.saito.core.files.Layout;
-import com.marcobehler.saito.core.files.Other;
-import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.rendering.RenderingEngine;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

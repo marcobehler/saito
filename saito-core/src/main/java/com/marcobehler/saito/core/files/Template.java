@@ -1,6 +1,6 @@
 package com.marcobehler.saito.core.files;
 
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;

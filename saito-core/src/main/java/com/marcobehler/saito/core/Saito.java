@@ -2,7 +2,7 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.plugins.Plugin;

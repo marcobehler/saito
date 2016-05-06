@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.util.PathUtils;
 
 import lombok.extern.slf4j.Slf4j;

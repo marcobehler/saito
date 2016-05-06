@@ -1,7 +1,7 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.configuration.RenderingModel;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Rule;
 import org.junit.Test;

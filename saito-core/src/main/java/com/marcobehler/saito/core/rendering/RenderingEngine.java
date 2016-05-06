@@ -1,6 +1,5 @@
 package com.marcobehler.saito.core.rendering;
 
-import com.marcobehler.saito.core.configuration.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Template;
 import lombok.extern.slf4j.Slf4j;
