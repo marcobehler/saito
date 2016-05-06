@@ -62,10 +62,9 @@ public class FreemarkerRenderer implements Renderer {
 
         Map<String,Object> dataModel = new HashMap<>();
         dataModel.putAll(renderingModel.getParameters());
+        dataModel.putAll(t.getFrontmatter());
         template.process(dataModel, w);
 
         return w.toString();
     }
-
-
 }
