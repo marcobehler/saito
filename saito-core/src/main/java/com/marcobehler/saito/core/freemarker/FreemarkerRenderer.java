@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
@@ -60,10 +61,20 @@ public class FreemarkerRenderer implements Renderer {
 
         freemarker.template.Template template = templateLoader.get(t);
 
-        Map<String,Object> dataModel = new HashMap<>();
-        dataModel.putAll(renderingModel.getParameters());
-        dataModel.putAll(t.getFrontmatter());
-        template.process(dataModel, w);
+        try {
+            Map<String,Object> dataModel = new HashMap<>();
+            dataModel.putAll(renderingModel.getParameters());
+            dataModel.putAll(t.getFrontmatter());
+            template.process(dataModel, w);
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof PaginationException) {
+                throw cause;
+            } else {
+                throw e;
+            }
+        }
+
 
         return w.toString();
     }

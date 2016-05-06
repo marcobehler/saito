@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 
+import com.marcobehler.saito.core.pagination.Paginator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,5 +34,6 @@ public class RenderingModel {
 
         this.parameters.put(TEMPLATE_OUTPUT_PATH, new ThreadLocal<Path>());
         this.parameters.put(BUILD_TIME_PARAMETER, new Date());
+        this.parameters.put("paginator", new Paginator());
     }
 }

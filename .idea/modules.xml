@@ -2,9 +2,16 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito.iml" filepath="$PROJECT_DIR$/.idea/modules/saito.iml" />
       <module fileurl="file://$PROJECT_DIR$/saito.iml" filepath="$PROJECT_DIR$/saito.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli.iml" group="saito-cli" />
       <module fileurl="file://$PROJECT_DIR$/saito-cli/saito-cli.iml" filepath="$PROJECT_DIR$/saito-cli/saito-cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli_main.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli_main.iml" group="saito-cli" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli_test.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-cli/saito-cli_test.iml" group="saito-cli" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-core/saito-core.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-core/saito-core.iml" group="saito-core" />
       <module fileurl="file://$PROJECT_DIR$/saito-core/saito-core.iml" filepath="$PROJECT_DIR$/saito-core/saito-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-core/saito-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-core/saito-core_main.iml" group="saito-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saito-core/saito-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/saito-core/saito-core_test.iml" group="saito-core" />
     </modules>
   </component>
 </project>

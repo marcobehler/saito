@@ -2,7 +2,10 @@ package com.marcobehler.saito.core.rendering;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 
+import com.marcobehler.saito.core.pagination.PaginationException;
+import lombok.Getter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
@@ -99,7 +102,54 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         assertThat(rendered).isEqualTo("<p>This is not a test, alter title</p>");
     }
 
+
+
+    @Test
+    public void pagination_none_needed() throws IOException {
+        String templateFileName = "index.ftl";
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 2---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
+
+        String layoutFileName = "layout.ftl";
+        Files.write(workingDirectory.resolve(layoutFileName), ("[@saito.yield/]").getBytes());
+
+        Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
+        saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
+
+        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
+        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+        assertThat(rendered).isEqualTo("<p>Hans</p><p>Franz</p>");
+    }
+
+    @Test(expected = PaginationException.class)
+    public void pagination_throws_exception_when_needed() throws IOException {
+        String templateFileName = "index.ftl";
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
+
+        String layoutFileName = "layout.ftl";
+        Files.write(workingDirectory.resolve(layoutFileName), ("[@saito.yield/]").getBytes());
+
+        Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
+        saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
+
+        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
+        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+    }
+
+
+
     private Lazy<Configuration> freemarkerConfig() {
         return () -> FreemarkerModule.configuration(mock(LinkHelper.class), new MultiTemplateLoader(new TemplateLoader[]{new ClassTemplateLoader(Saito.class.getClassLoader(), "/")}));
+    }
+
+    @Getter
+    public static class User {
+        private final String name;
+
+
+        public User(String name) {
+            this.name = name;
+        }
     }
 }
