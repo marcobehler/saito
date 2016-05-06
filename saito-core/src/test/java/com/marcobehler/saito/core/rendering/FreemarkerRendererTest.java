@@ -3,6 +3,7 @@ package com.marcobehler.saito.core.rendering;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import com.marcobehler.saito.core.pagination.PaginationException;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -134,6 +136,29 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
         RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
         renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+    }
+
+
+    @Test
+    public void pagination_executed_twice_throws_no_exception() throws IOException {
+        String templateFileName = "index.ftl";
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
+
+        String layoutFileName = "layout.ftl";
+        Files.write(workingDirectory.resolve(layoutFileName), ("[@saito.yield/]").getBytes());
+
+        Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
+        saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
+
+        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
+        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        try {
+            new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+            fail();
+        } catch (Exception e) {
+           // as expected
+        }
         new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
     }
 

@@ -7,8 +7,13 @@ import java.util.Collection;
  */
 public class Paginator {
 
+    private boolean paginationInProgress = false;
+
     public void restartIfNecessary(Collection<Object> collection, Integer pageSize) {
-        int pages = collection.size() / pageSize;
-        throw new PaginationException(pages, pageSize);
+        if (!paginationInProgress) {
+            int pages = collection.size() / pageSize;
+            paginationInProgress = true;
+            throw new PaginationException(pages, pageSize);
+        }
     }
 }
