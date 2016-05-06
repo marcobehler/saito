@@ -28,12 +28,12 @@ public class ModelSpace {
 
     private final Path workDirectory;
     private final SaitoConfig saitoConfig;
-    private final Lazy<FreemarkerTemplateLoader> freemarkerConfig;
+    private final FreemarkerTemplateLoader freemarkerConfig;
     private final Map<String,Object> parameters = new HashMap<>();
 
 
     @Inject
-    public ModelSpace(SaitoConfig saitoConfig, Lazy<FreemarkerTemplateLoader> freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
+    public ModelSpace(SaitoConfig saitoConfig, FreemarkerTemplateLoader freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
         this.freemarkerConfig = freemarkerConfig;
         this.saitoConfig = saitoConfig;
         this.workDirectory = workDirectory;

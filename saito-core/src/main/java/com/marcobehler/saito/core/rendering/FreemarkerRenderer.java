@@ -3,7 +3,7 @@ package com.marcobehler.saito.core.rendering;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
-import dagger.Lazy;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,11 +19,11 @@ import java.util.Collections;
 @Slf4j
 public class FreemarkerRenderer implements Renderer {
 
-    private final Lazy<FreemarkerTemplateLoader> config;
+    private final FreemarkerTemplateLoader templateLoader;
 
     @Inject
-    public FreemarkerRenderer(Lazy<FreemarkerTemplateLoader> freemarkerConfig) {
-        this.config = freemarkerConfig;
+    public FreemarkerRenderer(FreemarkerTemplateLoader freemarkerConfig) {
+        this.templateLoader = freemarkerConfig;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class FreemarkerRenderer implements Renderer {
     @SneakyThrows
     private String renderLayout(Layout layout, String renderedTemplate) {
         StringWriter w = new StringWriter();
-        freemarker.template.Template template = config.get().getTemplate(layout);
+        freemarker.template.Template template = templateLoader.get(layout);
         template.process(Collections.singletonMap("_saito_content_", renderedTemplate), w);
         return w.toString();
     }
@@ -48,7 +48,7 @@ public class FreemarkerRenderer implements Renderer {
     @SneakyThrows
     private String renderTemplate(Template t) {
         StringWriter w = new StringWriter();
-        freemarker.template.Template template = config.get().getTemplate(t);
+        freemarker.template.Template template = templateLoader.get(t);
         template.process(Collections.emptyMap(), w);
         return w.toString();
     }

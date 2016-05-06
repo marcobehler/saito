@@ -30,7 +30,7 @@ public class DataFile extends SaitoFile {
      */
     public void process(ModelSpace modelSpace) {
         Map<String, Object> parsedData = parse();
-        modelSpace.getFreemarkerConfig().get().mergeSharedVariableMap("data", parsedData);
+        modelSpace.getFreemarkerConfig().mergeSharedVariableMap("data", parsedData);
     }
 
     /**

@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.events.FileEventSubscriber;
+import com.marcobehler.saito.core.freemarker.FreemarkerModule;
 import com.marcobehler.saito.core.plugins.FileWatcherPlugin;
 import com.marcobehler.saito.core.plugins.JettyPlugin;
 import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
@@ -22,7 +23,7 @@ import static dagger.Provides.Type.SET_VALUES;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-@Module(includes =  {PathsModule.class, RenderingModule.class})
+@Module(includes =  {PathsModule.class, RenderingModule.class, FreemarkerModule.class})
 public class SaitoCLIModule {
 
     // plugins
