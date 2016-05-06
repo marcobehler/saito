@@ -1,7 +1,7 @@
 package com.marcobehler.saito.core.configuration;
 
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.freemarker.FreemarkerConfig;
+import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
 import dagger.Lazy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +28,12 @@ public class ModelSpace {
 
     private final Path workDirectory;
     private final SaitoConfig saitoConfig;
-    private final Lazy<FreemarkerConfig> freemarkerConfig;
+    private final Lazy<FreemarkerTemplateLoader> freemarkerConfig;
     private final Map<String,Object> parameters = new HashMap<>();
 
 
     @Inject
-    public ModelSpace(SaitoConfig saitoConfig, Lazy<FreemarkerConfig> freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
+    public ModelSpace(SaitoConfig saitoConfig, Lazy<FreemarkerTemplateLoader> freemarkerConfig, @Named(PathsModule.WORKING_DIR) Path workDirectory) {
         this.freemarkerConfig = freemarkerConfig;
         this.saitoConfig = saitoConfig;
         this.workDirectory = workDirectory;

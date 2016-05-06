@@ -1,110 +1,102 @@
 package com.marcobehler.saito.core.freemarker;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.Layout;
-import com.marcobehler.saito.core.util.LinkHelper;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
-import freemarker.template.*;
-import lombok.Getter;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultMapAdapter;
+import freemarker.template.Template;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
 @Singleton
-public class FreemarkerConfig {
+public class FreemarkerTemplateLoader {
 
-    @Getter
-    private Configuration cfg;
+    private Configuration freemarkerConfig;
 
     // wow, what a mess ;(
-    private LoadingCache<com.marcobehler.saito.core.files.Template, Template> templateCache = CacheBuilder.newBuilder()
+    private LoadingCache<com.marcobehler.saito.core.files.Template, Template> templatesCache = CacheBuilder.newBuilder()
             .build(
                     new CacheLoader<com.marcobehler.saito.core.files.Template, Template>() {
                         public Template load(com.marcobehler.saito.core.files.Template template) throws IOException {
                             String templatName = template.getRelativePath().getFileName().toString();
-                            return new Template(templatName, template.getContent().getText(), cfg);
+                            return new Template(templatName, template.getContent().getText(), freemarkerConfig);
                         }
                     });
 
 
-    private LoadingCache<Layout, Template> layoutCache = CacheBuilder.newBuilder()
+    private LoadingCache<Layout, Template> layoutsCache = CacheBuilder.newBuilder()
             .build(
                     new CacheLoader<Layout, Template>() {
                         public Template load(Layout layout) throws IOException {
-                            return new Template(layout.getName(), layout.getDataAsString(), cfg);
+                            return new Template(layout.getName(), layout.getDataAsString(), freemarkerConfig);
                         }
                     });
 
 
     @Inject
-    public FreemarkerConfig(@Named(PathsModule.WORKING_DIR) Path workingDir, LinkHelper linkHelper) {
-        this.cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-        try {
-            cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-            cfg.addAutoImport("saito", "saito.ftl");
-            cfg.setSharedVariable("saitoLinkHelper", linkHelper);
-            cfg.setDefaultEncoding("UTF-8");
-            cfg.setLogTemplateExceptions(false);
-        } catch (TemplateModelException e) {
-            log.error("Error creating config",  e);
-        }
+    public FreemarkerTemplateLoader(@Named(PathsModule.WORKING_DIR) Path workingDir, Configuration freemarkerConfig) {
+        this.freemarkerConfig = freemarkerConfig;
         initClassLoaders(workingDir);
     }
 
-    public void initClassLoaders(Path workingDirectory) {
+    protected void initClassLoaders(Path workingDirectory) {
         try {
             ClassTemplateLoader tl1 = new ClassTemplateLoader(Saito.class.getClassLoader(), "/");
             FileTemplateLoader tl2 = new FileTemplateLoader(workingDirectory.resolve("source").toFile());
             MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[]{tl1, tl2});
-            cfg.setTemplateLoader(mtl);
+            freemarkerConfig.setTemplateLoader(mtl);
         } catch (IOException e) {
             log.error("Error setting Freemarker template loader", e);
         }
     }
 
-
     @SneakyThrows
-    public Template getFreemarkerTemplate(Layout layout) {
-        return layoutCache.get(layout);
+    public Template getTemplate(Layout layout) {
+        return layoutsCache.get(layout);
     }
 
     @SneakyThrows
-    public Template getFreemarkerTemplate(com.marcobehler.saito.core.files.Template template) {
-        return templateCache.get(template);
+    public Template getTemplate(com.marcobehler.saito.core.files.Template template) {
+        return templatesCache.get(template);
     }
-
 
     @SuppressWarnings("unchecked")
     public synchronized void mergeSharedVariableMap(String key, Map<String, Object> parsedData) {
-        TemplateModel data = cfg.getSharedVariable(key);
+        TemplateModel data = freemarkerConfig.getSharedVariable(key);
 
         if (data == null) {
             try {
                 // when freemarker adds a HashMap sharedvariable, it will wrap it inside a DefaultMapAdapter
-                cfg.setSharedVariable(key, new HashMap<>());
+                freemarkerConfig.setSharedVariable(key, new HashMap<>());
             } catch (TemplateModelException e) {
                 log.error("Problem setting shared variable", e);
             }
         }
-        data = cfg.getSharedVariable(key);
+        data = freemarkerConfig.getSharedVariable(key);
 
         if (data instanceof DefaultMapAdapter) {
             Map<String, Object> underlyingMap = (Map<String, Object>) ((DefaultMapAdapter) data).getWrappedObject();
