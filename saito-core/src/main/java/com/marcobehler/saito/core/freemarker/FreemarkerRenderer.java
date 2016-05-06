@@ -2,6 +2,8 @@ package com.marcobehler.saito.core.freemarker;
 
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,7 +44,10 @@ public class FreemarkerRenderer implements Renderer {
     private String renderLayout(Layout layout, String renderedTemplate) {
         StringWriter w = new StringWriter();
         freemarker.template.Template template = templateLoader.get(layout);
-        template.process(Collections.singletonMap("_saito_content_", renderedTemplate), w);
+
+        final Map<String, Object> dataModel = Collections.singletonMap("_saito_content_", renderedTemplate);
+        template.process(getDataModel(dataModel), w);
+
         return w.toString();
     }
 
@@ -50,7 +55,16 @@ public class FreemarkerRenderer implements Renderer {
     private String renderTemplate(Template t) {
         StringWriter w = new StringWriter();
         freemarker.template.Template template = templateLoader.get(t);
-        template.process(Collections.emptyMap(), w);
+
+        final Map<String, Object> dataModel = getDataModel(Collections.emptyMap());
+        template.process(dataModel, w);
+
         return w.toString();
+    }
+
+    private Map<String,Object> getDataModel(Map<String,Object> params) {
+        Map<String,Object> defaultDataModel = new HashMap<>();
+        defaultDataModel.putAll(params);
+        return defaultDataModel;
     }
 }

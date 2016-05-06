@@ -29,7 +29,7 @@ public class FreemarkerModule {
 
     @Singleton
     @Provides
-    public static Configuration configuration(@Named(PathsModule.WORKING_DIR) Path workingDir, LinkHelper linkHelper) {
+    public static Configuration configuration(LinkHelper linkHelper, MultiTemplateLoader templateLoader) {
         try {
             Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
@@ -37,7 +37,7 @@ public class FreemarkerModule {
             cfg.setSharedVariable("saitoLinkHelper", linkHelper);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setLogTemplateExceptions(false);
-            initClassLoaders(workingDir, cfg);
+            cfg.setTemplateLoader(templateLoader);
             return cfg;
         } catch (TemplateModelException e) {
             log.error("Error creating config", e);
@@ -45,15 +45,16 @@ public class FreemarkerModule {
         }
     }
 
-
-    protected static void initClassLoaders(Path workingDirectory, Configuration cfg) {
+    @Singleton
+    @Provides
+    public MultiTemplateLoader classLoaders(@Named(PathsModule.WORKING_DIR) Path workingDirectory) {
         try {
             ClassTemplateLoader tl1 = new ClassTemplateLoader(Saito.class.getClassLoader(), "/");
             FileTemplateLoader tl2 = new FileTemplateLoader(workingDirectory.resolve("source").toFile());
-            MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[]{tl1, tl2});
-            cfg.setTemplateLoader(mtl);
+            return new MultiTemplateLoader(new TemplateLoader[] { tl1, tl2 });
         } catch (IOException e) {
             log.error("Error setting Freemarker template loader", e);
+            throw new IllegalStateException(e);
         }
     }
 }
