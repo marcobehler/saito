@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -35,36 +36,37 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @Override
-    public String render(Template template) {
-        String renderedTemplate = renderTemplate(template);
-        return renderLayout(template.getLayout(), renderedTemplate);
+    public String render(Template template, final ModelSpace modelSpace) {
+        String renderedTemplate = renderTemplate(template, modelSpace);
+        return renderLayout(template.getLayout(), renderedTemplate, modelSpace);
     }
 
     @SneakyThrows
-    private String renderLayout(Layout layout, String renderedTemplate) {
+    private String renderLayout(Layout layout, String renderedTemplate, ModelSpace modelSpace) {
         StringWriter w = new StringWriter();
+
         freemarker.template.Template template = templateLoader.get(layout);
 
-        final Map<String, Object> dataModel = Collections.singletonMap("_saito_content_", renderedTemplate);
-        template.process(getDataModel(dataModel), w);
-
-        return w.toString();
-    }
-
-    @SneakyThrows
-    private String renderTemplate(Template t) {
-        StringWriter w = new StringWriter();
-        freemarker.template.Template template = templateLoader.get(t);
-
-        final Map<String, Object> dataModel = getDataModel(Collections.emptyMap());
+        Map<String,Object> dataModel = new HashMap<>();
+        dataModel.putAll(modelSpace.getParameters());
+        dataModel.put("_saito_content_", renderedTemplate);
         template.process(dataModel, w);
 
         return w.toString();
     }
 
-    private Map<String,Object> getDataModel(Map<String,Object> params) {
-        Map<String,Object> defaultDataModel = new HashMap<>();
-        defaultDataModel.putAll(params);
-        return defaultDataModel;
+    @SneakyThrows
+    private String renderTemplate(Template t, ModelSpace modelSpace) {
+        StringWriter w = new StringWriter();
+
+        freemarker.template.Template template = templateLoader.get(t);
+
+        Map<String,Object> dataModel = new HashMap<>();
+        dataModel.putAll(modelSpace.getParameters());
+        template.process(dataModel, w);
+
+        return w.toString();
     }
+
+
 }

@@ -53,7 +53,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(null)).render(saitoTemplate);
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(null)).render(saitoTemplate, null);
         assertThat(rendered).isEqualTo("<p>This is not a test</p>");
     }
 }

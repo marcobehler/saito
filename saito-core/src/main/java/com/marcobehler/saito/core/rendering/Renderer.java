@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.rendering;
 
+import com.marcobehler.saito.core.configuration.ModelSpace;
 import com.marcobehler.saito.core.files.Template;
 
 /**
@@ -7,7 +8,8 @@ import com.marcobehler.saito.core.files.Template;
  */
 public interface Renderer {
 
-    String render(Template template);
-
     boolean canRender(Template template);
+
+    String render(Template template, final ModelSpace modelSpace);
+
 }
