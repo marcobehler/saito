@@ -17,6 +17,8 @@ dependencies {
     // todo exclude all not needed spring dependencies, apart from livereload
     compile("org.springframework.boot:spring-boot-devtools:1.3.3.RELEASE")
 
+    compile('org.apache.commons:commons-lang3:3.4')
+
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.jimfs:jimfs:1.1'
 
