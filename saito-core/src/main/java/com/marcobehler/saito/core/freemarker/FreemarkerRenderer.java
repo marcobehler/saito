@@ -69,7 +69,10 @@ public class FreemarkerRenderer implements Renderer {
         } catch (Exception e) {
             Throwable cause = e.getCause();
             if (cause instanceof PaginationException) {
-                throw cause;
+                int pages = ((PaginationException) cause).getPages();
+                for (int i = 1; i <= pages; i++) {
+                    render(t, renderingModel);
+                }
             } else {
                 throw e;
             }
