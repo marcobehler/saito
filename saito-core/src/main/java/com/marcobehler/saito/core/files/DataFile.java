@@ -1,17 +1,17 @@
 package com.marcobehler.saito.core.files;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcobehler.saito.core.configuration.ModelSpace;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.util.PathUtils;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcobehler.saito.core.configuration.ModelSpace;
+import com.marcobehler.saito.core.util.PathUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -30,8 +30,9 @@ public class DataFile extends SaitoFile {
      */
     public void process(ModelSpace modelSpace) {
         Map<String, Object> parsedData = parse();
-        modelSpace.getFreemarkerConfig().mergeSharedVariableMap("data", parsedData);
+        modelSpace.getParameters().put("data", parsedData);
     }
+
 
     /**
      * Parses the .json file and return its content as a map.
