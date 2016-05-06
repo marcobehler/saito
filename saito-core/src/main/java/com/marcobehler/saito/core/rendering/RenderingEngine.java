@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.rendering;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.pagination.PaginationException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
@@ -45,7 +46,13 @@ public class RenderingEngine {
             String postProcess = postProcess(rendered);
             Files.write(targetFile, postProcess.getBytes("UTF-8"));
             log.info("created {}", targetFile);
-        } catch (Exception e) {
+        } catch (PaginationException e) {
+            // TODO pagination
+            // ?page=2
+            // ?page=...
+            throw e;
+        }
+        catch (Exception e) {
             log.error("error creating file {}", targetFile, e);
         }
     }
