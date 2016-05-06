@@ -1,18 +1,19 @@
 package com.marcobehler.saito.core.configuration;
 
-import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
-import dagger.Lazy;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import com.marcobehler.saito.core.dagger.PathsModule;
+import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>

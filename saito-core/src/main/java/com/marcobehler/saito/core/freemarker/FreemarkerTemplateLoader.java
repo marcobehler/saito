@@ -21,7 +21,10 @@ import freemarker.template.TemplateModelException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+
 /**
+ * Keeps Saito layouts and templates in a guava cache, so that they do not get re-loaded on every render.
+ *
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Slf4j
