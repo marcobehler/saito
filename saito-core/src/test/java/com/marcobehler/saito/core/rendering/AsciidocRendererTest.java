@@ -12,7 +12,6 @@ import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
-import com.marcobehler.saito.core.markdown.PegdownRenderer;
 
 import static com.marcobehler.saito.core.rendering.FreemarkerRendererTest.freemarkerConfig;
 import static org.assertj.core.api.Assertions.assertThat;

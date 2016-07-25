@@ -1,11 +1,13 @@
 package com.marcobehler.saito.core.processing;
 
+import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.util.PathUtils;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ import java.util.regex.Pattern;
 public class SourceScanner {
 
     private static final Pattern layoutPattern = Pattern.compile("(?i)layouts[\\\\|/][^_].+\\.ftl");
-    private static final Pattern templatePattern = Pattern.compile("(?i).+\\.html\\.ftl");
+    private static final Pattern templatePattern = Pattern.compile("(?i).+\\.html\\.(ftl|asciidoc|adoc|asc|markdown|mdown|mkdn|mkd|md)");  // asciidoc und markdown TODO
     private static final Pattern filePattern = Pattern.compile("(?i).+\\..+");
     private static final Pattern dataPattern = Pattern.compile("(?i).+\\.json");
 
@@ -33,9 +35,11 @@ public class SourceScanner {
         Path dataDir = directory.resolve("data");
         scanDataDirectory(dataDir, result);
 
+        Path blogPostsDir = directory.resolve("posts");
+        scanBlogdirectory(blogPostsDir, result);
+
         return result;
     }
-
 
     private void scanSourceDirectory(Path directory, Sources result) {
         Path absoluteDirectory = directory.toAbsolutePath().normalize();
@@ -76,5 +80,23 @@ public class SourceScanner {
         }
     }
 
+    private void scanBlogdirectory(final Path directory, Sources result) {
+        if (Files.exists(directory)) {
+            log.info("No 'blog' directory found in project dir, skipping...");
+            return;
+        }
 
+        Path absoluteDirectory = directory.toAbsolutePath().normalize();
+        try {
+            Files.walk(absoluteDirectory).parallel().forEach(p -> {
+                Path relativePath = PathUtils.relativize(absoluteDirectory, p);
+                if  (templatePattern.matcher(relativePath.toString()).matches()) {
+                    result.getBlogPosts().add(new BlogPost(directory, relativePath));
+                }
+            });
+
+        } catch (IOException e) {
+            log.error("Problem walking {}", directory, e);
+        }
+    }
 }

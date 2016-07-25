@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.markdown.PegdownRenderer;
+import com.marcobehler.saito.core.markdown.MarkdownRenderer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +38,7 @@ public class PegdownRendererCanRenderTest extends BaseInMemoryFSTest {
         Files.write(workingDirectory.resolve(fileName), "test".getBytes());
 
         Template saitoTemplate = new Template(workingDirectory, fs.getPath(fileName));
-        boolean canRender = new PegdownRenderer(null).canRender(saitoTemplate);
+        boolean canRender = new MarkdownRenderer(null).canRender(saitoTemplate);
         assertThat(canRender).isTrue();
     }
 

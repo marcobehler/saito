@@ -1,15 +1,18 @@
 package com.marcobehler.saito.core.configuration;
 
 import com.marcobehler.saito.core.dagger.PathsModule;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.yaml.snakeyaml.Yaml;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -25,7 +28,6 @@ public class SaitoConfig {
 
     private final Path configFile;
 
-
     // configuration properties
 
     private boolean directoryIndexes = false;
@@ -33,7 +35,7 @@ public class SaitoConfig {
     private boolean liveReloadEnabled = true;
     private boolean compressCss = false;
     private boolean compressJs = false;
-    private String blogSourceDir = "source";
+    private String blogSourceDir = "posts"; //
 
     private Integer port = 8820;
 
@@ -42,7 +44,6 @@ public class SaitoConfig {
         this.configFile = configFile;
         initializeFromYaml(configFile);
     }
-
 
     @SneakyThrows
     private void initializeFromYaml(@Named(PathsModule.CONFIG_FILE) Path configFile) {
@@ -60,5 +61,5 @@ public class SaitoConfig {
         compressCss = (boolean) map.getOrDefault("compressCss", compressCss);
         compressJs = (boolean) map.getOrDefault("compressJs", compressJs);
         port = (Integer) map.getOrDefault("port", port);
-        }
-        }
+    }
+}

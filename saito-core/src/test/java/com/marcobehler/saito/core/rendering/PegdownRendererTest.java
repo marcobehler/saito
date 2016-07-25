@@ -2,12 +2,8 @@ package com.marcobehler.saito.core.rendering;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
@@ -15,7 +11,7 @@ import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
-import com.marcobehler.saito.core.markdown.PegdownRenderer;
+import com.marcobehler.saito.core.markdown.MarkdownRenderer;
 
 import static com.marcobehler.saito.core.rendering.FreemarkerRendererTest.freemarkerConfig;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +35,7 @@ public class PegdownRendererTest extends BaseInMemoryFSTest {
 
         final FreemarkerRenderer freemarkerRenderer = new FreemarkerRenderer(
                 new FreemarkerTemplateLoader(freemarkerConfig()));
-        String rendered = new PegdownRenderer(
+        String rendered = new MarkdownRenderer(
                 freemarkerRenderer).render(saitoTemplate, new RenderingModel(mock(SaitoConfig.class)));
         assertThat(rendered).isEqualTo("<p><h2>Dada Pegdown</h2></p>");
     }
