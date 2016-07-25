@@ -33,6 +33,7 @@ public class SaitoConfig {
     private boolean liveReloadEnabled = true;
     private boolean compressCss = false;
     private boolean compressJs = false;
+    private String blogSourceDir = "source";
 
     private Integer port = 8820;
 
@@ -55,8 +56,9 @@ public class SaitoConfig {
         directoryIndexes = (boolean) map.getOrDefault("directoryIndexes", directoryIndexes);
         relativeLinks = (boolean) map.getOrDefault("relativeLinks", relativeLinks);
         liveReloadEnabled = (boolean) map.getOrDefault("liveReloadEnabled", liveReloadEnabled);
+        blogSourceDir = (String) map.getOrDefault("blogSourceDir", blogSourceDir);
         compressCss = (boolean) map.getOrDefault("compressCss", compressCss);
         compressJs = (boolean) map.getOrDefault("compressJs", compressJs);
         port = (Integer) map.getOrDefault("port", port);
-    }
-}
+        }
+        }
