@@ -42,7 +42,7 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @SneakyThrows
-    private String renderLayout(Layout layout, String renderedTemplate, RenderingModel renderingModel) {
+    public String renderLayout(Layout layout, String renderedTemplate, RenderingModel renderingModel) {
         StringWriter w = new StringWriter();
 
         freemarker.template.Template template = templateLoader.get(layout);

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
+import com.marcobehler.saito.core.markdown.PegdownRenderer;
 
 import static dagger.Provides.Type.SET_VALUES;
 
@@ -20,7 +21,7 @@ public class RenderingModule {
 
     @Provides(type = SET_VALUES)
     @Singleton
-    static Set<Renderer> renderers(FreemarkerRenderer freemarkerRenderer) {
-        return new HashSet<>(Arrays.asList(freemarkerRenderer));
+    static Set<Renderer> renderers(FreemarkerRenderer freemarkerRenderer, PegdownRenderer pegdownRenderer) {
+        return new HashSet<>(Arrays.asList(freemarkerRenderer, pegdownRenderer));
     }
 }

@@ -166,7 +166,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
 
 
-    private Lazy<Configuration> freemarkerConfig() {
+    public static Lazy<Configuration> freemarkerConfig() {
         return () -> FreemarkerModule.configuration(mock(LinkHelper.class), new MultiTemplateLoader(new TemplateLoader[]{new ClassTemplateLoader(Saito.class.getClassLoader(), "/")}));
     }
 
