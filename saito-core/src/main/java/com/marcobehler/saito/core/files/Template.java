@@ -26,7 +26,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
 
-    private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
+    static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
     @Getter
     private final FrontMatter frontmatter;
