@@ -51,9 +51,7 @@ public class Template extends SaitoFile {
 
         String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
 
-        Path targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
-                ? getDirectoryIndexTargetFile(targetDir, relativePath)
-                : getTargetFile(targetDir, relativePath);
+        Path targetFile = getTargetFile(renderingModel, targetDir, relativePath);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -71,6 +69,12 @@ public class Template extends SaitoFile {
                 engine.render(this, targetFile, renderingModel);
             }
         }
+    }
+
+    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String relativePath) {
+        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
+                    ? getDirectoryIndexTargetFile(targetDir, relativePath)
+                    : getTargetFile(targetDir, relativePath);
     }
 
     private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
