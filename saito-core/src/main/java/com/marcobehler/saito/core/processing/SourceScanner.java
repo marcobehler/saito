@@ -61,7 +61,7 @@ public class SourceScanner {
     }
 
     private void scanDataDirectory(Path directory, Sources result) {
-        if (Files.exists(directory)) {
+        if (!Files.exists(directory)) {
             log.info("No 'data' directory found in project dir, skipping...");
             return;
         }
@@ -81,7 +81,7 @@ public class SourceScanner {
     }
 
     private void scanBlogdirectory(final Path directory, Sources result) {
-        if (Files.exists(directory)) {
+        if (!Files.exists(directory)) {
             log.info("No 'blog' directory found in project dir, skipping...");
             return;
         }
