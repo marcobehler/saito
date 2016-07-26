@@ -91,7 +91,11 @@ public class SourceScanner {
             Files.walk(absoluteDirectory).parallel().forEach(p -> {
                 Path relativePath = PathUtils.relativize(absoluteDirectory, p);
                 if  (templatePattern.matcher(relativePath.toString()).matches()) {
-                    result.getBlogPosts().add(new BlogPost(directory, relativePath));
+                    try {
+                        result.getBlogPosts().add(new BlogPost(directory, relativePath));
+                    } catch (BlogPost.BlogPostFormattingException e) {
+                        log.error("Problem parsing blog post {}", e);
+                    }
                 }
             });
 
