@@ -16,14 +16,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BlogPostTest extends BaseInMemoryFSTest  {
 
     @Test
-    public void blog_post_should_parse_filename_correctly() throws IOException {
-        final Path f = workingDirectory.resolve("2015-03-05-this-is-it.html.ftl");
-        Files.write(f, "".getBytes());
-        BlogPost post = new BlogPost(workingDirectory, f);
+    public void blog_post_should_parse_year_correctly() throws IOException {
+        BlogPost post = new BlogPost(workingDirectory, newFile("2015-03-05-this-is-it.html.ftl"));
 
         assertThat(post.getYear()).isEqualTo("2015");
+    }
+
+    @Test
+    public void blog_post_should_parse_month_correctly() throws IOException {
+        BlogPost post = new BlogPost(workingDirectory, newFile("2015-03-05-this-is-it.html.ftl"));
+
         assertThat(post.getMonth()).isEqualTo("03");
+    }
+
+
+
+    @Test
+    public void blog_post_should_parse_day_correctly() throws IOException {
+        BlogPost post = new BlogPost(workingDirectory, newFile("2015-03-05-this-is-it.html.ftl"));
+
         assertThat(post.getDay()).isEqualTo("05");
+    }
+
+
+    @Test
+    public void blog_post_should_parse_title_correctly() throws IOException {
+        BlogPost post = new BlogPost(workingDirectory, newFile("2015-03-05-this-is-it.html.ftl"));
+
         assertThat(post.getTitle()).isEqualTo("this-is-it");
     }
 

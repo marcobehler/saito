@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -29,5 +30,11 @@ public abstract class BaseInMemoryFSTest {
         if (fs != null) {
             fs.close();
         }
+    }
+
+    protected Path newFile(String filename) throws IOException {
+        final Path f = workingDirectory.resolve(filename);
+        Files.write(f, "".getBytes());
+        return f;
     }
 }
