@@ -1,13 +1,15 @@
 package com.marcobehler.saito.core.files;
 
 import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import sun.plugin.dom.exception.InvalidStateException;
 
-/**
- * // {year}-{month}-{day}-{title}.html
- */
 public class BlogPost extends Template {
+
+    // {year}-{month}-{day}-{title}.html
+    private static final Pattern BLOG_POST_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(.+?)\\..+");
 
     private final String year;
     private final String month;
@@ -18,17 +20,16 @@ public class BlogPost extends Template {
         super(sourceDirectory, relativePath);
 
         String fileName = relativePath.getFileName().toString();
-        fileName = fileName.substring(fileName.indexOf("."));
+        final Matcher m = BLOG_POST_PATTERN.matcher(fileName);
 
-        final String[] splitFileName = fileName.split("-");
-        if (splitFileName.length != 4) {
+        if (m.matches()) {
+            this.year = m.group(1);
+            this.month = m.group(2);
+            this.day = m.group(3);
+            this.title = m.group(4);
+        } else {
             throw new InvalidStateException("Not a blog post filename");
         }
-
-        this.year = splitFileName[0];
-        this.month = splitFileName[1];
-        this.day = splitFileName[2];
-        this.title = splitFileName[3];
     }
 
     public String getYear() {
