@@ -1,7 +1,9 @@
 package com.marcobehler.saito.core.freemarker;
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,8 +33,8 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @Override
-    public boolean canRender(Template template) {
-        return template.getRelativePath().toString().toLowerCase().endsWith(".ftl");
+    public List<String> getExtensions() {
+        return Arrays.asList("ftl");
     }
 
     @Override

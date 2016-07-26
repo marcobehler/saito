@@ -1,6 +1,8 @@
 package com.marcobehler.saito.core.asciidoc;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,10 +31,8 @@ public class AsciidocRenderer implements Renderer {
     }
 
     @Override
-    public boolean canRender(final Template template) {
-        final String fileName = template.getRelativePath().toString().toLowerCase();
-        // github asciidoc extensions @see http://asciidoctor.org/docs/asciidoc-recommended-practices/
-        return fileName.endsWith(".asciidoc") || fileName.endsWith(".adoc") || fileName.endsWith(".asc");
+    public List<String> getExtensions() {
+        return Arrays.asList("asciidoc", "adoc", "asc");
     }
 
     @Override

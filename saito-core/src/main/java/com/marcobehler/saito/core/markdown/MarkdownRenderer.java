@@ -1,5 +1,8 @@
 package com.marcobehler.saito.core.markdown;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -29,11 +32,8 @@ public class MarkdownRenderer implements Renderer {
     }
 
     @Override
-    public boolean canRender(final Template template) {
-        final String fileName = template.getRelativePath().toString().toLowerCase();
-        // github markdown extensions https://github.com/github/markup/blob/b865add2e053f8cea3d7f4d9dcba001bdfd78994/lib/github/markups.rb#L1
-        return fileName.endsWith(".markdown") || fileName.endsWith(".mdown") || fileName.endsWith(".mkdn") || fileName
-                .endsWith(".mkd") || fileName.endsWith(".md");
+    public List<String> getExtensions() {
+        return Arrays.asList("markdown", "mdown", "mkdn", "mkd", "md");
     }
 
     @Override

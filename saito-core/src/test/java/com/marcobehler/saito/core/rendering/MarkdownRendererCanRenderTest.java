@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 @RunWith(Parameterized.class)
-public class PegdownRendererCanRenderTest extends BaseInMemoryFSTest {
+public class MarkdownRendererCanRenderTest extends BaseInMemoryFSTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -28,7 +28,7 @@ public class PegdownRendererCanRenderTest extends BaseInMemoryFSTest {
 
     private String extension;
 
-    public PegdownRendererCanRenderTest(String extension) {
+    public MarkdownRendererCanRenderTest(String extension) {
         this.extension = extension;
     }
 

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 /**
  *
  */
-public class PegdownRendererTest extends BaseInMemoryFSTest {
+public class MarkdownRendererTest extends BaseInMemoryFSTest {
 
     @Test
     public void simple_render_works() throws IOException {
