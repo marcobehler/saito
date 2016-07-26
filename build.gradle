@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.7"
+    }
+}
+
 def versionPropsFile = file("${rootDir}/version.properties")
 def versionBuild = 0
 
@@ -12,6 +23,7 @@ if (versionPropsFile.canRead()) {
 
 subprojects {
 
+    apply plugin: "net.ltgt.apt"
     apply plugin: 'java'
     apply plugin: 'idea'
 
@@ -25,21 +37,13 @@ subprojects {
     }
 
 
-    idea {
-        module {
-            // generatedSourceDir does  not work for some reason
-            sourceDirs  += file(project.projectDir.absolutePath + '/src/main/generated')
-        }
-    }
-
-
     dependencies {
-        compile 'com.google.dagger:dagger-compiler:2.2'
+        apt  'com.google.dagger:dagger-compiler:2.2'
+        apt 'org.projectlombok:lombok:1.16.8'
+
         compile 'org.projectlombok:lombok:1.16.8'
 
         compile 'com.google.dagger:dagger:2.2'
-
-        compile 'org.projectlombok:lombok:1.16.8'
 
         compile 'javax.inject:javax.inject:1'
 
