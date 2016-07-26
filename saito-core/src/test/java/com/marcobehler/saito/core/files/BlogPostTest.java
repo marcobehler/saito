@@ -10,7 +10,9 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
+import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.dagger.Saito$$;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -70,6 +72,11 @@ public class BlogPostTest extends BaseInMemoryFSTest  {
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath(layoutFileName)));
 
         final BlogPost bp = new BlogPost(workingDirectory, fs.getPath(templateFileName));
+
+        //Saito$$ cliComponent = DaggerSaito$$.builder().build();
+        //Saito saitoCli = cliComponent.saito();
+
+        //bp.process(saitoCli.getRenderingModel(), null , saitoCli.getEngine());
 
         // TODO
         /*final RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
