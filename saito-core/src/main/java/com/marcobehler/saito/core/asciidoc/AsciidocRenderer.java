@@ -31,7 +31,7 @@ public class AsciidocRenderer implements Renderer {
     }
 
     @Override
-    public List<String> getExtensions() {
+    public List<String> getSupportedExtensions() {
         return Arrays.asList("asciidoc", "adoc", "asc");
     }
 

@@ -32,7 +32,7 @@ public class MarkdownRenderer implements Renderer {
     }
 
     @Override
-    public List<String> getExtensions() {
+    public List<String> getSupportedExtensions() {
         return Arrays.asList("markdown", "mdown", "mkdn", "mkd", "md");
     }
 

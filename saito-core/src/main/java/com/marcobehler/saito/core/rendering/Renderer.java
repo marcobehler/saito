@@ -12,7 +12,7 @@ public interface Renderer {
     default boolean canRender(Template template) {
         final String fileName = template.getRelativePath().toString().toLowerCase();
 
-        for (String extension : getExtensions()) {
+        for (String extension : getSupportedExtensions()) {
             if (fileName.endsWith("."+ extension) ) {
                 return true;
             }
@@ -20,7 +20,7 @@ public interface Renderer {
         return false;
     }
 
-    public List<String> getExtensions();
+    public List<String> getSupportedExtensions();
 
     String render(Template template, final RenderingModel renderingModel);
 

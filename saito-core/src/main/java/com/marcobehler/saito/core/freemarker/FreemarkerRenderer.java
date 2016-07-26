@@ -33,7 +33,7 @@ public class FreemarkerRenderer implements Renderer {
     }
 
     @Override
-    public List<String> getExtensions() {
+    public List<String> getSupportedExtensions() {
         return Arrays.asList("ftl");
     }
 
