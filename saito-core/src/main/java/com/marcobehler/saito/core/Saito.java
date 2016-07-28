@@ -28,6 +28,9 @@ import java.util.Set;
 public class Saito {
 
     @Getter
+    private Path sourcesDir;
+
+    @Getter
     private Path workingDir;
 
     @Getter
@@ -37,8 +40,9 @@ public class Saito {
     private final RenderingEngine engine;
 
     @Inject
-    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final RenderingEngine engine) {
+    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final RenderingEngine engine) {
         this.workingDir = workDirectory;
+        this.sourcesDir = sourcesDir;
         this.renderingModel = renderingModel;
         this.engine = engine;
     }

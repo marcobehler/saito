@@ -20,7 +20,7 @@ public class BlogPostITest {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
 
-        final Path sourceDirectory = saito.getWorkingDir().resolve("source");
+        final Path sourceDirectory = saito.getSourcesDir();
 
         String templateFileName = "2015-03-05-this-is-it.html.ftl";
         Files.write(sourceDirectory.resolve(templateFileName), ("---\n" + "layout: layout\n" + "---This is not a test").getBytes());
