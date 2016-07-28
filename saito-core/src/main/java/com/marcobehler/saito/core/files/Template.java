@@ -49,9 +49,9 @@ public class Template extends SaitoFile {
             throw new IllegalStateException("Layout must not be null");
         }
 
-        String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
+        String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
 
-        Path targetFile = getTargetFile(renderingModel, targetDir, relativePath);
+        Path targetFile = getTargetFile(renderingModel, targetDir, outputPath);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -63,18 +63,18 @@ public class Template extends SaitoFile {
             int pages = e.getPages();
             for (int i = 1; i < pages; i++ ) {
                 // TODO refactor
-                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
-                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), relativePath)
-                        : getTargetFile(targetDir, relativePath + ((i == 1) ? "" : "page=" + i));
+                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
+                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), outputPath)
+                        : getTargetFile(targetDir, outputPath + ((i == 1) ? "" : "page=" + i));
                 engine.render(this, targetFile, renderingModel);
             }
         }
     }
 
-    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String relativePath) {
-        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
-                    ? getDirectoryIndexTargetFile(targetDir, relativePath)
-                    : getTargetFile(targetDir, relativePath);
+    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath) {
+        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
+                    ? getDirectoryIndexTargetFile(targetDir, outputPath)
+                    : getTargetFile(targetDir, outputPath);
     }
 
 

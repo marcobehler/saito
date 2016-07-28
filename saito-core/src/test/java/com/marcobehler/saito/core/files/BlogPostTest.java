@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.dagger.DaggerSaito$$;
 import com.marcobehler.saito.core.dagger.Saito$$;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
@@ -68,22 +69,12 @@ public class BlogPostTest extends BaseInMemoryFSTest  {
         String layoutFileName = "layout.ftl";
         Files.write(workingDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());
 
-        Template saitoTemplate = new Template(workingDirectory, fs.getPath(templateFileName));
-        saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath(layoutFileName)));
-
         final BlogPost bp = new BlogPost(workingDirectory, fs.getPath(templateFileName));
+        bp.setLayout(new Layout(workingDirectory, fs.getPath(layoutFileName)));
 
-        //Saito$$ cliComponent = DaggerSaito$$.builder().build();
-        //Saito saitoCli = cliComponent.saito();
-
-        //bp.process(saitoCli.getRenderingModel(), null , saitoCli.getEngine());
-
-        // TODO
-        /*final RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
-        bp.process(renderingModel, workingDirectory.resolve("output"), new RenderingEngine(mock(SaitoConfig.class), new HashSet<Renderer>(FreemarkerRenderer)));
-
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, );
-        assertThat(rendered).isEqualTo("<p>This is not a test</p>");*/
+        final Saito$$ saito$$ = DaggerSaito$$.builder().build();
+        Saito saito = saito$$.saito();
+        bp.process(saito.getRenderingModel(), Files.createTempDirectory("tmpdir") , saito.getEngine());
     }
 
 

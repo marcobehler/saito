@@ -28,6 +28,10 @@ public class SaitoFile {
         this.data = readFile(sourceDirectory.resolve(relativePath));
     }
 
+    public Path getOutputPath() {
+        return relativePath;
+    }
+
     @SneakyThrows
     private byte[] readFile(Path path) {
         return Files.readAllBytes(path);

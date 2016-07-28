@@ -1,12 +1,13 @@
 package com.marcobehler.saito.core.files;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BlogPost extends Template {
 
-    private static final Pattern BLOG_POST_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(.+?)\\..+");
+    private static final Pattern BLOG_POST_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(.+?)(\\..+)");
 
     private final String year;
     private final String month;
@@ -27,6 +28,15 @@ public class BlogPost extends Template {
         this.month = m.group(2);
         this.day = m.group(3);
         this.title = m.group(4);
+    }
+
+    @Override
+    public Path getOutputPath() {
+        final Path relativePath = getRelativePath();
+        final String asString = relativePath.toString();
+
+        final String blogPath = BLOG_POST_PATTERN.matcher(asString).replaceAll("$1/$2/$3/$4$5");
+        return Paths.get(blogPath);
     }
 
     public String getYear() {
