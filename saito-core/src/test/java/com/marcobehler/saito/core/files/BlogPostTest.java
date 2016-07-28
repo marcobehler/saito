@@ -13,7 +13,9 @@ import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.DaggerSaito$$;
+import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
 import com.marcobehler.saito.core.dagger.Saito$$;
+import com.marcobehler.saito.core.dagger.TestSaito$$;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.freemarker.FreemarkerTemplateLoader;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -60,22 +62,6 @@ public class BlogPostTest extends BaseInMemoryFSTest  {
         assertThat(post.getTitle()).isEqualTo("this-is-it");
     }
 
-
-    @Test
-    public void blog_post_should_be_processed_into_correct_directory() throws IOException, BlogPost.BlogPostFormattingException {
-        String templateFileName = "2015-03-05-this-is-it.html.ftl";
-        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\n" + "---This is not a test").getBytes());
-
-        String layoutFileName = "layout.ftl";
-        Files.write(workingDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());
-
-        final BlogPost bp = new BlogPost(workingDirectory, fs.getPath(templateFileName));
-        bp.setLayout(new Layout(workingDirectory, fs.getPath(layoutFileName)));
-
-        final Saito$$ saito$$ = DaggerSaito$$.builder().build();
-        Saito saito = saito$$.saito();
-        bp.process(saito.getRenderingModel(), Files.createTempDirectory("tmpdir") , saito.getEngine());
-    }
 
 
     @Test

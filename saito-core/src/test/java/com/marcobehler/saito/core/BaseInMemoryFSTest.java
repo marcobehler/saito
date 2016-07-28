@@ -18,11 +18,14 @@ public abstract class BaseInMemoryFSTest {
     protected FileSystem fs;
 
     protected Path workingDirectory;
+    protected Path sourceDirectory;
 
     @Before
-    public void before() {
-        fs = Jimfs.newFileSystem(Configuration.unix());
+    public void before() throws IOException {
+        fs = Jimfs.newFileSystem("saito-test", Configuration.unix());
         workingDirectory = fs.getPath("/");
+        sourceDirectory = fs.getPath("/source");
+        Files.createDirectories(sourceDirectory);
     }
 
     @After
