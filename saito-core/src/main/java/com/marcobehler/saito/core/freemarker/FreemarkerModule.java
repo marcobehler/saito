@@ -50,7 +50,7 @@ public class FreemarkerModule {
     public MultiTemplateLoader classLoaders(@Named(PathsModule.SOURCES_DIR) Path sourcesDir) {
         try {
             ClassTemplateLoader tl1 = new ClassTemplateLoader(Saito.class.getClassLoader(), "/");
-            FileTemplateLoader tl2 = new FileTemplateLoader(sourcesDir.toFile());
+            Java7PathTemplateLoader tl2 = new Java7PathTemplateLoader(sourcesDir);
             return new MultiTemplateLoader(new TemplateLoader[] { tl1, tl2 });
         } catch (IOException e) {
             log.error("Error setting Freemarker template loader", e);

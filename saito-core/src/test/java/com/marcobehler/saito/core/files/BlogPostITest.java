@@ -31,9 +31,13 @@ public class BlogPostITest {
         final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.resolve(templateFileName));
         bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
 
+        final Path tmpDir = Files.createTempDirectory("tmpdir");
+        bp.process(saito.getRenderingModel(), tmpDir, saito.getEngine());
+
+        tmpDir.resolve("2015");
 
 
-        bp.process(saito.getRenderingModel(), Files.createTempDirectory("tmpdir") , saito.getEngine());
+
     }
 
 }

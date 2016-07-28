@@ -57,7 +57,7 @@ public class Template extends SaitoFile {
         tl.set(targetFile);
 
         try {
-/            engine.render(this, targetFile, renderingModel);
+            engine.render(this, targetFile, renderingModel);
         } catch (PaginationException e) {
             log.info("Starting to paginate ", e);
             int pages = e.getPages();
