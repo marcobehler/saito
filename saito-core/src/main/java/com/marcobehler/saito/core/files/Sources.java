@@ -26,11 +26,14 @@ public class Sources {
 
     private List<Other> others = new ArrayList<>();
 
+    private List<BlogPost> blogPosts = new ArrayList<>();
+
     public void process(RenderingModel config, Path projectDirectory, RenderingEngine engine) {
         calculateDependencies();
         dataFiles.forEach(d -> d.process(config));
         templates.forEach(t -> t.process(config, projectDirectory, engine));
         others.forEach(o -> o.process(config, projectDirectory));
+        blogPosts.forEach(b -> b.process(config, projectDirectory, engine));
     }
 
     private void calculateDependencies() {

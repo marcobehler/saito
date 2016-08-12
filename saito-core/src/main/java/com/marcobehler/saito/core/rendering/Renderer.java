@@ -1,5 +1,7 @@
 package com.marcobehler.saito.core.rendering;
 
+import java.util.List;
+
 import com.marcobehler.saito.core.files.Template;
 
 /**
@@ -7,7 +9,18 @@ import com.marcobehler.saito.core.files.Template;
  */
 public interface Renderer {
 
-    boolean canRender(Template template);
+    default boolean canRender(Template template) {
+        final String fileName = template.getRelativePath().toString().toLowerCase();
+
+        for (String extension : getSupportedExtensions()) {
+            if (fileName.endsWith("."+ extension) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<String> getSupportedExtensions();
 
     String render(Template template, final RenderingModel renderingModel);
 

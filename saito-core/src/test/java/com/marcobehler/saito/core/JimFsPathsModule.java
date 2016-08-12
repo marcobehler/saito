@@ -1,28 +1,22 @@
-package com.marcobehler.saito.core.dagger;
+package com.marcobehler.saito.core;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-
+/**
+ *
+ */
 @Module
-public class PathsModule {
+public class JimFsPathsModule {
 
     public static final String WORKING_DIR = "workingDir";
-    public static final String SOURCES_DIR = "source";
     public static final String CONFIG_FILE = "configFile";
-
-
-    @Singleton
-    @Named(SOURCES_DIR)
-    @Provides
-    public static Path sourceDir() {
-        return Paths.get(".").resolve("source").toAbsolutePath().normalize();
-    }
 
     @Singleton
     @Named(WORKING_DIR)

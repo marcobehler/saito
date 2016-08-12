@@ -4,6 +4,9 @@ dependencies {
     compile 'org.slf4j:jcl-over-slf4j:1.7.14'
 
     compile 'org.freemarker:freemarker:2.3.23'
+
+    compile group: 'org.pegdown', name: 'pegdown', version: '1.6.0'
+
     compile 'org.yaml:snakeyaml:1.17'
     compile 'org.projectlombok:lombok:1.16.8'
     compile 'com.google.guava:guava:19.0'
@@ -13,6 +16,9 @@ dependencies {
 
 
     compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
+
+    // https://mvnrepository.com/artifact/org.asciidoctor/asciidoctorj
+    compile group: 'org.asciidoctor', name: 'asciidoctorj', version: '1.5.4'
 
     // todo exclude all not needed spring dependencies, apart from livereload
     compile("org.springframework.boot:spring-boot-devtools:1.3.3.RELEASE")

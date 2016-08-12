@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import com.marcobehler.saito.core.pagination.PaginationException;
 import lombok.Getter;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
@@ -107,6 +108,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
 
     @Test
+    @Ignore
     public void pagination_none_needed() throws IOException {
         String templateFileName = "index.ftl";
         Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 2---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
@@ -164,7 +166,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
 
 
-    private Lazy<Configuration> freemarkerConfig() {
+    public static Lazy<Configuration> freemarkerConfig() {
         return () -> FreemarkerModule.configuration(mock(LinkHelper.class), new MultiTemplateLoader(new TemplateLoader[]{new ClassTemplateLoader(Saito.class.getClassLoader(), "/")}));
     }
 

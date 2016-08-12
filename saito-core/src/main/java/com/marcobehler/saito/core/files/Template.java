@@ -26,7 +26,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
 
-    private static final String TEMPLATE_FILE_EXTENSION = ".ftl";
+    static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
     @Getter
     private final FrontMatter frontmatter;
@@ -49,11 +49,9 @@ public class Template extends SaitoFile {
             throw new IllegalStateException("Layout must not be null");
         }
 
-        String relativePath = PathUtils.stripExtension(getRelativePath(), TEMPLATE_FILE_EXTENSION);
+        String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
 
-        Path targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
-                ? getDirectoryIndexTargetFile(targetDir, relativePath)
-                : getTargetFile(targetDir, relativePath);
+        Path targetFile = getTargetFile(renderingModel, targetDir, outputPath);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -65,16 +63,18 @@ public class Template extends SaitoFile {
             int pages = e.getPages();
             for (int i = 1; i < pages; i++ ) {
                 // TODO refactor
-                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), relativePath)
-                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), relativePath)
-                        : getTargetFile(targetDir, relativePath + ((i == 1) ? "" : "page=" + i));
+                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
+                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), outputPath)
+                        : getTargetFile(targetDir, outputPath + ((i == 1) ? "" : "page=" + i));
                 engine.render(this, targetFile, renderingModel);
             }
         }
     }
 
-    private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
-        return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
+    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath) {
+        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
+                    ? getDirectoryIndexTargetFile(targetDir, outputPath)
+                    : getTargetFile(targetDir, outputPath);
     }
 
 
@@ -88,6 +88,7 @@ public class Template extends SaitoFile {
         return targetSubDir.resolve("index.html");
     }
 
+
     private Path getTargetFile(Path targetDir, String relativePath) {
         Path targetFile = targetDir.resolve(relativePath);
         if (!Files.exists(targetFile.getParent())) {
@@ -99,6 +100,13 @@ public class Template extends SaitoFile {
         }
         return targetFile;
     }
+
+
+    private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
+        return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
+    }
+
+
 
     public String getLayoutName() {
         Map<String, Object> frontMatter = getFrontmatter();
