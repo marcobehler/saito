@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/saito.iml" filepath="$PROJECT_DIR$/.idea/saito.iml" />
       <module fileurl="file://$PROJECT_DIR$/saito.iml" filepath="$PROJECT_DIR$/saito.iml" />
       <module fileurl="file://$PROJECT_DIR$/saito-cli/saito-cli.iml" filepath="$PROJECT_DIR$/saito-cli/saito-cli.iml" />
       <module fileurl="file://$PROJECT_DIR$/saito-core/saito-core.iml" filepath="$PROJECT_DIR$/saito-core/saito-core.iml" />
