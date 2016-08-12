@@ -1,3 +1,21 @@
+buildscript {
+    repositories {
+        maven {
+            url 'http://repo.marcobehler.com/plugins-release'
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+        
+    }
+    dependencies {
+        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+    }
+}
+
+
 def versionPropsFile = file("${rootDir}/version.properties")
 def versionBuild = 0
 
@@ -9,21 +27,22 @@ if (versionPropsFile.canRead()) {
     versionProps.store(versionPropsFile.newWriter(), null)
 }
 
+allprojects {
+apply plugin: 'maven-publish'
+	 apply plugin: "com.jfrog.artifactory"
+}
+
 
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'idea'
+	
 
     compileJava.options.encoding = 'UTF-8'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    repositories {
-        jcenter()
-    }
-
 
     idea {
         module {
@@ -55,4 +74,38 @@ subprojects {
     jar {
         manifest.attributes provider: 'gradle'
     }
+	
+	publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+            
+        }
+		  defaults {
+            publications ('mavenJava')
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+            
+        }
+    }
+}
+
