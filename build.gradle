@@ -11,8 +11,10 @@ buildscript {
     dependencies {
         //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.7"
     }
 }
+
 
 def versionPropsFile = file("${rootDir}/version.properties")
 def versionBuild = 0
@@ -30,13 +32,15 @@ allprojects {
     apply plugin: "com.jfrog.artifactory"
 }
 
-
 subprojects {
-
     apply plugin: "net.ltgt.apt"
     apply plugin: 'java'
     apply plugin: 'idea'
 
+
+    repositories {
+        jcenter()
+    }
 
     compileJava.options.encoding = 'UTF-8'
 
@@ -84,6 +88,9 @@ subprojects {
         }
     }
 }
+
+
+/** ONLY FOR PUBLISHING TO MARCOBEHLER REPO **/
 
 artifactory {
     contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
