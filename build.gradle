@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.7"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.8"
     }
 }
 
@@ -56,12 +56,12 @@ subprojects {
 
 
     dependencies {
-        apt 'com.google.dagger:dagger-compiler:2.2'
+        apt 'com.google.dagger:dagger-compiler:2.6'
         apt 'org.projectlombok:lombok:1.16.8'
 
         compile 'org.projectlombok:lombok:1.16.8'
 
-        compile 'com.google.dagger:dagger:2.2'
+        compile 'com.google.dagger:dagger:2.6'
 
         compile 'org.projectlombok:lombok:1.16.8'
 

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.yaml.snakeyaml.Yaml;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -26,8 +27,6 @@ import java.util.Map;
 @Slf4j
 public class SaitoConfig {
 
-    private final Path configFile;
-
     // configuration properties
 
     private boolean directoryIndexes = false;
@@ -40,8 +39,7 @@ public class SaitoConfig {
     private Integer port = 8820;
 
     @Inject
-    public SaitoConfig(@Named("configFile") Path configFile) {
-        this.configFile = configFile;
+    public SaitoConfig(@Named("configFile") @Nullable  Path configFile) {
         initializeFromYaml(configFile);
     }
 

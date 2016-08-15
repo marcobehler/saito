@@ -3,6 +3,7 @@ package com.marcobehler.saito.core.dagger;
 import dagger.Module;
 import dagger.Provides;
 
+import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.nio.file.Path;
@@ -16,18 +17,17 @@ public class PathsModule {
     public static final String SOURCES_DIR = "source";
     public static final String CONFIG_FILE = "configFile";
 
-
     @Singleton
     @Named(SOURCES_DIR)
     @Provides
-    public static Path sourceDir() {
+    public Path sourceDir() {
         return Paths.get(".").resolve("source").toAbsolutePath().normalize();
     }
 
     @Singleton
     @Named(WORKING_DIR)
     @Provides
-    public static Path workingDir() {
+    public Path workingDir() {
         return Paths.get(".").toAbsolutePath().normalize();
     }
 
@@ -35,7 +35,8 @@ public class PathsModule {
     @Singleton
     @Named(CONFIG_FILE)
     @Provides
-    public static Path configFile() {
+    @Nullable
+    public Path configFile() {
         return Paths.get("./config.yaml").toAbsolutePath().normalize();
     }
 }

@@ -15,16 +15,11 @@
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true">
-        <sourceOutputDir name="../../generated/source/apt/main/" />
-        <sourceTestOutputDir name="../../generated/source/apt/test/" />
+        <sourceOutputDir name="build/generated/source/apt/main" />
+        <sourceTestOutputDir name="build/generated/source/apt/test" />
+        <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="saito-cli_main" target="1.8" />
-      <module name="saito-cli_test" target="1.8" />
-      <module name="saito-core_main" target="1.8" />
-      <module name="saito-core_test" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

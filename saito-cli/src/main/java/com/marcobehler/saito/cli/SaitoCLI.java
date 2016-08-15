@@ -25,7 +25,6 @@ import java.util.Set;
 @Singleton
 public class SaitoCLI {
 
-
     @Parameter(names = {"-help", "-h"}, help = true)
     private boolean help;
 

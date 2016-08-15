@@ -1,21 +1,12 @@
 package com.marcobehler.saito.core.files;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.junit.Test;
-
-import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
-import com.marcobehler.saito.core.dagger.TestSaito$$;
 
 /**
  *
  */
 public class BlogPostITest {
 
-    @Test
+   /* @Test
     public void blog_post_should_be_processed_into_correct_directory() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
@@ -39,5 +30,5 @@ public class BlogPostITest {
 
 
     }
-
+*/
 }
