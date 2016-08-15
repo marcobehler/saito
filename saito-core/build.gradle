@@ -15,6 +15,9 @@ dependencies {
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.8'
 
 
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
+
+
     compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
 
     // https://mvnrepository.com/artifact/org.asciidoctor/asciidoctorj
