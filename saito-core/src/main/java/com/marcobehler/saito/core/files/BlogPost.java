@@ -32,6 +32,11 @@ public class BlogPost extends Template {
     }
 
     @Override
+    protected boolean shouldProcess() {
+        return !getFrontmatter().containsKey("published") || getFrontmatter().get("published").equals(Boolean.TRUE);
+    }
+
+    @Override
     public Path getOutputPath() {
         final Path relativePath = getRelativePath();
         final String asString = relativePath.toString();

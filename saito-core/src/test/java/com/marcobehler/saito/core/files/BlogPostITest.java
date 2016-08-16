@@ -91,4 +91,31 @@ public class BlogPostITest {
         assertThat(Files.exists(indexHtml)).isTrue();
     }
 
+
+    @Test
+    public void blog_draft_should_not_be_processed() throws IOException, BlogPost.BlogPostFormattingException {
+        final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
+        Saito saito = saito$$.saito();
+
+        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
+
+        final Path sourceDirectory = saito.getSourcesDir();
+
+        String templateFileName = "2015-03-05-this-is-it.html.ftl";
+        Files.write(sourceDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npublished: false\n" + "---This is not a test").getBytes());
+
+        String layoutFileName = "layout.ftl";
+        Files.write(sourceDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());
+
+        final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.relativize(sourceDirectory.resolve(templateFileName)));
+        bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
+
+        final Path buildDir = sourceDirectory.resolve("build");
+        Files.createDirectories(buildDir);
+        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+
+        final Path yearDir = buildDir.resolve("2015");
+        assertThat(Files.exists(yearDir)).isFalse();
+    }
+
 }

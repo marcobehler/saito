@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -50,6 +49,10 @@ public class Template extends SaitoFile {
             throw new IllegalStateException("Layout must not be null");
         }
 
+        if (!shouldProcess()) {
+            return;
+        }
+
         String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
 
         Path targetFile = getTargetFile(renderingModel, targetDir, outputPath);
@@ -70,6 +73,11 @@ public class Template extends SaitoFile {
                 engine.render(this, targetFile, renderingModel);
             }
         }
+    }
+
+
+    protected boolean shouldProcess() {
+        return true;
     }
 
     protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath) {
