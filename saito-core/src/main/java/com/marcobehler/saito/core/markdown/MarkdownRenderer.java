@@ -42,6 +42,6 @@ public class MarkdownRenderer implements Renderer {
         final String markdown = template.getContent().getText();
         final String html = pegDownProcessor.markdownToHtml(markdown);
 
-        return freemarkerRenderer.renderLayout(template.getLayout(), html, renderingModel);
+        return freemarkerRenderer.renderLayout(template, html, renderingModel);
     }
 }

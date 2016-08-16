@@ -16,7 +16,7 @@ public class FrontMatter extends HashMap<String, Object> {
     private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
 
     public FrontMatter(Map<String, Object> map) {
-        putAll(map);
+        put("current_page", map);
     }
 
     public static FrontMatter of(String content) {

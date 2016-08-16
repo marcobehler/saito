@@ -40,6 +40,6 @@ public class AsciidocRenderer implements Renderer {
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         final String asciidoc = template.getContent().getText();
         final String html = asciidoctor.convert(asciidoc, new HashMap<>());
-        return freemarkerRenderer.renderLayout(template.getLayout(), html, renderingModel);
+        return freemarkerRenderer.renderLayout(template, html, renderingModel);
     }
 }

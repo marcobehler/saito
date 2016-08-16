@@ -40,19 +40,20 @@ public class FreemarkerRenderer implements Renderer {
     @Override
     public String render(Template template, final RenderingModel renderingModel) {
         String renderedTemplate = renderTemplate(template, renderingModel);
-        return renderLayout(template.getLayout(), renderedTemplate, renderingModel);
+        return renderLayout(template, renderedTemplate, renderingModel);
     }
 
     @SneakyThrows
-    public String renderLayout(Layout layout, String renderedTemplate, RenderingModel renderingModel) {
+    public String renderLayout(Template template, String renderedTemplate, RenderingModel renderingModel) {
         StringWriter w = new StringWriter();
 
-        freemarker.template.Template template = templateLoader.get(layout);
+        freemarker.template.Template freemarkerTemplate = templateLoader.get(template.getLayout());
 
         Map<String,Object> dataModel = new HashMap<>();
         dataModel.putAll(renderingModel.getParameters());
+        dataModel.putAll(template.getFrontmatter());
         dataModel.put("_saito_content_", renderedTemplate);
-        template.process(dataModel, w);
+        freemarkerTemplate.process(dataModel, w);
 
         return w.toString();
     }
