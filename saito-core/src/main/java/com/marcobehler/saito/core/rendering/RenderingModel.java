@@ -2,8 +2,7 @@ package com.marcobehler.saito.core.rendering;
 
 import java.nio.file.Path;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,7 +25,7 @@ public class RenderingModel {
     public static final String TEMPLATE_OUTPUT_PATH = "saito_output_path";
 
     private final SaitoConfig saitoConfig;
-    private final Map<String,Object> parameters = new HashMap<>();
+    private final ConcurrentHashMap<String,Object> parameters = new ConcurrentHashMap<>();
 
     @Inject
     public RenderingModel(SaitoConfig saitoConfig) {

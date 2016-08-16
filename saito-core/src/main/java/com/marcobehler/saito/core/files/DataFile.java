@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,9 @@ public class DataFile extends SaitoFile {
      */
     public void process(RenderingModel renderingModel) {
         Map<String, Object> parsedData = parse();
-        renderingModel.getParameters().put("data", parsedData);
+        ConcurrentHashMap<String, Object> params = renderingModel.getParameters();
+        params.putIfAbsent("data", new HashMap<>());
+        ((Map<String, Object>) params.get("data")).putAll(parsedData);
     }
 
 
