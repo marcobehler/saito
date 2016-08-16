@@ -1,12 +1,24 @@
 package com.marcobehler.saito.core.files;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
+import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
+import com.marcobehler.saito.core.dagger.TestSaito$$;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  *
  */
 public class BlogPostITest {
 
-   /* @Test
+    @Test
     public void blog_post_should_be_processed_into_correct_directory() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
@@ -19,16 +31,25 @@ public class BlogPostITest {
         String layoutFileName = "layout.ftl";
         Files.write(sourceDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());
 
-        final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.resolve(templateFileName));
+        final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.relativize(sourceDirectory.resolve(templateFileName)));
         bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
 
-        final Path tmpDir = Files.createTempDirectory("tmpdir");
-        bp.process(saito.getRenderingModel(), tmpDir, saito.getEngine());
+        final Path buildDir = sourceDirectory.resolve("build");
+        Files.createDirectories(buildDir);
 
-        tmpDir.resolve("2015");
+        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
 
+        final Path yearDir = buildDir.resolve("2015");
+        assertThat(Files.exists(yearDir)).isTrue();
 
+        final Path monthDir = yearDir.resolve("03");
+        assertThat(Files.exists(monthDir)).isTrue();
 
+        final Path dayDir = monthDir.resolve("5555");
+        assertThat(Files.exists(dayDir)).isTrue();
+
+        final Path indexFile = dayDir.resolve("index.html");
+        assertThat(Files.exists(indexFile)).isTrue();
     }
-*/
+
 }

@@ -35,6 +35,8 @@ public class BlogPost extends Template {
         final Path relativePath = getRelativePath();
         final String asString = relativePath.toString();
 
+
+
         final String blogPath = BLOG_POST_PATTERN.matcher(asString).replaceAll("$1/$2/$3/$4$5");
         return Paths.get(blogPath);
     }
