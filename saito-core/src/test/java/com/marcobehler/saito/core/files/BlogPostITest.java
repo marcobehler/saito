@@ -3,12 +3,11 @@ package com.marcobehler.saito.core.files;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
 import com.marcobehler.saito.core.dagger.TestSaito$$;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
