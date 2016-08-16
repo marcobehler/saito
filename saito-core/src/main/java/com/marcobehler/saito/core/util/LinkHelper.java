@@ -57,10 +57,37 @@ public class LinkHelper {
 
 
     public String favicon(String name) {
-        final String href = directory("images") + name;
+        String favIcon = "<link rel=\"icon\" type=\"[mime]\" href=\"[href]\"/>";
+
         String mimeType = getMimeType(name);
-        final String favIcon = "<link rel=\"icon\" type=\"[mime]\" href=\"[href]\"/>";
+        String href = directory("images") + name;
+
         return favIcon.replace("[href]", href).replace("[mime]", mimeType);
+    }
+
+    public String imageTag(String image, Integer width, Integer height, String clazz, String data, String alt){
+        StringBuilder builder = new StringBuilder();
+
+        String href = directory("images") + image;
+
+        builder.append("<img src=\"").append(href).append("\" ");
+        if (width != null && width > 0) {
+            builder.append("width=\"").append(width).append("\" ");
+        }
+        if (height != null && height > 0) {
+            builder.append("height=\"").append(height).append("\" ");
+        }
+        if (clazz != null && !clazz.trim().isEmpty()) {
+            builder.append("class=\"").append(clazz).append("\" ");
+        }
+        if (data != null && !data.trim().isEmpty()) {
+            builder.append("data-title=\"").append(data).append("\" ");
+        }
+        if (alt != null && !alt.trim().isEmpty()) {
+            builder.append("alt=\"").append(alt).append("\" ");
+        }
+        builder.append("/>");
+        return builder.toString();
     }
 
 

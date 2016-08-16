@@ -34,4 +34,31 @@ public class LinkHelperTest {
         final String link = new LinkHelper(new RenderingModel(mock(SaitoConfig.class)), Paths.get(".")).favicon("test.png");
         assertThat(link).isEqualTo("<link rel=\"icon\" type=\"image/png\" href=\"/images/test.png\"/>");
     }
+
+
+
+    @Test
+    public void img_tag() {
+        final String link = new LinkHelper(new RenderingModel(mock(SaitoConfig.class)), Paths.get(".")).imageTag("myImage.png", null, null, null, null, null);
+        assertThat(link).isEqualTo("<img src=\"/images/myImage.png\" />");
+    }
+
+    @Test
+    public void img_tag_with_height() {
+        final String link = new LinkHelper(new RenderingModel(mock(SaitoConfig.class)), Paths.get(".")).imageTag("myImage.png", null, 30, null, null, null);
+        assertThat(link).isEqualTo("<img src=\"/images/myImage.png\" height=\"30\" />");
+    }
+
+
+    @Test
+    public void img_tag_with_width() {
+        final String link = new LinkHelper(new RenderingModel(mock(SaitoConfig.class)), Paths.get(".")).imageTag("myImage.png", 25, null, null, null, null);
+        assertThat(link).isEqualTo("<img src=\"/images/myImage.png\" width=\"25\" />");
+    }
+
+    @Test
+    public void img_tag_all_options() {
+        final String link = new LinkHelper(new RenderingModel(mock(SaitoConfig.class)), Paths.get(".")).imageTag("myImage.png", 32, 64, "huhuCss", "customData", "customAlt");
+        assertThat(link).isEqualTo("<img src=\"/images/myImage.png\" width=\"32\" height=\"64\" class=\"huhuCss\" data-title=\"customData\" alt=\"customAlt\" />");
+    }
 }

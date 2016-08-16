@@ -1,4 +1,5 @@
 [#-- @ftlvariable name="paginator" type="com.marcobehler.saito.core.pagination.Paginator" --]
+[#-- @ftlvariable name="saitoLinkHelper" type="com.marcobehler.saito.core.util.LinkHelper" --]
 
 [#macro yield]${_saito_content_}[/#macro]
 
@@ -16,6 +17,10 @@ ${saitoLinkHelper.javascript(files)}
 
 [#macro favicon_tag icon]
 ${saitoLinkHelper.favicon(icon)}
+[/#macro]
+
+[#macro image_tag name height=-1 width=-1 class="" data="", alt=""]
+${saitoLinkHelper.imageTag(name, width, height, class, data, alt)}
 [/#macro]
 
 [#macro paginate data]
