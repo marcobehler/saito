@@ -14,6 +14,10 @@ ${saitoLinkHelper.styleSheet(files)}
 ${saitoLinkHelper.javascript(files)}
 [/#macro]
 
+[#macro favicon_tag icon]
+${saitoLinkHelper.favicon(icon)}
+[/#macro]
+
 [#macro paginate data]
 ${paginator.restartIfNecessary(data, pagination.per_page)}
     [#list data as d]

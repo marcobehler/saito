@@ -1,6 +1,9 @@
 package com.marcobehler.saito.core.util;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -11,10 +14,13 @@ import javax.inject.Singleton;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Singleton
+@Slf4j
 public class LinkHelper {
 
     private final RenderingModel renderingModel;
@@ -50,6 +56,14 @@ public class LinkHelper {
     }
 
 
+    public String favicon(String name) {
+        final String href = directory("images") + name;
+        String mimeType = getMimeType(name);
+        final String favIcon = "<link rel=\"icon\" type=\"[mime]\" href=\"[href]\"/>";
+        return favIcon.replace("[href]", href).replace("[mime]", mimeType);
+    }
+
+
     private String getCompressedJSSuffix() {
         return renderingModel.getSaitoConfig().isCompressJs() ? getCompressedSuffix(renderingModel) : "";
     }
@@ -58,6 +72,14 @@ public class LinkHelper {
         return renderingModel.getSaitoConfig().isCompressCss() ? getCompressedSuffix(renderingModel) : "";
     }
 
+    private String getMimeType(String filename) {
+        try {
+            return  Files.probeContentType(Paths.get(filename));
+        } catch (IOException e) {
+            log.warn("Problem detecting mimetype", e);
+            return null;
+        }
+    }
 
     private String directory(String directoryName) {
         if (renderingModel.getSaitoConfig().isRelativeLinks()) {
