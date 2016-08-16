@@ -58,19 +58,6 @@ public class Java7PathTemplateLoader implements TemplateLoader
         private boolean emulateCaseSensitiveFileSystem;
         private MruCacheStorage correctCasePaths;
 
-        /**
-         * Creates a new file template cache that will use the current directory (the value of the system property
-         * <code>user.dir</code> as the base directory for loading templates. It will not allow access to template files
-         * that are accessible through symlinks that point outside the base directory.
-         *
-         * @deprecated Relying on what the current directory is is a bad practice; use
-         *             {@link Java7PathTemplateLoader#Java7PathTemplateLoader(File)} instead.
-         */
-        public Java7PathTemplateLoader()
-        throws IOException
-        {
-            this(Paths.get(SecurityUtilities.getSystemProperty("user.dir")));
-        }
 
         /**
          * Creates a new file template loader that will use the specified directory

@@ -45,10 +45,10 @@ public class BlogPostITest {
         final Path monthDir = yearDir.resolve("03");
         assertThat(Files.exists(monthDir)).isTrue();
 
-        final Path dayDir = monthDir.resolve("5555");
+        final Path dayDir = monthDir.resolve("05");
         assertThat(Files.exists(dayDir)).isTrue();
 
-        final Path indexFile = dayDir.resolve("index.html");
+        final Path indexFile = dayDir.resolve("this-is-it.html");
         assertThat(Files.exists(indexFile)).isTrue();
     }
 

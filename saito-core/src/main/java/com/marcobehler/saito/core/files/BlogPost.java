@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.files;
 
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
@@ -34,11 +35,9 @@ public class BlogPost extends Template {
     public Path getOutputPath() {
         final Path relativePath = getRelativePath();
         final String asString = relativePath.toString();
-
-
-
+        final FileSystem fs = relativePath.getFileSystem();
         final String blogPath = BLOG_POST_PATTERN.matcher(asString).replaceAll("$1/$2/$3/$4$5");
-        return Paths.get(blogPath);
+        return fs.getPath(blogPath);
     }
 
     public String getYear() {

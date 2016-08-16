@@ -25,7 +25,7 @@ public class SaitoConfigTest extends BaseInMemoryFSTest {
 
     @Test
     public void get_default_config_with_non_existing_path_returns_default() {
-        SaitoConfig config = new SaitoConfig(Paths.get("/bla.yaml"));
+        SaitoConfig config = new SaitoConfig(fs.getPath("/bla.yaml"));
 
         assertThat(config.isDirectoryIndexes()).isEqualTo(false);
         assertThat(config.isRelativeLinks()).isEqualTo(false);

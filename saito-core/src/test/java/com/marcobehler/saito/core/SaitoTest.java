@@ -50,14 +50,4 @@ public class SaitoTest extends BaseInMemoryFSTest {
         softly.assertAll();
     }
 
-
-    @Test
-    @Ignore
-    public void build_should_create_directory() throws IOException {
-        Path workingDirectory = Paths.get("./a");
-        Files.createDirectories(workingDirectory);
-        Saito saito = new Saito(null, workingDirectory, null,  null);
-        saito.init(null);
-        saito.build();
-    }
 }

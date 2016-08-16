@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -80,7 +81,8 @@ public class Template extends SaitoFile {
 
     @SneakyThrows
     private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath) {
-        relativePath = PathUtils.stripExtension(Paths.get(relativePath), ".html");
+        final FileSystem fs = targetDir.getFileSystem();
+        relativePath = PathUtils.stripExtension(fs.getPath(relativePath), ".html");
 
         Path dir = targetDir.resolve(relativePath);
         Path targetSubDir = Files.createDirectories(dir);

@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.util;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,7 +102,8 @@ public class LinkHelper {
 
     private String getMimeType(String filename) {
         try {
-            return  Files.probeContentType(Paths.get(filename));
+            final FileSystem fs = workingDirectory.getFileSystem();
+            return  Files.probeContentType(fs.getPath(filename));
         } catch (IOException e) {
             log.warn("Problem detecting mimetype", e);
             return null;
