@@ -52,6 +52,7 @@ subprojects {
 
     dependencies {
         apt 'com.google.dagger:dagger-compiler:2.6'
+        testApt 'com.google.dagger:dagger-compiler:2.6'
         apt 'org.projectlombok:lombok:1.16.8'
 
         compile 'org.projectlombok:lombok:1.16.8'
