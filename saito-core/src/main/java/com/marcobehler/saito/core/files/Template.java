@@ -119,7 +119,7 @@ public class Template extends SaitoFile {
 
 
     public String getLayoutName() {
-        Map<String, Object> frontMatter = getFrontmatter();
+        Map<String, Object> frontMatter = getFrontmatter().getCurrentPage();
         return (String) frontMatter.getOrDefault("layout", "layout");
     }
 

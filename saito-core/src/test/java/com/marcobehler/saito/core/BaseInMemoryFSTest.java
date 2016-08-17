@@ -22,6 +22,7 @@ public abstract class BaseInMemoryFSTest {
 
     @Before
     public void before() throws IOException {
+
         fs = Jimfs.newFileSystem("saito-test", Configuration.unix());
         workingDirectory = fs.getPath("/");
         sourceDirectory = fs.getPath("/source");

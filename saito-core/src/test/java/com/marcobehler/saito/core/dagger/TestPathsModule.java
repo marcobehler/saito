@@ -5,6 +5,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -61,6 +62,6 @@ public class TestPathsModule {
     @Singleton
     @Provides
     public static FileSystem getFs() {
-        return Jimfs.newFileSystem("saito-test", Configuration.unix());
+        return Jimfs.newFileSystem(UUID.randomUUID().toString(), Configuration.unix());
     }
 }

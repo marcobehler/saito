@@ -11,11 +11,11 @@ import java.util.regex.Pattern;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-public class FrontMatter extends HashMap<String, Object> {
+public class FrontMatter extends HashMap<String, Map<String,Object>> {
 
     private static final Pattern pattern = Pattern.compile("---(.*)---(.*)", Pattern.DOTALL);
 
-    public FrontMatter(Map<String, Object> map) {
+    public FrontMatter(Map<String,Object> map) {
         put("current_page", map);
     }
 
@@ -39,5 +39,9 @@ public class FrontMatter extends HashMap<String, Object> {
         }
 
         return new FrontMatter(matter);
+    }
+
+    public Map<String,Object> getCurrentPage() {
+        return get("current_page");
     }
 }

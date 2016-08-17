@@ -77,7 +77,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
     @Test
     public void frontMatter_variable_works() throws IOException {
         String templateFileName = "index.ftl";
-        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\ntitle: Das ist mein title" + "---This is not a test, ${title}").getBytes());
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\ntitle: Das ist mein title" + "---This is not a test, ${current_page.title}").getBytes());
 
         String layoutFileName = "layout.ftl";
         Files.write(workingDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());
@@ -93,7 +93,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
     @Test
     public void nested_frontMatter_variable_works() throws IOException {
         String templateFileName = "index.ftl";
-        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\ntitle:\n  new: neuer title\n  old: alter title" + "---This is not a test, ${title.old}").getBytes());
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\ntitle:\n  new: neuer title\n  old: alter title" + "---This is not a test, ${current_page.title.old}").getBytes());
 
         String layoutFileName = "layout.ftl";
         Files.write(workingDirectory.resolve(layoutFileName), ("<p>[@saito.yield/]</p>").getBytes());

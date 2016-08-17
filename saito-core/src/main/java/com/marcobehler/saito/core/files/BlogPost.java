@@ -33,7 +33,7 @@ public class BlogPost extends Template {
 
     @Override
     protected boolean shouldProcess() {
-        return !getFrontmatter().containsKey("published") || getFrontmatter().get("published").equals(Boolean.TRUE);
+        return !getFrontmatter().getCurrentPage().containsKey("published") || getFrontmatter().getCurrentPage().get("published").equals(Boolean.TRUE);
     }
 
     @Override
