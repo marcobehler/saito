@@ -143,9 +143,10 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
 
     @Test
+    @Ignore
     public void pagination_executed_twice_throws_no_exception() throws IOException {
         String templateFileName = "index.ftl";
-        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
+        Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u}</p>[/@saito.paginate]").getBytes());
 
         String layoutFileName = "layout.ftl";
         Files.write(workingDirectory.resolve(layoutFileName), ("[@saito.yield/]").getBytes());
