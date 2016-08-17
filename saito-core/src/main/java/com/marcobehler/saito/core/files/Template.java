@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.files;
 
+
 import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
@@ -17,7 +18,10 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -25,6 +29,8 @@ import java.util.Map;
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
+
+    public static final Pattern PAGING_PATTERN = Pattern.compile("\\[@saito\\.paginate\\s+(.+);.+\\]");
 
     static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
@@ -64,17 +70,37 @@ public class Template extends SaitoFile {
             engine.render(this, targetFile, renderingModel);
         } catch (PaginationException e) {
             log.info("Starting to paginate ", e);
+
+            // TODO cleanup, needs more work
+
             int pages = e.getPages();
+
+            final String dataPath = getDataPath();
+            final List<List<Object>> partitions = e.getPartitions();
+
             for (int i = 1; i < pages; i++ ) {
-                // TODO refactor
-                targetFile = isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
-                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "page" + i), outputPath)
-                        : getTargetFile(targetDir, outputPath + ((i == 1) ? "" : "page=" + i));
-                engine.render(this, targetFile, renderingModel);
+
+                RenderingModel clonedModel = renderingModel.clone();
+                clonedModel.getParameters().remove(dataPath);
+                clonedModel.getParameters().put(dataPath, partitions.get(i - 1));
+
+                targetFile = isDirectoryIndexEnabled(clonedModel.getSaitoConfig(), outputPath)
+                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "/pages/" + i + "/"), outputPath)
+                        : getTargetFile(targetDir, targetFile.getParent().getFileName().toString() + ((i == 1) ? "" : "/pages/" + i + ".html"));
+                engine.render(this, targetFile, clonedModel);
             }
         }
     }
 
+
+
+    private String getDataPath() {
+        final Matcher matcher = PAGING_PATTERN.matcher(content.getText());
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        throw new IllegalStateException("Could not find data for pagination");
+    }
 
     protected boolean shouldProcess() {
         return true;

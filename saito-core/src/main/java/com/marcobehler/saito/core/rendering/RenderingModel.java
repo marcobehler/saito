@@ -35,4 +35,11 @@ public class RenderingModel {
         this.parameters.put(BUILD_TIME_PARAMETER, new Date());
         this.parameters.put("paginator", new Paginator());
     }
+
+
+    public RenderingModel clone() {
+        RenderingModel clone = new RenderingModel(saitoConfig);
+        clone.parameters.putAll(this.parameters);
+        return clone;
+    }
 }

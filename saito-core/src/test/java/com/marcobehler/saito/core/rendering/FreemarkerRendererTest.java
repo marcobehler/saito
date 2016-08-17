@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.marcobehler.saito.core.pagination.PaginationException;
 import lombok.Getter;
@@ -141,6 +143,22 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
     }
 
+
+
+    @Test
+    @Ignore
+    public void pagination_get_correct_data_path() {
+
+        String s = "---\n" + "layout: layout\n" + "pagination:\n" + "  per_page: 1\n" + "---\n" + "\n" + "Jajajajajaj\n"
+                + "\n" + "[@saito.paginate data.dummy.friends; d]<p>${d}</p>[/@saito.paginate]\n" + "\n";
+
+        final Pattern p = Pattern.compile("\\[@saito\\.paginate\\s+(.+);.+\\]");
+        final Matcher matcher = p.matcher(s);
+        if (matcher.find()) {
+            System.out.println(matcher.group(1));
+        }
+
+    }
 
     @Test
     @Ignore
