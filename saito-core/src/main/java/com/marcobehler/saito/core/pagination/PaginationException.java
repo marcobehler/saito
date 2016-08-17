@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.pagination;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -26,6 +27,6 @@ public class PaginationException extends RuntimeException{
 
 
     public List<List<Object>> getPartitions() {
-        return Lists.partition(data, pageSize);
+        return new ArrayList<>(Lists.partition(data, pageSize));
     }
 }

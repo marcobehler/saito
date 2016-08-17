@@ -15,13 +15,21 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -74,21 +82,60 @@ public class Template extends SaitoFile {
             // TODO cleanup, needs more work
 
             int pages = e.getPages();
+            System.out.println(pages);
 
             final String dataPath = getDataPath();
+            System.out.println(dataPath);
+
             final List<List<Object>> partitions = e.getPartitions();
+            System.out.println(partitions);
 
             for (int i = 1; i < pages; i++ ) {
 
+                // Todo clone the whole data list
+                // real partitioning, not via sublist
+                // access the list via the last .
                 RenderingModel clonedModel = renderingModel.clone();
-                clonedModel.getParameters().remove(dataPath);
-                clonedModel.getParameters().put(dataPath, partitions.get(i - 1));
+                final String[] split = dataPath.split("\\.");
+                System.out.println(split.length);
+                final String newPath = Arrays.stream(split).map(s -> "(" + s + ")").collect(Collectors.joining(""));
+                System.out.println(newPath);
+                // TODO
+                try {
+                    final List<Object> dataList = (List<Object>) PropertyUtils.getProperty(clonedModel.getParameters(), newPath);
+                    dataList.clear();
+                    dataList.addAll(partitions.get(i -1 ));
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e1) {
+                    e1.printStackTrace();
+                }
 
                 targetFile = isDirectoryIndexEnabled(clonedModel.getSaitoConfig(), outputPath)
                         ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "/pages/" + i + "/"), outputPath)
                         : getTargetFile(targetDir, targetFile.getParent().getFileName().toString() + ((i == 1) ? "" : "/pages/" + i + ".html"));
                 engine.render(this, targetFile, clonedModel);
             }
+        }
+    }
+
+    public static void main(String[] args) {
+        final HashMap<String, Object> m = new HashMap<>();
+        final HashMap<Object, Object> friends = new HashMap<>();
+        friends.put("friends", Arrays.asList("hansi", "hinter", "huber"));
+
+        final HashMap<Object, Object> dummy = new HashMap<>();
+        dummy.put("dummy", friends);
+
+        m.put("data", dummy);
+
+        try {
+            final Object property = PropertyUtils.getProperty(m, "(data)(dummy)(friends)");
+            System.out.println(property);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
     }
 
