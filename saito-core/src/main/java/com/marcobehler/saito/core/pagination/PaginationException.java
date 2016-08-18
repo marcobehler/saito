@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -14,6 +15,9 @@ import lombok.Getter;
 public class PaginationException extends RuntimeException{
 
     private final int pages;
+
+    @Setter
+    private int currentPage;
 
     private final int pageSize;
 
@@ -29,4 +33,6 @@ public class PaginationException extends RuntimeException{
     public List<List<Object>> getPartitions() {
         return Lists.partition(data, pageSize);
     }
+
+
 }

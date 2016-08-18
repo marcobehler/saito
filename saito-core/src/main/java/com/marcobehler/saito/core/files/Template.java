@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +76,7 @@ public class Template extends SaitoFile {
         }
 
         String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
-        Path targetFile = getTargetFile(renderingModel, targetDir, outputPath);
+        Path targetFile = getTargetFile(renderingModel, targetDir, outputPath, Optional.empty());
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -93,26 +94,13 @@ public class Template extends SaitoFile {
         int pages = e.getPages();
         final List<List<Object>> partitions = e.getPartitions();
 
-
-        Path targetFile;
-
         for (int i = 0; i < pages; i++ ) {
+            // TODO fix
             String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
             RenderingModel clonedModel = renderingModel.clone();
             clonedModel.getParameters().put("_saito_pagination_content_", partitions.get(i));
-
-            if (isDirectoryIndexEnabled(clonedModel.getSaitoConfig(), outputPath)) {
-                if (i > 0) {
-
-                }
-                targetFile = getDirectoryIndexTargetFile(targetDir, outputPath); // resolve( i == 1 ? "" : "/pages/" + i + "/")
-            } else {
-                if (i > 0) {
-                    outputPath = outputPath.replaceAll("(.*)(\\.html.*)", "$1-page" + (i+1) + "$2");
-                }
-                targetFile = getTargetFile(targetDir,outputPath );
-            }
-
+            e.setCurrentPage(i + 1);
+            Path targetFile = getTargetFile(renderingModel, targetDir, outputPath, Optional.of(e));
             String paginatedTemplate = content.getText().replaceFirst("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
             Template clonedTemplate = this.clone(paginatedTemplate);
             engine.render(clonedTemplate, targetFile, clonedModel);
@@ -125,28 +113,39 @@ public class Template extends SaitoFile {
         return true;
     }
 
-    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath) {
+
+    // TODO fix paginationException
+    protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath,  Optional<PaginationException> paginationException) {
         return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
-                    ? getDirectoryIndexTargetFile(targetDir, outputPath)
-                    : getTargetFile(targetDir, outputPath);
+                    ? getDirectoryIndexTargetFile(targetDir, outputPath, paginationException)
+                    : getTargetFile(targetDir, outputPath,paginationException);
     }
 
 
 
-
+    // TODO fix paginationException
     @SneakyThrows
-    private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath) {
+    private Path getDirectoryIndexTargetFile(Path targetDir, String relativePath, Optional<PaginationException> pagination) {
         final FileSystem fs = targetDir.getFileSystem();
         relativePath = PathUtils.stripExtension(fs.getPath(relativePath), ".html");
 
         Path dir = targetDir.resolve(relativePath);
+        if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
+            dir = dir.resolve("pages/" + pagination.get().getCurrentPage());
+        }
         Path targetSubDir = Files.createDirectories(dir);
 
         return targetSubDir.resolve("index.html");
     }
 
 
-    private Path getTargetFile(Path targetDir, String relativePath) {
+
+    // TODO fix paginationException
+    private Path getTargetFile(Path targetDir, String relativePath,  Optional<PaginationException> pagination) {
+        if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
+            relativePath = relativePath.replaceAll("(.*)(\\.html.*)", "$1-page" + pagination.get().getCurrentPage() + "$2");
+        }
+
         Path targetFile = targetDir.resolve(relativePath);
         if (!Files.exists(targetFile.getParent())) {
             try {
