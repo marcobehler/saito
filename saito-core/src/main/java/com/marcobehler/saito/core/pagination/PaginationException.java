@@ -27,6 +27,6 @@ public class PaginationException extends RuntimeException{
 
 
     public List<List<Object>> getPartitions() {
-        return new ArrayList<>(Lists.partition(data, pageSize));
+        return Lists.partition(data, pageSize);
     }
 }

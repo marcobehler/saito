@@ -17,16 +17,19 @@ import java.nio.file.Path;
 @Getter
 public class SaitoFile {
 
-    private final Path sourceDirectory;
-    private final Path relativePath;
+    protected Path sourceDirectory;
+    protected Path relativePath;
 
-    private final byte[] data;
+    protected byte[] data;
 
     SaitoFile(Path sourceDirectory, Path relativePath) {
         this.sourceDirectory = sourceDirectory;
         this.relativePath = relativePath;
         this.data = readFile(sourceDirectory.resolve(relativePath));
     }
+
+    SaitoFile() {}
+
 
     public Path getOutputPath() {
         return relativePath;

@@ -1,12 +1,12 @@
 package com.marcobehler.saito.core.files;
 
 
-import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
+import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.RenderingEngine;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,21 +15,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -38,15 +31,13 @@ import org.apache.commons.beanutils.PropertyUtils;
 @EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
 
-    public static final Pattern PAGING_PATTERN = Pattern.compile("\\[@saito\\.paginate\\s+(.+);.+\\]");
-
     static final String TEMPLATE_FILE_EXTENSION = ".ftl";
 
     @Getter
-    private final FrontMatter frontmatter;
+    private FrontMatter frontmatter;
 
     @Getter
-    private final TemplateContent content; // can be  HTML, asciidoc, md
+    private TemplateContent content; // can be  HTML, asciidoc, md
 
     @Setter
     @Getter
@@ -56,6 +47,22 @@ public class Template extends SaitoFile {
         super(sourceDirectory, relativePath);
         this.frontmatter = FrontMatter.of(getDataAsString());
         this.content = TemplateContent.of(getDataAsString());
+    }
+
+    private Template() {}
+
+
+    public Template clone(String content) {
+        Template clone = new Template();
+        clone.relativePath = getRelativePath();
+        clone.sourceDirectory = getSourceDirectory();
+        clone.frontmatter = frontmatter;
+        clone.layout = layout;
+        clone.content = new TemplateContent(content);
+        try {
+            clone.data = content.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {}
+        return clone;
     }
 
     public void process(RenderingModel renderingModel, Path targetDir, RenderingEngine engine) {
@@ -68,7 +75,6 @@ public class Template extends SaitoFile {
         }
 
         String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
-
         Path targetFile = getTargetFile(renderingModel, targetDir, outputPath);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
@@ -77,77 +83,43 @@ public class Template extends SaitoFile {
         try {
             engine.render(this, targetFile, renderingModel);
         } catch (PaginationException e) {
-            log.info("Starting to paginate ", e);
+            paginate(renderingModel, targetDir, engine, e);
+        }
+    }
 
-            // TODO cleanup, needs more work
+    private void paginate(RenderingModel renderingModel, Path targetDir, RenderingEngine engine, PaginationException e) {
+        log.info("Starting to paginate ", e);
 
-            int pages = e.getPages();
-            System.out.println(pages);
+        int pages = e.getPages();
+        final List<List<Object>> partitions = e.getPartitions();
 
-            final String dataPath = getDataPath();
-            System.out.println(dataPath);
 
-            final List<List<Object>> partitions = e.getPartitions();
-            System.out.println(partitions);
+        Path targetFile;
 
-            for (int i = 1; i < pages; i++ ) {
+        for (int i = 0; i < pages; i++ ) {
+            String outputPath = PathUtils.stripExtension(getOutputPath(), TEMPLATE_FILE_EXTENSION);
+            RenderingModel clonedModel = renderingModel.clone();
+            clonedModel.getParameters().put("_saito_pagination_content_", partitions.get(i));
 
-                // Todo clone the whole data list
-                // real partitioning, not via sublist
-                // access the list via the last .
-                RenderingModel clonedModel = renderingModel.clone();
-                final String[] split = dataPath.split("\\.");
-                System.out.println(split.length);
-                final String newPath = Arrays.stream(split).map(s -> "(" + s + ")").collect(Collectors.joining(""));
-                System.out.println(newPath);
-                // TODO
-                try {
-                    final List<Object> dataList = (List<Object>) PropertyUtils.getProperty(clonedModel.getParameters(), newPath);
-                    dataList.clear();
-                    dataList.addAll(partitions.get(i -1 ));
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e1) {
-                    e1.printStackTrace();
+            if (isDirectoryIndexEnabled(clonedModel.getSaitoConfig(), outputPath)) {
+                if (i > 0) {
+
                 }
-
-                targetFile = isDirectoryIndexEnabled(clonedModel.getSaitoConfig(), outputPath)
-                        ? getDirectoryIndexTargetFile(targetDir.resolve( i == 1 ? "" : "/pages/" + i + "/"), outputPath)
-                        : getTargetFile(targetDir, targetFile.getParent().getFileName().toString() + ((i == 1) ? "" : "/pages/" + i + ".html"));
-                engine.render(this, targetFile, clonedModel);
+                targetFile = getDirectoryIndexTargetFile(targetDir, outputPath); // resolve( i == 1 ? "" : "/pages/" + i + "/")
+            } else {
+                if (i > 0) {
+                    outputPath = outputPath.replaceAll("(.*)(\\.html.*)", "$1-page" + (i+1) + "$2");
+                }
+                targetFile = getTargetFile(targetDir,outputPath );
             }
-        }
-    }
 
-    public static void main(String[] args) {
-        final HashMap<String, Object> m = new HashMap<>();
-        final HashMap<Object, Object> friends = new HashMap<>();
-        friends.put("friends", Arrays.asList("hansi", "hinter", "huber"));
-
-        final HashMap<Object, Object> dummy = new HashMap<>();
-        dummy.put("dummy", friends);
-
-        m.put("data", dummy);
-
-        try {
-            final Object property = PropertyUtils.getProperty(m, "(data)(dummy)(friends)");
-            System.out.println(property);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            String paginatedTemplate = content.getText().replaceFirst("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
+            Template clonedTemplate = this.clone(paginatedTemplate);
+            engine.render(clonedTemplate, targetFile, clonedModel);
         }
     }
 
 
-
-    private String getDataPath() {
-        final Matcher matcher = PAGING_PATTERN.matcher(content.getText());
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        throw new IllegalStateException("Could not find data for pagination");
-    }
 
     protected boolean shouldProcess() {
         return true;
@@ -158,6 +130,8 @@ public class Template extends SaitoFile {
                     ? getDirectoryIndexTargetFile(targetDir, outputPath)
                     : getTargetFile(targetDir, outputPath);
     }
+
+
 
 
     @SneakyThrows

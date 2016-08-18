@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.freemarker;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 
 import javax.inject.Named;
@@ -16,7 +17,11 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.Environment;
+import freemarker.log.Logger;
 import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +36,7 @@ public class FreemarkerModule {
     @Provides
     public static Configuration configuration(LinkHelper linkHelper, MultiTemplateLoader templateLoader) {
         try {
+            freemarker.log.Logger.selectLoggerLibrary(Logger.LIBRARY_SLF4J);
             Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
             cfg.addAutoImport("saito", "saito.ftl");
@@ -39,7 +45,7 @@ public class FreemarkerModule {
             cfg.setLogTemplateExceptions(false);
             cfg.setTemplateLoader(templateLoader);
             return cfg;
-        } catch (TemplateModelException e) {
+        } catch (TemplateModelException | ClassNotFoundException e) {
             log.error("Error creating config", e);
             throw new IllegalStateException(e);
         }
