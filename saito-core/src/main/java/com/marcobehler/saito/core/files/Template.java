@@ -116,7 +116,7 @@ public class Template extends SaitoFile {
 
     // TODO fix paginationException
     protected Path getTargetFile(final RenderingModel renderingModel, final Path targetDir, final String outputPath,  Optional<PaginationException> paginationException) {
-        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath)
+        return isDirectoryIndexEnabled(renderingModel.getSaitoConfig(), outputPath, paginationException)
                     ? getDirectoryIndexTargetFile(targetDir, outputPath, paginationException)
                     : getTargetFile(targetDir, outputPath,paginationException);
     }
@@ -158,8 +158,12 @@ public class Template extends SaitoFile {
     }
 
 
-    private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath) {
-        return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
+    private boolean isDirectoryIndexEnabled(SaitoConfig config, String relativePath, Optional<PaginationException> pagination) {
+        if (!pagination.isPresent()) {
+            return config.isDirectoryIndexes() && !relativePath.endsWith("index.html"); // if the file is already called index.html, skip it
+        } else {
+            return config.isDirectoryIndexes() || pagination.get().getCurrentPage() > 1;
+        }
     }
 
 
