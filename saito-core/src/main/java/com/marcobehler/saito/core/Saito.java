@@ -120,7 +120,7 @@ public class Saito {
 
             if (plugins != null) {
                 plugins.stream()
-                        .forEach(plugin -> plugin.start(this));
+                        .forEach(plugin -> plugin.start(this, sources));
             }
 
         } catch (IOException e) {

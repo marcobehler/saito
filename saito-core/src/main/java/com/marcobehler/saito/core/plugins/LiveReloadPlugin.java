@@ -4,6 +4,7 @@ import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.events.FileEvent;
 import com.marcobehler.saito.core.events.FileEventSubscriber;
+import com.marcobehler.saito.core.files.Sources;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.devtools.livereload.LiveReloadServer;
@@ -28,7 +29,7 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
     public LiveReloadPlugin() {}
 
     @Override
-    public void start(Saito saito) {
+    public void start(Saito saito, Sources sources) {
         log.info("Starting Livereload");
         SaitoConfig config = saito.getRenderingModel().getSaitoConfig();
         isEnabled = config.isLiveReloadEnabled();

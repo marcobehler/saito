@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.files.Sources;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -35,7 +36,7 @@ public class JettyPlugin implements Plugin {
      *
      */
     @Override
-    public void start(Saito saito) {
+    public void start(Saito saito, Sources sources) {
         SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
         String dir = saito.getWorkingDir().resolve("build").toString();
 

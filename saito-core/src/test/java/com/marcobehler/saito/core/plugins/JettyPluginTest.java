@@ -46,7 +46,7 @@ public class JettyPluginTest {
         Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(saito);
+            new JettyPlugin().start(saito, sources);
         }).start();
 
         String inputLine = httpGet(saitoConfig.getPort());

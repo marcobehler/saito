@@ -3,6 +3,7 @@ package com.marcobehler.saito.core.plugins;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.events.FileEvent;
 import com.marcobehler.saito.core.events.FileEventSubscriber;
+import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.watcher.SourceWatcher;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ public class FileWatcherPlugin implements Plugin {
     }
 
     @Override
-    public void start(Saito saito) {
+    public void start(Saito saito, Sources sources) {
         Path sourceDir = saito.getWorkingDir().resolve("source");
         new Thread(() -> {
             try {
