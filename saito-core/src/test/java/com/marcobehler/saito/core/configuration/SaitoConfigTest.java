@@ -65,4 +65,13 @@ public class SaitoConfigTest extends BaseInMemoryFSTest {
         SaitoConfig config = new SaitoConfig(configFile);
         assertThat(config.isLiveReloadEnabled()).isEqualTo(true);
     }
+
+
+    @Test
+    public void get_config_from_path_generateSitemap() throws IOException {
+        Path configFile = Files.write(fs.getPath("/test.yaml"), "generateSitemap : true".getBytes("UTF-8"));
+
+        SaitoConfig config = new SaitoConfig(configFile);
+        assertThat(config.isGenerateSitemap()).isEqualTo(true);
+    }
 }

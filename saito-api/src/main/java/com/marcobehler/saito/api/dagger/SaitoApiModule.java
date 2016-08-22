@@ -4,6 +4,7 @@ import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.events.FileEventSubscriber;
 import com.marcobehler.saito.core.freemarker.FreemarkerModule;
 import com.marcobehler.saito.core.plugins.Plugin;
+import com.marcobehler.saito.core.plugins.SitemapPlugin;
 import com.marcobehler.saito.core.rendering.RenderingModule;
 import dagger.Module;
 import dagger.Provides;
@@ -24,8 +25,8 @@ public class SaitoApiModule {
 
     @Provides(type = SET_VALUES)
     @Singleton
-    static Set<Plugin> plugins() {
-        return Collections.emptySet();
+    static Set<Plugin> plugins(SitemapPlugin sitemapPlugin) {
+        return Collections.singleton(sitemapPlugin);
     }
 
     // file event subscribers

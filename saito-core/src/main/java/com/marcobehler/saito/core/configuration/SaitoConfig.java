@@ -35,6 +35,8 @@ public class SaitoConfig {
     private boolean compressCss = false;
     private boolean compressJs = false;
     private String blogSourceDir = "posts"; //
+    private boolean generateSitemap = false;
+    private String host;
 
     private Integer port = 8820;
 
@@ -58,6 +60,8 @@ public class SaitoConfig {
         blogSourceDir = (String) map.getOrDefault("blogSourceDir", blogSourceDir);
         compressCss = (boolean) map.getOrDefault("compressCss", compressCss);
         compressJs = (boolean) map.getOrDefault("compressJs", compressJs);
+        generateSitemap = (boolean) map.getOrDefault("generateSitemap", generateSitemap);
+        host = (String) map.getOrDefault("host", host);
         port = (Integer) map.getOrDefault("port", port);
     }
 }

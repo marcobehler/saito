@@ -10,10 +10,7 @@ import javax.inject.Singleton;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.events.FileEventSubscriber;
 import com.marcobehler.saito.core.freemarker.FreemarkerModule;
-import com.marcobehler.saito.core.plugins.FileWatcherPlugin;
-import com.marcobehler.saito.core.plugins.JettyPlugin;
-import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
-import com.marcobehler.saito.core.plugins.Plugin;
+import com.marcobehler.saito.core.plugins.*;
 
 import com.marcobehler.saito.core.rendering.RenderingModule;
 import dagger.Module;
@@ -30,8 +27,8 @@ public class SaitoCLIModule {
 
     @Provides(type = SET_VALUES)
     @Singleton
-    static Set<Plugin> plugins(JettyPlugin jettyPlugin, LiveReloadPlugin liveReloadPlugin, FileWatcherPlugin fileWatcherPlugin ) {
-        return new TreeSet<>(Arrays.asList(jettyPlugin, liveReloadPlugin, fileWatcherPlugin));
+    static Set<Plugin> plugins(JettyPlugin jettyPlugin, LiveReloadPlugin liveReloadPlugin, FileWatcherPlugin fileWatcherPlugin, SitemapPlugin sitemapPlugin) {
+        return new TreeSet<>(Arrays.asList(jettyPlugin, liveReloadPlugin, fileWatcherPlugin, sitemapPlugin));
     }
 
     // file event subscribers
