@@ -1,13 +1,19 @@
 package com.marcobehler.saito.core.files;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
+import com.marcobehler.saito.core.pagination.PaginationException;
+import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.util.PathUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -16,6 +22,9 @@ import java.nio.file.Path;
 @ToString
 @Getter
 public class SaitoFile {
+
+    static final String TEMPLATE_FILE_EXTENSION = ".ftl";
+
 
     protected Path sourceDirectory;
     protected Path relativePath;
@@ -28,12 +37,9 @@ public class SaitoFile {
         this.data = readFile(sourceDirectory.resolve(relativePath));
     }
 
-    SaitoFile() {}
-
-
-    public Path getOutputPath() {
-        return relativePath;
+    SaitoFile() {
     }
+
 
     @SneakyThrows
     private byte[] readFile(Path path) {
@@ -42,5 +48,54 @@ public class SaitoFile {
 
     public String getDataAsString() {
         return new String(data, Charset.forName("UTF-8"));
+    }
+
+    public Path getOutputPath() {throw new UnsupportedOperationException();}
+
+    // todo enable pagination again
+    /*   if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
+        relativePath = relativePath.replaceAll("(.*)(\\.html.*)", "$1-page" + pagination.get().getCurrentPage() + "$2");
+    }*/
+
+    public Path getTargetFile(final RenderingModel renderingModel) {
+        Path targetFile = getOutputPath();
+        if (isDirectoryIndexEnabled(renderingModel.getSaitoConfig())) {
+            targetFile = toDirectoryIndex(targetFile);
+        }
+        return targetFile;
+    }
+
+    @SneakyThrows
+    private Path toDirectoryIndex(Path targetFile){
+        // todo enable pagination again
+      /*  if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
+            directoryIndexDir = directoryIndexDir.resolve("pages/" + pagination.get().getCurrentPage());
+        }*/
+        String directoryName = PathUtils.stripExtension(targetFile, ".html");
+        Path directoryIndexPath = targetFile.getFileSystem().getPath(directoryName, "index.html");
+        Files.createDirectories(directoryIndexPath.getParent());
+        return directoryIndexPath;
+    }
+
+    public Path getTargetFile(Path targetDir, RenderingModel model) {
+        Path relativePath = getTargetFile(model);
+        Path absolutePath = targetDir.resolve(relativePath);
+        if (!Files.exists(absolutePath.getParent())) {
+            try {
+                Files.createDirectories(absolutePath.getParent());
+            } catch (IOException e) {
+                log.error("Error creating directory", e);
+            }
+        }
+        return absolutePath;
+    }
+
+
+    private boolean isDirectoryIndexEnabled(SaitoConfig config) {
+        if (getRelativePath().toString().contains("index.html")) {
+            return false;
+        }
+        // todo enable pagination again
+        return config.isDirectoryIndexes();
     }
 }

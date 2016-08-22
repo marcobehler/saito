@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
+import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Rule;
@@ -46,7 +47,7 @@ public class JettyPluginTest {
         Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(saito, sources);
+            new JettyPlugin().start(saito, mock(Sources.class));
         }).start();
 
         String inputLine = httpGet(saitoConfig.getPort());

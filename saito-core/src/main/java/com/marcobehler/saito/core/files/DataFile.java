@@ -26,6 +26,11 @@ public class DataFile extends SaitoFile {
         super(sourceDirectory, relativePath);
     }
 
+    @Override
+    public Path getOutputPath() {
+        return getRelativePath();
+    }
+
     /**
      * Parses the .json file this class represents and makes its data available in Freemarker, as a shared variable.
      */

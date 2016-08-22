@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,12 +83,20 @@ public class SitemapPlugin  implements Plugin {
             host = host + "/";
         }
 
-        String outputPath = t.getOutputPath().toString();
+        String outputPath = t.getTargetFile(new RenderingModel(cfg)).toString();
+        outputPath = outputPath.replaceAll("\\\\", "/");
+
         if (outputPath.startsWith("/")) {
             outputPath = outputPath.substring(1);
         }
 
-        return host + outputPath;
+        String url = host + outputPath;
+
+        if (url.endsWith("/index.html")) {
+            url = url.substring(0, url.length() -11);
+        }
+
+        return url;
     }
 
     @Override
