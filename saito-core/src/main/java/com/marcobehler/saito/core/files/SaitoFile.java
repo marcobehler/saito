@@ -73,7 +73,6 @@ public class SaitoFile {
         }*/
         String directoryName = PathUtils.stripExtension(targetFile, ".html");
         Path directoryIndexPath = targetFile.getFileSystem().getPath(directoryName, "index.html");
-        Files.createDirectories(directoryIndexPath.getParent());
         return directoryIndexPath;
     }
 
