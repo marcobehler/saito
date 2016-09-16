@@ -7,6 +7,7 @@ import com.marcobehler.saito.cli.dagger.DaggerSaitoCLIComponent;
 import com.marcobehler.saito.cli.dagger.SaitoCLIComponent;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.plugins.Plugin;
+import com.marcobehler.saito.core.plugins.SitemapPlugin;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +17,8 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -95,7 +98,8 @@ public class SaitoCLI {
         if ("init".equals(jc.getParsedCommand())) {
             saito.init(initCommand.getTarget());
         } else if ("build".equals(jc.getParsedCommand())) {
-            saito.build();
+            TreeSet<Plugin> plugins = cliPlugins.stream().filter(p -> p instanceof SitemapPlugin).collect(Collectors.toCollection(TreeSet::new));
+            saito.build(plugins);
         } else if ("clean".equals(jc.getParsedCommand())) {
             saito.clean();
         } else if ("server".equals(jc.getParsedCommand())) {

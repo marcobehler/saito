@@ -31,6 +31,7 @@ public class SitemapPlugin  implements Plugin {
         SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
 
         if (!cfg.isGenerateSitemap()) {
+            log.info("Sitemaps are turned off.");
             return;
         }
 

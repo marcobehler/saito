@@ -28,6 +28,8 @@ public class Other extends SaitoFile {
         return getRelativePath();
     }
 
+
+
     /**
      * Other files get copied as is, without any processing done to them.
      *
@@ -37,6 +39,10 @@ public class Other extends SaitoFile {
     public void process(RenderingModel renderingModel, Path targetDirectory) {
         try {
             Path sourceFile = getSourceDirectory().resolve(getRelativePath());
+
+            if (sourceFile.endsWith("ftl") || sourceFile.startsWith("_")) {
+                return;
+            }
 
             Path targetFile = targetDirectory.resolve(getRelativePath());
             if (!Files.exists(targetFile.getParent())) {
