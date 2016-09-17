@@ -65,7 +65,7 @@ public class Template extends SaitoFile {
         return clone;
     }
 
-    public void process(RenderingModel renderingModel, Path targetDir, RenderingEngine engine) {
+    public void process(RenderingModel renderingModel, Path buildDir, RenderingEngine engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -74,7 +74,7 @@ public class Template extends SaitoFile {
             return;
         }
 
-        Path targetFile = getTargetFile(targetDir, renderingModel);
+        Path targetFile = getTargetFile(buildDir, renderingModel);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -82,7 +82,7 @@ public class Template extends SaitoFile {
         try {
             engine.render(this, targetFile, renderingModel);
         } catch (PaginationException e) {
-            paginate(renderingModel, targetDir, engine, e);
+            paginate(renderingModel, buildDir, engine, e);
         }
     }
 

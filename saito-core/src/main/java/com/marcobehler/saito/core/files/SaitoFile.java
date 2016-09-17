@@ -76,9 +76,9 @@ public class SaitoFile {
         return directoryIndexPath;
     }
 
-    public Path getTargetFile(Path targetDir, RenderingModel model) {
+    public Path getTargetFile(Path buildDir, RenderingModel model) {
         Path relativePath = getTargetFile(model);
-        Path absolutePath = targetDir.resolve(relativePath);
+        Path absolutePath = buildDir.resolve(relativePath);
         if (!Files.exists(absolutePath.getParent())) {
             try {
                 Files.createDirectories(absolutePath.getParent());
