@@ -18,7 +18,9 @@ import java.io.IOException;
  */
 @Slf4j
 @Singleton
-public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
+public class LiveReloadPlugin implements Plugin, FileEventSubscriber, TemplatePostProcessor {
+
+    private static final String LIVE_RELOAD_TAG = "<script>document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1\"></' + 'script>')</script>";
 
     @Getter
     private LiveReloadServer liveReloadServer;
@@ -42,6 +44,14 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber {
                 log.error("Problem starting LiveReload", e);
             }
         }
+    }
+
+    @Override
+    public String postProcess(String rendered) {
+        if (isEnabled) {
+            return rendered.replaceFirst("</head>", LIVE_RELOAD_TAG + "</head>");
+        }
+        return rendered;
     }
 
     @Override

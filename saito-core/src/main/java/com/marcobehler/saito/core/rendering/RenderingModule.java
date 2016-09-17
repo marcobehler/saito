@@ -1,5 +1,7 @@
 package com.marcobehler.saito.core.rendering;
 
+import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
+import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,5 +26,11 @@ public class RenderingModule {
     @Singleton
     static Set<Renderer> renderers(FreemarkerRenderer freemarkerRenderer, MarkdownRenderer markdownRenderer, AsciidocRenderer asciidocRenderer) {
         return new HashSet<>(Arrays.asList(freemarkerRenderer, markdownRenderer, asciidocRenderer));
+    }
+
+    @Provides(type = SET_VALUES)
+    @Singleton
+    static Set<TemplatePostProcessor> templatePostProcessor(LiveReloadPlugin plugin) {
+        return new HashSet<>(Arrays.asList(plugin));
     }
 }

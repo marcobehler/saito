@@ -4,7 +4,7 @@ package com.marcobehler.saito.core.files;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
 import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.RenderingEngine;
+import com.marcobehler.saito.core.rendering.Renderers;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.EqualsAndHashCode;
@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -25,7 +25,6 @@ import java.util.Optional;
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 public class Template extends SaitoFile {
-
 
     @Getter
     private FrontMatter frontmatter;
@@ -65,7 +64,7 @@ public class Template extends SaitoFile {
         return clone;
     }
 
-    public void process(RenderingModel renderingModel, Path buildDir, RenderingEngine engine) {
+    public void process(RenderingModel renderingModel, Path buildDir, Renderers engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -80,13 +79,18 @@ public class Template extends SaitoFile {
         tl.set(targetFile);
 
         try {
-            engine.render(this, targetFile, renderingModel);
+            String rendered = engine.render(this, renderingModel);
+            try {
+                Files.write(targetFile, rendered.getBytes("UTF-8"));
+            } catch (IOException e) {
+                log.error("Error writing file",e );
+            }
         } catch (PaginationException e) {
             paginate(renderingModel, buildDir, engine, e);
         }
     }
 
-    private void paginate(RenderingModel renderingModel, Path targetDir, RenderingEngine engine, PaginationException e) {
+    private void paginate(RenderingModel renderingModel, Path targetDir, Renderers engine, PaginationException e) {
         log.info("Starting to paginate ", e);
 
         int pages = e.getPages();
@@ -102,7 +106,12 @@ public class Template extends SaitoFile {
 
             String paginatedTemplate = content.getText().replaceFirst("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
             Template clonedTemplate = this.clone(paginatedTemplate);
-            engine.render(clonedTemplate, targetFile, clonedModel);
+            String renderedString = engine.render(clonedTemplate, clonedModel);
+            try {
+                Files.write(targetFile, renderedString.getBytes("UTF-8"));
+            } catch (IOException e1) {
+                log.error("Error writing file", e1);
+            }
         }
     }
 

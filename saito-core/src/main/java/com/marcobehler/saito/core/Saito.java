@@ -7,7 +7,7 @@ import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
-import com.marcobehler.saito.core.rendering.RenderingEngine;
+import com.marcobehler.saito.core.rendering.Renderers;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,10 +37,10 @@ public class Saito {
     private final RenderingModel renderingModel;
 
     @Getter
-    private final RenderingEngine engine;
+    private final Renderers engine;
 
     @Inject
-    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final RenderingEngine engine) {
+    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Renderers engine) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
         this.renderingModel = renderingModel;

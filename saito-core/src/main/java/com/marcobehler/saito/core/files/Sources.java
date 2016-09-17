@@ -3,7 +3,7 @@ package com.marcobehler.saito.core.files;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.marcobehler.saito.core.rendering.RenderingModel;
-import com.marcobehler.saito.core.rendering.RenderingEngine;
+import com.marcobehler.saito.core.rendering.Renderers;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ public class Sources {
 
     private List<BlogPost> blogPosts = new ArrayList<>();
 
-    public void process(RenderingModel config, Path projectDirectory, RenderingEngine engine) {
+    public void process(RenderingModel config, Path projectDirectory, Renderers engine) {
         calculateDependencies();
         dataFiles.forEach(d -> d.process(config));
         templates.forEach(t -> t.process(config, projectDirectory, engine));
