@@ -22,6 +22,6 @@ public interface Renderer {
 
     public List<String> getSupportedExtensions();
 
-    String render(Template template, final RenderingModel renderingModel);
+    String render(Template template, final Model model);
 
 }

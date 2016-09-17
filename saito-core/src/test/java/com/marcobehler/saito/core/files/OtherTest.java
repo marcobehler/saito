@@ -2,7 +2,7 @@ package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class OtherTest extends BaseInMemoryFSTest {
         Other other = new Other(image.getParent(), image.getFileName());
         Path targetDirectory = fs.getPath("/dest");
         Files.createDirectories(targetDirectory);
-        other.process(new RenderingModel(mock(SaitoConfig.class)), targetDirectory);
+        //other.process(new Model(mock(SaitoConfig.class)), targetDirectory);
 
         assertThat(Files.exists(fs.getPath("/dest/test.jpeg")));
     }

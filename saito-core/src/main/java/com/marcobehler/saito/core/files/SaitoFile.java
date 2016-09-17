@@ -2,7 +2,7 @@ package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -57,9 +57,9 @@ public class SaitoFile {
         relativePath = relativePath.replaceAll("(.*)(\\.html.*)", "$1-page" + pagination.get().getCurrentPage() + "$2");
     }*/
 
-    public Path getTargetFile(final RenderingModel renderingModel) {
+    public Path getTargetFile(final Model model) {
         Path targetFile = getOutputPath();
-        if (isDirectoryIndexEnabled(renderingModel.getSaitoConfig())) {
+        if (isDirectoryIndexEnabled(model.getSaitoConfig())) {
             targetFile = toDirectoryIndex(targetFile);
         }
         return targetFile;
@@ -76,7 +76,7 @@ public class SaitoFile {
         return directoryIndexPath;
     }
 
-    public Path getTargetFile(Path buildDir, RenderingModel model) {
+    public Path getTargetFile(Path buildDir, Model model) {
         Path relativePath = getTargetFile(model);
         Path absolutePath = buildDir.resolve(relativePath);
         if (!Files.exists(absolutePath.getParent())) {

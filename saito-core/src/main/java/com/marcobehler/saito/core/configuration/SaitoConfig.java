@@ -58,7 +58,7 @@ public class SaitoConfig {
         relativeLinks = (boolean) map.getOrDefault("relativeLinks", relativeLinks);
         liveReloadEnabled = (boolean) map.getOrDefault("liveReloadEnabled", liveReloadEnabled);
         blogSourceDir = (String) map.getOrDefault("blogSourceDir", blogSourceDir);
-        compressCss = (boolean) map.getOrDefault("compressCss", compressCss);
+        compressCss = (boolean) map.getOrDefault("compressCSS", compressCss);
         compressJs = (boolean) map.getOrDefault("compressJs", compressJs);
         generateSitemap = (boolean) map.getOrDefault("generateSitemap", generateSitemap);
         host = (String) map.getOrDefault("host", host);

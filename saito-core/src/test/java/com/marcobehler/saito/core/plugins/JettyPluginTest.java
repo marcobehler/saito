@@ -1,7 +1,7 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,9 +36,9 @@ public class JettyPluginTest {
         when(saito.getWorkingDir()).thenReturn(Paths.get(folder.getRoot().toString()));
 
         SaitoConfig saitoConfig = mock(SaitoConfig.class);
-        RenderingModel renderingModel = mock(RenderingModel.class);
-        when(saito.getRenderingModel()).thenReturn(renderingModel);
-        when(renderingModel.getSaitoConfig()).thenReturn(saitoConfig);
+        Model model = mock(Model.class);
+        when(saito.getModel()).thenReturn(model);
+        when(model.getSaitoConfig()).thenReturn(saitoConfig);
         when(saitoConfig.getPort()).thenReturn(1111);
 
         File buildFolder = folder.newFolder("build");

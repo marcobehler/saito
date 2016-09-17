@@ -2,7 +2,7 @@ package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 
 import org.junit.Test;
 
@@ -64,7 +64,7 @@ public class DataFileTest extends BaseInMemoryFSTest {
 
     @Test
     public void multipleDataFiles_dont_screwup_renderingModel() throws IOException {
-        final RenderingModel model = new RenderingModel(mock(SaitoConfig.class));
+        final Model model = new Model(mock(SaitoConfig.class));
 
         Path dummyJson = fs.getPath("/dummy.json");
         Files.write(dummyJson, json.getBytes("UTF-8"));
@@ -73,10 +73,10 @@ public class DataFileTest extends BaseInMemoryFSTest {
         Files.write(peopleJson, "{ \"yes\": \"mam\"}".getBytes("UTF-8"));
 
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
-        dataFile.process(model);
+        //dataFile.process(model);
 
         DataFile dataFile2 = new DataFile(fs.getPath("/"), fs.getPath("people.json"));
-        dataFile2.process(model);
+        //dataFile2.process(model);
 
         final ConcurrentHashMap<String, Object> params = model.getParameters();
 

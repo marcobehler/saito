@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,17 +32,6 @@ public class DataFile extends SaitoFile {
     }
 
     /**
-     * Parses the .json file this class represents and makes its data available in Freemarker, as a shared variable.
-     */
-    public void process(RenderingModel renderingModel) {
-        Map<String, Object> parsedData = parse();
-        ConcurrentHashMap<String, Object> params = renderingModel.getParameters();
-        params.putIfAbsent("data", new HashMap<>());
-        ((Map<String, Object>) params.get("data")).putAll(parsedData);
-    }
-
-
-    /**
      * Parses the .json file and return its content as a map.
      * <p>
      * If the data file has the following path /data/my/dear/friends.json , the resulting map will look like
@@ -50,7 +39,7 @@ public class DataFile extends SaitoFile {
      *
      * @return
      */
-    Map<String, Object> parse() {
+    public Map<String, Object> parse() {
         Map<String, Object> result = new HashMap<>();
         try {
             Iterator<String> it = stripAndSplit(getRelativePath());
@@ -60,7 +49,8 @@ public class DataFile extends SaitoFile {
                 if (it.hasNext()) {
                     currentMap.put(key, currentMap = new HashMap<>());
                 } else {
-                    Map<? extends String, ?> dataAsMap = doParse();
+                    ObjectMapper mapper = new ObjectMapper();
+                    Map<? extends String, ?> dataAsMap = mapper.readValue(getData(), new TypeReference<HashMap<String, Object>>() {});
                     currentMap.put(key, dataAsMap);
                 }
             }
@@ -70,11 +60,6 @@ public class DataFile extends SaitoFile {
         return result;
     }
 
-    private Map<? extends String, ?> doParse() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(getData(), new TypeReference<HashMap<String, Object>>() {
-        });
-    }
 
     private Iterator<String> stripAndSplit(Path path) {
         String strippedPath = PathUtils.stripExtension(path, DATA_FILE_EXTENSION);

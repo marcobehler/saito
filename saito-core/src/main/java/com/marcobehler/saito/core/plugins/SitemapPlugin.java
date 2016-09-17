@@ -5,7 +5,7 @@ import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ public class SitemapPlugin  implements Plugin {
 
     @Override
     public void start(Saito saito, List<SaitoFile> sources) {
-        SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
+        SaitoConfig cfg = saito.getModel().getSaitoConfig();
 
         if (!cfg.isGenerateSitemap()) {
             return;
@@ -74,7 +74,7 @@ public class SitemapPlugin  implements Plugin {
             host = host + "/";
         }
 
-        String outputPath = t.getTargetFile(new RenderingModel(cfg)).toString();
+        String outputPath = t.getTargetFile(new Model(cfg)).toString();
         outputPath = outputPath.replaceAll("\\\\", "/");
 
         if (outputPath.startsWith("/")) {

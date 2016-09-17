@@ -11,7 +11,7 @@ import org.pegdown.PegDownProcessor;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.rendering.Renderer;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,11 +37,11 @@ public class MarkdownRenderer implements Renderer {
     }
 
     @Override
-    public String render(final Template template, final RenderingModel renderingModel) {
+    public String render(final Template template, final Model model) {
         final PegDownProcessor pegDownProcessor = new PegDownProcessor();
         final String markdown = template.getContent().getText();
         final String html = pegDownProcessor.markdownToHtml(markdown);
 
-        return freemarkerRenderer.renderLayout(template, html, renderingModel);
+        return freemarkerRenderer.renderLayout(template, html, model);
     }
 }

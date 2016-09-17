@@ -27,17 +27,17 @@ public class Processors {
         this.renderers = renderers;
     }
 
-    public void process(Path buildDir, SaitoFile source, RenderingModel renderingModel) {
+    public void process(Path buildDir, SaitoFile source, Model model) {
 
     }
 
-    public String render(Template template, RenderingModel renderingModel) {
+    public String render(Template template, Model model) {
         Renderer renderer = renderers.stream()
                 .filter(r -> r.canRender(template))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
         try {
-            String rendered = renderer.render(template, renderingModel);
+            String rendered = renderer.render(template, model);
             return postProcess(rendered);
         } catch (PaginationException e) {
             throw e;

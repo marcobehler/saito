@@ -26,7 +26,7 @@ public class BugsTest {
         Saito saito = saito$$.saito();
 
 
-        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
+        saito.getModel().getSaitoConfig().setDirectoryIndexes(true);
 
         Path workingDir = saito.getWorkingDir();
         Path dataDir = workingDir.resolve("data");

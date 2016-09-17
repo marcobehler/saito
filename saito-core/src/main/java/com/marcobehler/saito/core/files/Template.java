@@ -5,7 +5,7 @@ import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
 import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.Processors;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -64,62 +64,10 @@ public class Template extends SaitoFile {
         return clone;
     }
 
-    public void process(RenderingModel renderingModel, Path buildDir, Processors engine) {
-        if (layout == null) {
-            throw new IllegalStateException("Layout must not be null");
-        }
 
-        if (!shouldProcess()) {
-            return;
-        }
-
-        Path targetFile = getTargetFile(buildDir, renderingModel);
-
-        ThreadLocal<Path> tl = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
-        tl.set(targetFile);
-
-        try {
-            String rendered = engine.render(this, renderingModel);
-            try {
-                Files.write(targetFile, rendered.getBytes("UTF-8"));
-            } catch (IOException e) {
-                log.error("Error writing file",e );
-            }
-        } catch (PaginationException e) {
-            paginate(renderingModel, buildDir, engine, e);
-        }
-    }
-
-    private void paginate(RenderingModel renderingModel, Path targetDir, Processors engine, PaginationException e) {
-        log.info("Starting to paginate ", e);
-
-        int pages = e.getPages();
-        final List<List<Object>> partitions = e.getPartitions();
-
-        for (int i = 0; i < pages; i++ ) {
-            // TODO fix
-            RenderingModel clonedModel = renderingModel.clone();
-            clonedModel.getParameters().put("_saito_pagination_content_", partitions.get(i));
-            e.setCurrentPage(i + 1);
-
-            Path targetFile = getTargetFile(targetDir, renderingModel);
-
-            String paginatedTemplate = content.getText().replaceFirst("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
-            Template clonedTemplate = this.clone(paginatedTemplate);
-            String renderedString = engine.render(clonedTemplate, clonedModel);
-            try {
-                Files.write(targetFile, renderedString.getBytes("UTF-8"));
-            } catch (IOException e1) {
-                log.error("Error writing file", e1);
-            }
-        }
-    }
-
-    protected boolean shouldProcess() {
+    public boolean shouldProcess() {
         return true;
     }
-
-
 
     public String getLayoutName() {
         Map<String, Object> frontMatter = getFrontmatter().getCurrentPage();

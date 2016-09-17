@@ -36,7 +36,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
+        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -56,7 +56,7 @@ public class BlogPostITest {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
 
-        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
+        saito.getModel().getSaitoConfig().setDirectoryIndexes(true);
 
         final Path sourceDirectory = saito.getSourcesDir();
 
@@ -72,7 +72,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
+        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -96,7 +96,7 @@ public class BlogPostITest {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
 
-        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
+        saito.getModel().getSaitoConfig().setDirectoryIndexes(true);
 
         final Path sourceDirectory = saito.getSourcesDir();
 
@@ -111,7 +111,7 @@ public class BlogPostITest {
 
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
-        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
+        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isFalse();

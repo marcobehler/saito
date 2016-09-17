@@ -2,9 +2,10 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.rendering.Processors;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
@@ -35,16 +36,16 @@ public class Saito {
     private Path workingDir;
 
     @Getter
-    private final RenderingModel renderingModel;
+    private final Model model;
 
     @Getter
     private final Processors processors;
 
     @Inject
-    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Processors processors) {
+    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Processors processors) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
-        this.renderingModel = renderingModel;
+        this.model = model;
         this.processors = processors;
     }
 
@@ -109,7 +110,21 @@ public class Saito {
             log.info("Working dir {} ", workingDir);
 
             // 1. scan-in ALL source files
-            List<SaitoFile> sources = new SourceScanner().scan(workingDir);
+            List<SaitoFile> files = new SourceScanner().scan(workingDir);
+
+            // 2. sort files so that data files are always processed first
+            files.sort((o1, o2) -> {
+                boolean o1Data = o1 instanceof DataFile;
+                boolean o2Data = o2 instanceof DataFile;
+                if (o1Data) {
+                    return 1;
+                } else if (o2Data) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+
 
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
             Path buildDir = workingDir.resolve("build");
@@ -117,11 +132,14 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            sources.forEach(source -> processors.process(buildDir, source, renderingModel));
+
+            files.forEach(source -> {
+                processors.process(buildDir, source, model);
+            });
 
             if (plugins != null) {
                 plugins.stream()
-                        .forEach(plugin -> plugin.start(this, sources));
+                        .forEach(plugin -> plugin.start(this, files));
             }
 
         } catch (IOException e) {
