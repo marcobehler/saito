@@ -3,20 +3,14 @@ package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
-import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.Processors;
-import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 /**

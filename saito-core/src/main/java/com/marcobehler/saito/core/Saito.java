@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.SaitoFile;
-import com.marcobehler.saito.core.rendering.Processors;
+import com.marcobehler.saito.core.processing.Processor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.dagger.PathsModule;
 import com.marcobehler.saito.core.plugins.Plugin;
@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -39,10 +40,10 @@ public class Saito {
     private final Model model;
 
     @Getter
-    private final Processors processors;
+    private final Map<Class, Processor<SaitoFile>> processors;
 
     @Inject
-    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Processors processors) {
+    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, Map<Class, Processor<SaitoFile>> processors) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
         this.model = model;
@@ -125,16 +126,17 @@ public class Saito {
                 }
             });
 
-
-            // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
             Path buildDir = workingDir.resolve("build");
             if (!Files.exists(buildDir)) {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-
-            files.forEach(source -> {
-                processors.process(buildDir, source, model);
+            // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
+            files.forEach(file -> {
+                if (processors.containsKey(file.getClass())) {
+                    Processor<SaitoFile> processor = processors.get(file.getClass());
+                    processor.process(file);
+                }
             });
 
             if (plugins != null) {
