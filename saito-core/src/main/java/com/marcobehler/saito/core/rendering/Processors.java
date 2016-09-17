@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.rendering;
 
+import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.nio.file.Path;
 import java.util.Set;
 
 /**
@@ -14,15 +16,19 @@ import java.util.Set;
  */
 @Singleton
 @Slf4j
-public class Renderers {
+public class Processors {
 
     private final Set<Renderer> renderers;
     private final Set<TemplatePostProcessor> templatePostProcessors;
 
     @Inject
-    public Renderers(Set<Renderer> renderers, Set<TemplatePostProcessor> templatePostProcessors) {
+    public Processors(Set<Renderer> renderers, Set<TemplatePostProcessor> templatePostProcessors) {
         this.templatePostProcessors = templatePostProcessors;
         this.renderers = renderers;
+    }
+
+    public void process(Path buildDir, SaitoFile source, RenderingModel renderingModel) {
+
     }
 
     public String render(Template template, RenderingModel renderingModel) {
@@ -45,4 +51,6 @@ public class Renderers {
         }
         return rendered;
     }
+
+
 }

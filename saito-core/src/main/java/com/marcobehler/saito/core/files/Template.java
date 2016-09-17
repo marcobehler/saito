@@ -4,7 +4,7 @@ package com.marcobehler.saito.core.files;
 import com.marcobehler.saito.core.domain.FrontMatter;
 import com.marcobehler.saito.core.domain.TemplateContent;
 import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.Renderers;
+import com.marcobehler.saito.core.rendering.Processors;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.EqualsAndHashCode;
@@ -64,7 +64,7 @@ public class Template extends SaitoFile {
         return clone;
     }
 
-    public void process(RenderingModel renderingModel, Path buildDir, Renderers engine) {
+    public void process(RenderingModel renderingModel, Path buildDir, Processors engine) {
         if (layout == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -90,7 +90,7 @@ public class Template extends SaitoFile {
         }
     }
 
-    private void paginate(RenderingModel renderingModel, Path targetDir, Renderers engine, PaginationException e) {
+    private void paginate(RenderingModel renderingModel, Path targetDir, Processors engine, PaginationException e) {
         log.info("Starting to paginate ", e);
 
         int pages = e.getPages();

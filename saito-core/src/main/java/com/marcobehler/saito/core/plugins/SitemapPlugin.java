@@ -3,7 +3,7 @@ package com.marcobehler.saito.core.plugins;
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.BlogPost;
-import com.marcobehler.saito.core.files.Sources;
+import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
@@ -27,7 +27,7 @@ public class SitemapPlugin  implements Plugin {
     public SitemapPlugin() {    }
 
     @Override
-    public void start(Saito saito, Sources sources) {
+    public void start(Saito saito, List<SaitoFile> sources) {
         SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
 
         if (!cfg.isGenerateSitemap()) {
@@ -41,26 +41,17 @@ public class SitemapPlugin  implements Plugin {
                     .autoValidate(true)
                     .build();
 
-            // add all "normal" pages
-            List<Template> templates = sources.getTemplates();
-            templates.forEach(t -> {
+            // add all normal pages & blog posts
+            sources.stream()
+                    .filter(s -> s instanceof Template)
+                    .map(s -> (Template) s)
+                    .forEach(t -> {
                 try {
                     wsg.addUrl(join(cfg, t));
                 } catch (MalformedURLException e) {
                     log.error("Error", e);
                 }
             });
-
-            // add all "blogposts" pages
-            List<BlogPost> blogPosts = sources.getBlogPosts();
-            blogPosts.forEach(b -> {
-                try {
-                    wsg.addUrl(join(cfg, b));
-                } catch (MalformedURLException e) {
-                    log.error("Error", e);
-                }
-            });
-
 
             // write to String as otherwise we can only write to "File", not "Path". Messes up JimFS
             List<String> strings = wsg.writeAsStrings();

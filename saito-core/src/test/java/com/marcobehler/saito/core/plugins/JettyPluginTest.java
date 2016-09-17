@@ -1,7 +1,6 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Rule;
@@ -16,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -47,7 +47,7 @@ public class JettyPluginTest {
         Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(saito, mock(Sources.class));
+            new JettyPlugin().start(saito, Collections.emptyList());
         }).start();
 
         String inputLine = httpGet(saitoConfig.getPort());

@@ -36,7 +36,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -72,7 +72,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -111,7 +111,7 @@ public class BlogPostITest {
 
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+        bp.process(saito.getRenderingModel(), buildDir, saito.getProcessors());
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isFalse();

@@ -2,12 +2,12 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.marcobehler.saito.core.files.SaitoFile;
+import com.marcobehler.saito.core.rendering.Processors;
 import com.marcobehler.saito.core.rendering.RenderingModel;
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.files.Sources;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.processing.SourceScanner;
-import com.marcobehler.saito.core.rendering.Renderers;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 
@@ -37,14 +38,14 @@ public class Saito {
     private final RenderingModel renderingModel;
 
     @Getter
-    private final Renderers engine;
+    private final Processors processors;
 
     @Inject
-    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Renderers engine) {
+    public Saito(final RenderingModel renderingModel, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, final Processors processors) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
         this.renderingModel = renderingModel;
-        this.engine = engine;
+        this.processors = processors;
     }
 
     /**
@@ -108,7 +109,7 @@ public class Saito {
             log.info("Working dir {} ", workingDir);
 
             // 1. scan-in ALL source files
-            Sources sources = new SourceScanner().scan(workingDir);
+            List<SaitoFile> sources = new SourceScanner().scan(workingDir);
 
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
             Path buildDir = workingDir.resolve("build");
@@ -116,7 +117,7 @@ public class Saito {
                 log.info("create {}", Files.createDirectories(buildDir));
             }
 
-            sources.process(renderingModel, buildDir, engine);
+            sources.forEach(source -> processors.process(buildDir, source, renderingModel));
 
             if (plugins != null) {
                 plugins.stream()
