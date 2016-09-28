@@ -21,10 +21,8 @@ public class BugsTest {
 
     @Test
     public void wrong_dirs_are_created() throws IOException, BlogPost.BlogPostFormattingException {
-
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
-
 
         saito.getModel().getSaitoConfig().setDirectoryIndexes(true);
 
@@ -61,12 +59,9 @@ public class BugsTest {
         Files.createDirectories(layoutDir);
 
         Files.write(layoutDir.resolve("layout.ftl"), ("<p>[@saito.yield/]</p>").getBytes());
-
         saito.build();
-
 
         boolean existsBuggyDir = Files.exists(workingDir.resolve("friends"));
         assertFalse(existsBuggyDir);
-
     }
 }

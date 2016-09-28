@@ -118,9 +118,9 @@ public class Saito {
                 boolean o1Data = o1 instanceof DataFile;
                 boolean o2Data = o2 instanceof DataFile;
                 if (o1Data) {
-                    return 1;
-                } else if (o2Data) {
                     return -1;
+                } else if (o2Data) {
+                    return 1;
                 } else {
                     return 0;
                 }
