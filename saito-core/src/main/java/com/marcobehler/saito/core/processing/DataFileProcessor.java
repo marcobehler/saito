@@ -21,7 +21,7 @@ public class DataFileProcessor implements Processor<DataFile> {
     public void process(DataFile dataFile, Model model) {
         Map<String, Object> parsedData = dataFile.parse();
 
-        ConcurrentHashMap<String, Object> params = model.getParameters();
+        ConcurrentHashMap<String, Object> params = model;
         params.putIfAbsent("data", new HashMap<>());
         ((Map<String, Object>) params.get("data")).putAll(parsedData);
     }

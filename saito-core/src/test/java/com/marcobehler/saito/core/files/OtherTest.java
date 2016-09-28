@@ -32,7 +32,7 @@ public class OtherTest extends BaseInMemoryFSTest {
         Other other = new Other(image.getParent(), image.getFileName());
         Path targetDirectory = fs.getPath("/dest");
         Files.createDirectories(targetDirectory);
-        processor.process(other, new Model(config));
+        processor.process(other, new Model());
 
         assertThat(Files.exists(fs.getPath("/dest/test.jpeg")));
     }

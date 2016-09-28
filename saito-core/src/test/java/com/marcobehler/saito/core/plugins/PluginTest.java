@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.plugins;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -21,10 +22,12 @@ public class PluginTest {
         FileWatcherPlugin fileWatcherPlugin = new FileWatcherPlugin(Collections.emptySet());
         plugins.add(fileWatcherPlugin);
 
-        JettyPlugin jettyPlugin = new JettyPlugin();
+        SaitoConfig config = new SaitoConfig(null);
+
+        JettyPlugin jettyPlugin = new JettyPlugin(config);
         plugins.add(jettyPlugin);
 
-        LiveReloadPlugin liveReloadPlugin = new LiveReloadPlugin();
+        LiveReloadPlugin liveReloadPlugin = new LiveReloadPlugin(config);
         plugins.add(liveReloadPlugin);
 
         TreeSet<Plugin> sortedPlugins = new TreeSet<>(plugins);

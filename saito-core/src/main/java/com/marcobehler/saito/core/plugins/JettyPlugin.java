@@ -28,9 +28,13 @@ public class JettyPlugin implements Plugin {
 
     private Server server;
 
+    private final SaitoConfig cfg;
+
     @Inject
-    public JettyPlugin() {
+    public JettyPlugin(SaitoConfig saitoConfig) {
+        this.cfg = saitoConfig;
     }
+
 
     /**
      * Run Jetty web server serving out supplied path on the supplied port on SaitoConfig
@@ -38,7 +42,6 @@ public class JettyPlugin implements Plugin {
      */
     @Override
     public void start(Saito saito, List<? extends SaitoFile> sources) {
-        SaitoConfig cfg = saito.getModel().getSaitoConfig();
         String dir = saito.getWorkingDir().resolve("build").toString();
 
         server = new Server();

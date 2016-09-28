@@ -22,13 +22,16 @@ import java.util.List;
 @Slf4j
 public class SitemapPlugin  implements Plugin {
 
+    private final SaitoConfig cfg;
+
     @Inject
-    public SitemapPlugin() {    }
+    public SitemapPlugin(SaitoConfig saitoConfig) {
+        this.cfg = saitoConfig;
+    }
+
 
     @Override
     public void start(Saito saito, List<? extends SaitoFile> sources) {
-        SaitoConfig cfg = saito.getModel().getSaitoConfig();
-
         if (!cfg.isGenerateSitemap()) {
             return;
         }

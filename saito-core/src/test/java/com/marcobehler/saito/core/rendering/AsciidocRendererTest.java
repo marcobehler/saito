@@ -36,7 +36,7 @@ public class AsciidocRendererTest extends BaseInMemoryFSTest {
         final FreemarkerRenderer freemarkerRenderer = new FreemarkerRenderer(
                 new FreemarkerTemplateLoader(freemarkerConfig()));
         String rendered = new AsciidocRenderer(
-                freemarkerRenderer).render(saitoTemplate, new Model(mock(SaitoConfig.class)));
+                freemarkerRenderer).render(saitoTemplate, new Model());
         assertThat(rendered).isEqualTo("<p><div class=\"paragraph\">\n" + "<p>Writing AsciiDoc is <em>easy</em>!</p>\n"
                 + "</div></p>");
     }

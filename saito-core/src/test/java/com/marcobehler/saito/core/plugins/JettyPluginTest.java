@@ -38,7 +38,6 @@ public class JettyPluginTest {
         SaitoConfig saitoConfig = mock(SaitoConfig.class);
         Model model = mock(Model.class);
         when(saito.getModel()).thenReturn(model);
-        when(model.getSaitoConfig()).thenReturn(saitoConfig);
         when(saitoConfig.getPort()).thenReturn(1111);
 
         File buildFolder = folder.newFolder("build");
@@ -47,7 +46,7 @@ public class JettyPluginTest {
         Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(saito, Collections.emptyList());
+            new JettyPlugin(saitoConfig).start(saito, Collections.emptyList());
         }).start();
 
         String inputLine = httpGet(saitoConfig.getPort());

@@ -28,14 +28,18 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber, TemplatePo
 
     private Boolean isEnabled = false;
 
+    private final SaitoConfig cfg;
+
     @Inject
-    public LiveReloadPlugin() {}
+    public LiveReloadPlugin(SaitoConfig saitoConfig) {
+        this.cfg = saitoConfig;
+    }
+
 
     @Override
     public void start(Saito saito, List<? extends SaitoFile> sources) {
         log.info("Starting Livereload");
-        SaitoConfig config = saito.getModel().getSaitoConfig();
-        isEnabled = config.isLiveReloadEnabled();
+        isEnabled = cfg.isLiveReloadEnabled();
 
         if (isEnabled) {
             try {

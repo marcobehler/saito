@@ -24,7 +24,7 @@ public class DataFileProcessorTest extends BaseInMemoryFSTest {
 
     @Test
     public void multipleDataFiles_dont_screwup_renderingModel() throws IOException {
-        final Model model = new Model(mock(SaitoConfig.class));
+        final Model model = new Model();
 
         Path dummyJson = fs.getPath("/dummy.json");
         Files.write(dummyJson, "{\"friends\" : [\"johnny\", \"b\"]}".getBytes("UTF-8"));
@@ -38,11 +38,10 @@ public class DataFileProcessorTest extends BaseInMemoryFSTest {
         DataFile dataFile2 = new DataFile(fs.getPath("/"), fs.getPath("people.json"));
         processor.process(dataFile2, model);
 
-        final ConcurrentHashMap<String, Object> params = model.getParameters();
 
-        assertThat(params).containsKey("data");
+        assertThat(model).containsKey("data");
 
-        final Map<String,Object> data = (Map<String, Object>) params.get("data");
+        final Map<String,Object> data = (Map<String, Object>) model.get("data");
         assertThat(data).hasSize(2);
         assertThat(data).containsKey("dummy");
         assertThat(data).containsKey("people");

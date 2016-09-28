@@ -52,7 +52,7 @@ public class FreemarkerRenderer implements Renderer {
         freemarker.template.Template freemarkerTemplate = templateLoader.get(template.getLayout());
 
         Map<String,Object> dataModel = new HashMap<>();
-        dataModel.putAll(model.getParameters());
+        dataModel.putAll(model);
         dataModel.putAll(template.getFrontmatter());
         dataModel.put("_saito_content_", renderedTemplate);
         freemarkerTemplate.process(dataModel, w);
@@ -68,7 +68,7 @@ public class FreemarkerRenderer implements Renderer {
 
         try {
             Map<String,Object> dataModel = new HashMap<>();
-            dataModel.putAll(model.getParameters());
+            dataModel.putAll(model);
             dataModel.putAll(t.getFrontmatter());
             template.process(dataModel, w);
         } catch (Exception e) {
