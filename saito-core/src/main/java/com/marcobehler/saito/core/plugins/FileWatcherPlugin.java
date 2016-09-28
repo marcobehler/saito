@@ -30,7 +30,7 @@ public class FileWatcherPlugin implements Plugin {
     }
 
     @Override
-    public void start(Saito saito, List<SaitoFile> sources) {
+    public void start(Saito saito, List<? extends SaitoFile> sources) {
         Path sourceDir = saito.getWorkingDir().resolve("source");
         new Thread(() -> {
             try {

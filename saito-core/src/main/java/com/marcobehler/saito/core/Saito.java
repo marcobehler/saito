@@ -40,10 +40,10 @@ public class Saito {
     private final Model model;
 
     @Getter
-    private final Map<Class, Processor<SaitoFile>> processors;
+    private final Map<Class<? extends SaitoFile>, Processor<? extends SaitoFile>> processors;
 
     @Inject
-    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, Map<Class, Processor<SaitoFile>> processors) {
+    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, Map<Class<? extends SaitoFile>, Processor<? extends SaitoFile>> processors) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
         this.model = model;
@@ -111,7 +111,7 @@ public class Saito {
             log.info("Working dir {} ", workingDir);
 
             // 1. scan-in ALL source files
-            List<SaitoFile> files = new SourceScanner().scan(workingDir);
+            List<? extends SaitoFile> files = new SourceScanner().scan(workingDir);
 
             // 2. sort files so that data files are always processed first
             files.sort((o1, o2) -> {
@@ -134,8 +134,8 @@ public class Saito {
             // 2. process them (e.g. merge templates with layouts, minify assets etc, save them to target dir)
             files.forEach(file -> {
                 if (processors.containsKey(file.getClass())) {
-                    Processor<SaitoFile> processor = processors.get(file.getClass());
-                    processor.process(file);
+                    Processor<? extends SaitoFile> processor = processors.get(file.getClass());
+                    processor.process(rebox(file), model);
                 }
             });
 
@@ -149,6 +149,10 @@ public class Saito {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends SaitoFile> T rebox(SaitoFile saitoFile) {
+        return (T) saitoFile;
+    }
 
     public void incrementalBuild(Path singleFile) {
         if (Files.isDirectory(singleFile)) {

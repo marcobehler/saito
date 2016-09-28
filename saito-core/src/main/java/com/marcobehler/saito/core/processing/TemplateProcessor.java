@@ -6,6 +6,7 @@ import com.marcobehler.saito.core.rendering.Renderer;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,21 +17,20 @@ import java.util.Set;
  * Created by marco on 17.09.2016.
  */
 @Slf4j
+@Singleton
 public class TemplateProcessor implements Processor<Template> {
 
     private final TargetPathFinder targetPathFinder;
 
     private final Set<Renderer> renderers;
-    private final Model model;
 
     @Inject
-    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers, Model model) {
+    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
         this.targetPathFinder = targetPathFinder;
         this.renderers = rendererers;
-        this.model = model;
     }
 
-    public void process(Template template) {
+    public void process(Template template, Model model) {
         if (template.getLayout() == null) {
             throw new IllegalStateException("Layout must not be null");
         }
@@ -52,6 +52,8 @@ public class TemplateProcessor implements Processor<Template> {
             log.error("Error writing file", e);
         }
     }
+
+
 
   /*  private void paginate(Model model, Path targetDir, Processors engine, PaginationException e) {
         log.info("Starting to paginate ", e);

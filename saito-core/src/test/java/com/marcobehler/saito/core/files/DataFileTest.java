@@ -61,30 +61,5 @@ public class DataFileTest extends BaseInMemoryFSTest {
         assertThat(data).isEqualTo(expected);
     }
 
-
-    @Test
-    public void multipleDataFiles_dont_screwup_renderingModel() throws IOException {
-        final Model model = new Model(mock(SaitoConfig.class));
-
-        Path dummyJson = fs.getPath("/dummy.json");
-        Files.write(dummyJson, json.getBytes("UTF-8"));
-
-        Path peopleJson = fs.getPath("/people.json");
-        Files.write(peopleJson, "{ \"yes\": \"mam\"}".getBytes("UTF-8"));
-
-        DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
-        //dataFile.process(model);
-
-        DataFile dataFile2 = new DataFile(fs.getPath("/"), fs.getPath("people.json"));
-        //dataFile2.process(model);
-
-        final ConcurrentHashMap<String, Object> params = model.getParameters();
-
-        assertThat(params).containsKey("data");
-
-        final Map<String,Object> data = (Map<String, Object>) params.get("data");
-        assertThat(data).hasSize(2);
-        assertThat(data).containsKey("dummy");
-        assertThat(data).containsKey("people");
-    }
+    
 }

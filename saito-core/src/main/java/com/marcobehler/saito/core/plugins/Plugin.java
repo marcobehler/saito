@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface Plugin extends Comparable<Plugin> {
 
-    void start(Saito saito, List<SaitoFile> sources);
+    void start(Saito saito, List<? extends SaitoFile> sources);
 
     Integer getOrder();
 

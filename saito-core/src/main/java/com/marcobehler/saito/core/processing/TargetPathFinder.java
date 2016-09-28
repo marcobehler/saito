@@ -4,15 +4,22 @@ import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.rendering.Model;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.nio.file.Path;
 
 /**
  * Created by marco on 17.09.2016.
  */
+@Singleton
 public class TargetPathFinder {
 
+    @Inject
+    public TargetPathFinder() {
+    }
+
     public Path find(SaitoFile otherFile) {
-return null;
+        return null;
       /*  getdirectory
 
         isindex  ----. currentdir vs cyrentdur/name

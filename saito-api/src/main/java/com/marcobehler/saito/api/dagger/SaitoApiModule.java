@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.events.FileEventSubscriber;
 import com.marcobehler.saito.core.freemarker.FreemarkerModule;
 import com.marcobehler.saito.core.plugins.Plugin;
 import com.marcobehler.saito.core.plugins.SitemapPlugin;
+import com.marcobehler.saito.core.processing.ProcessingModule;
 import com.marcobehler.saito.core.rendering.RenderingModule;
 import dagger.Module;
 import dagger.Provides;
@@ -18,7 +19,7 @@ import static dagger.Provides.Type.SET_VALUES;
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
-@Module(includes =  {PathsModule.class, RenderingModule.class, FreemarkerModule.class})
+@Module(includes =  {PathsModule.class, RenderingModule.class, FreemarkerModule.class, ProcessingModule.class})
 public class SaitoApiModule {
 
     // plugins

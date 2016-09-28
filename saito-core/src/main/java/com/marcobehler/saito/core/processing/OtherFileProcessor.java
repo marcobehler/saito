@@ -3,9 +3,11 @@ package com.marcobehler.saito.core.processing;
 import com.marcobehler.saito.core.assets.YuiWrapper;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Other;
+import com.marcobehler.saito.core.rendering.Model;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +16,7 @@ import java.nio.file.Path;
  * Created by marco on 17.09.2016.
  */
 @Slf4j
+@Singleton
 public class OtherFileProcessor implements Processor<Other> {
 
     private final SaitoConfig saitoConfig;
@@ -27,7 +30,7 @@ public class OtherFileProcessor implements Processor<Other> {
     }
 
     @Override
-    public void process(Other otherFile) {
+    public void process(Other otherFile, Model model) {
         try {
             Path targetPath = targetPathFinder.find(otherFile);
             byte[] targetData = compressIfWanted(otherFile);

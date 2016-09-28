@@ -2,7 +2,6 @@ package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Model;
@@ -27,7 +26,7 @@ public class SitemapPlugin  implements Plugin {
     public SitemapPlugin() {    }
 
     @Override
-    public void start(Saito saito, List<SaitoFile> sources) {
+    public void start(Saito saito, List<? extends SaitoFile> sources) {
         SaitoConfig cfg = saito.getModel().getSaitoConfig();
 
         if (!cfg.isGenerateSitemap()) {

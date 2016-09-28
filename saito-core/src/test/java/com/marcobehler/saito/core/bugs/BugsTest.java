@@ -68,6 +68,5 @@ public class BugsTest {
         boolean existsBuggyDir = Files.exists(workingDir.resolve("friends"));
         assertFalse(existsBuggyDir);
 
-
     }
 }
