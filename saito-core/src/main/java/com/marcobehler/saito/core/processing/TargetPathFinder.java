@@ -7,15 +7,19 @@ import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static com.marcobehler.saito.core.dagger.PathsModule.BUILD_DIR;
 
 /**
  * Created by marco on 17.09.2016.
@@ -24,11 +28,15 @@ import java.nio.file.Path;
 @Slf4j
 public class TargetPathFinder {
 
+    @Getter
     private SaitoConfig saitoConfig;
 
+    private final Path buildDir;
+
     @Inject
-    public TargetPathFinder(SaitoConfig saitoConfig) {
+    public TargetPathFinder(SaitoConfig saitoConfig, @Named(BUILD_DIR) Path buildDir) {
         this.saitoConfig = saitoConfig;
+        this.buildDir = buildDir;
     }
 
     public <T extends SaitoFile> Path find(T file) {
@@ -36,8 +44,21 @@ public class TargetPathFinder {
         if (isDirectoryIndexEnabled(file)) {
             targetFile = toDirectoryIndex(targetFile);
         }
-        return targetFile;
+        return toAbsolutePath(buildDir, targetFile);
     }
+
+    private Path toAbsolutePath(Path buildDir, Path relativePath) {
+        Path absolutePath = buildDir.resolve(relativePath);
+        if (!Files.exists(absolutePath.getParent())) {
+            try {
+                Files.createDirectories(absolutePath.getParent());
+            } catch (IOException e) {
+                log.error("Error creating directory", e);
+            }
+        }
+        return absolutePath;
+    }
+
 
     public Path getOutputPath(SaitoFile file) {
         if (file instanceof BlogPost) {
@@ -66,19 +87,6 @@ public class TargetPathFinder {
         Path directoryIndexPath = targetFile.getFileSystem().getPath(directoryName, "index.html");
         return directoryIndexPath;
     }
-
-   /* public Path getTargetFile(Path buildDir, Model model) {
-        Path relativePath = getTargetFile(model);
-        Path absolutePath = buildDir.resolve(relativePath);
-        if (!Files.exists(absolutePath.getParent())) {
-            try {
-                Files.createDirectories(absolutePath.getParent());
-            } catch (IOException e) {
-                log.error("Error creating directory", e);
-            }
-        }
-        return absolutePath;
-    }*/
 
 
     private boolean isDirectoryIndexEnabled(SaitoFile file) {

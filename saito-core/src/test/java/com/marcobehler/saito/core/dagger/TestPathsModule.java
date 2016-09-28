@@ -16,6 +16,8 @@ import com.google.common.jimfs.Jimfs;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.marcobehler.saito.core.dagger.PathsModule.BUILD_DIR;
+
 /**
  *
  */
@@ -51,6 +53,19 @@ public class TestPathsModule {
     @Provides
     public static Path sourceDir(FileSystem fs) {
         final Path source = fs.getPath(".").resolve("source").toAbsolutePath().normalize();
+        try {
+            Files.createDirectories(source);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return source;
+    }
+
+    @Singleton
+    @Named(BUILD_DIR)
+    @Provides
+    public static Path buildDir(FileSystem fs) {
+        final Path source = fs.getPath(".").resolve("build").toAbsolutePath().normalize();
         try {
             Files.createDirectories(source);
         } catch (IOException e) {
