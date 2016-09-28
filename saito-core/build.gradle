@@ -3,7 +3,7 @@ dependencies {
 
     compile 'org.slf4j:jcl-over-slf4j:1.7.14'
 
-    compile 'org.freemarker:freemarker:2.3.23'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.25-incubating'
 
     compile group: 'org.pegdown', name: 'pegdown', version: '1.6.0'
 
