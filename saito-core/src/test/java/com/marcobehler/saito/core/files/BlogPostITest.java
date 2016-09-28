@@ -3,19 +3,27 @@ package com.marcobehler.saito.core.files;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
+import com.marcobehler.saito.core.processing.TargetPathFinder;
+import com.marcobehler.saito.core.processing.TemplateProcessor;
+import com.marcobehler.saito.core.rendering.Model;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.TestSaito$$;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  *
  */
 public class BlogPostITest {
+
+    private TemplateProcessor processor = new TemplateProcessor(mock(TargetPathFinder.class), Collections.emptySet());
 
     @Test
     public void blog_post_should_be_processed_into_correct_directory_with_filename() throws IOException, BlogPost.BlogPostFormattingException {
@@ -36,7 +44,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
+        processor.process(bp, new Model(mock(SaitoConfig.class)));
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -72,7 +80,7 @@ public class BlogPostITest {
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
 
-        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
+        processor.process(bp, new Model(mock(SaitoConfig.class)));
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -111,7 +119,7 @@ public class BlogPostITest {
 
         final Path buildDir = sourceDirectory.resolve("build");
         Files.createDirectories(buildDir);
-        //bp.process(saito.getModel(), buildDir, saito.getProcessors());
+        processor.process(bp, new Model(mock(SaitoConfig.class)));
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isFalse();
