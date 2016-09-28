@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/saito-core" />
           </set>
         </option>
+        <option name="resolveModulePerSourceSet" value="false" />
         <option name="useAutoImport" value="true" />
       </GradleProjectSettings>
     </option>

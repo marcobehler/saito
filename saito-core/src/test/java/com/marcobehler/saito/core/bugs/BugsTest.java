@@ -26,7 +26,7 @@ public class BugsTest {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();
 
-        saito.getModel().getSaitoConfig().setDirectoryIndexes(true);
+        saito.getConfig().setDirectoryIndexes(true);
 
         Path workingDir = saito.getWorkingDir();
         Path dataDir = workingDir.resolve("data");

@@ -2,6 +2,7 @@ package com.marcobehler.saito.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.processing.Processor;
@@ -31,6 +32,9 @@ import java.util.Set;
 public class Saito {
 
     @Getter
+    private SaitoConfig config;
+
+    @Getter
     private Path sourcesDir;
 
     @Getter
@@ -43,11 +47,12 @@ public class Saito {
     private final Map<Class<? extends SaitoFile>, Processor<? extends SaitoFile>> processors;
 
     @Inject
-    public Saito(final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, Map<Class<? extends SaitoFile>, Processor<? extends SaitoFile>> processors) {
+    public Saito(SaitoConfig saitoConfig, final Model model, final @Named(PathsModule.WORKING_DIR) Path workDirectory, final @Named(PathsModule.SOURCES_DIR) Path sourcesDir, Map<Class<? extends SaitoFile>, Processor<? extends SaitoFile>> processors) {
         this.workingDir = workDirectory;
         this.sourcesDir = sourcesDir;
         this.model = model;
         this.processors = processors;
+        this.config = saitoConfig;
     }
 
     /**
