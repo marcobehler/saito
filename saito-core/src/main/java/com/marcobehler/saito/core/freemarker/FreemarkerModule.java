@@ -37,7 +37,7 @@ public class FreemarkerModule {
     public static Configuration configuration(LinkHelper linkHelper, MultiTemplateLoader templateLoader) {
         try {
             freemarker.log.Logger.selectLoggerLibrary(Logger.LIBRARY_SLF4J);
-            Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
+            Configuration cfg = new freemarker.template.Configuration(Configuration.VERSION_2_3_25);
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
             cfg.addAutoImport("saito", "saito.ftl");
             cfg.setSharedVariable("saitoLinkHelper", linkHelper);

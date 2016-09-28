@@ -1,14 +1,12 @@
 package com.marcobehler.saito.core.files;
 
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BlogPost extends Template {
 
-    private static final Pattern BLOG_POST_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(.+?)(\\..+)");
+    public static final Pattern BLOG_POST_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(.+?)(\\..+)");
 
     private final String year;
     private final String month;
@@ -32,17 +30,8 @@ public class BlogPost extends Template {
     }
 
     @Override
-    protected boolean shouldProcess() {
+    public boolean shouldProcess() {
         return !getFrontmatter().getCurrentPage().containsKey("published") || getFrontmatter().getCurrentPage().get("published").equals(Boolean.TRUE);
-    }
-
-    @Override
-    public Path getOutputPath() {
-        final Path relativePath = getRelativePath();
-        final String asString = relativePath.toString();
-        final FileSystem fs = relativePath.getFileSystem();
-        final String blogPath = BLOG_POST_PATTERN.matcher(asString).replaceAll("$1/$2/$3/$4$5");
-        return fs.getPath(blogPath);
     }
 
     public String getYear() {

@@ -71,7 +71,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new RenderingModel(mock(SaitoConfig.class)));
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new Model());
         assertThat(rendered).isEqualTo("<p>This is not a test</p>");
     }
 
@@ -87,7 +87,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new RenderingModel(mock(SaitoConfig.class)));
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new Model());
         assertThat(rendered).isEqualTo("<p>This is not a test, Das ist mein title</p>");
     }
 
@@ -103,7 +103,7 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new RenderingModel(mock(SaitoConfig.class)));
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, new Model());
         assertThat(rendered).isEqualTo("<p>This is not a test, alter title</p>");
     }
 
@@ -121,9 +121,9 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
-        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
-        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+        Model model = new Model();
+        model.put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
         assertThat(rendered).isEqualTo("<p>Hans</p><p>Franz</p>");
     }
 
@@ -138,9 +138,9 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
-        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
-        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+        Model model = new Model();
+        model.put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
     }
 
 
@@ -172,15 +172,15 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         Template saitoTemplate = new Template(workingDirectory, fs.getPath("index.ftl"));
         saitoTemplate.setLayout(new Layout(workingDirectory, fs.getPath("layout.ftl")));
 
-        RenderingModel renderingModel = new RenderingModel(mock(SaitoConfig.class));
-        renderingModel.getParameters().put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+        Model model = new Model();
+        model.put("users", Arrays.asList(new User("Hans"), new User("Franz")));
         try {
-            new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+            new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
             fail();
         } catch (Exception e) {
            // as expected
         }
-        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, renderingModel);
+        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
     }
 
 

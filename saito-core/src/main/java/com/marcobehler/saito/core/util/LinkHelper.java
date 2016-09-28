@@ -12,8 +12,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.PathsModule;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,12 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LinkHelper {
 
-    private final RenderingModel renderingModel;
+    private final Model model;
     private final Path workingDirectory;
+    private final SaitoConfig saitoConfig;
 
     @Inject
-    public LinkHelper(RenderingModel renderingModel, @Named(PathsModule.WORKING_DIR) Path workingDirectory) {
-        this.renderingModel = renderingModel;
+    public LinkHelper(SaitoConfig saitoConfig, Model model, @Named(PathsModule.WORKING_DIR) Path workingDirectory) {
+        this.saitoConfig = saitoConfig;
+        this.model = model;
         this.workingDirectory = workingDirectory;
     }
 
@@ -93,11 +96,11 @@ public class LinkHelper {
 
 
     private String getCompressedJSSuffix() {
-        return renderingModel.getSaitoConfig().isCompressJs() ? getCompressedSuffix(renderingModel) : "";
+        return saitoConfig.isCompressJs() ? getCompressedSuffix(model) : "";
     }
 
     private String getCompressedCssSuffix() {
-        return renderingModel.getSaitoConfig().isCompressCss() ? getCompressedSuffix(renderingModel) : "";
+        return saitoConfig.isCompressCss() ? getCompressedSuffix(model) : "";
     }
 
     private String getMimeType(String filename) {
@@ -111,9 +114,9 @@ public class LinkHelper {
     }
 
     private String directory(String directoryName) {
-        if (renderingModel.getSaitoConfig().isRelativeLinks()) {
+        if (saitoConfig.isRelativeLinks()) {
             // TODO cast and error check
-            ThreadLocal<Path> outputPathTL = (ThreadLocal<Path>) renderingModel.getParameters().get(RenderingModel.TEMPLATE_OUTPUT_PATH);
+            ThreadLocal<Path> outputPathTL = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
             Path outputPath = outputPathTL.get();
 
             // assets are either in /javascript/ or /stylesheets/
@@ -126,9 +129,9 @@ public class LinkHelper {
     }
 
     // TODO remove duplicate in linkhelper
-    private String getCompressedSuffix(RenderingModel renderingModel) {
+    private String getCompressedSuffix(Model model) {
         String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(
-                renderingModel.getParameters().get(RenderingModel.BUILD_TIME_PARAMETER));
+                model.get(Model.BUILD_TIME_PARAMETER));
         return "-" + datePart + ".min";
     }
 

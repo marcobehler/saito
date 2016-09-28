@@ -6,9 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +25,40 @@ public class YuiWrapper {
         public boolean preserveAllSemiColons = false;
         public boolean disableOptimizations = false;
     }
+
+
+    public byte[] compressJavaScript(byte[] js) {
+        Options o = new Options();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try (Reader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(js)));
+             Writer writer = new BufferedWriter(new OutputStreamWriter(bos, o.charset))) {
+            JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new YuiCompressorErrorReporter());
+            compressor.compress(writer, o.lineBreakPos, o.munge, o.verbose, o.preserveAllSemiColons, o.disableOptimizations);
+            writer.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            log.error("Error compressing javascript", e);
+        }
+        return new byte[0];
+    }
+
+    public byte[] compressCSS(byte[] css) {
+        Options o = new Options();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try (Reader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(css)));
+             Writer writer = new BufferedWriter(new OutputStreamWriter(bos, o.charset))) {
+            CssCompressor compressor = new CssCompressor(reader);
+            compressor.compress(writer, o.lineBreakPos);
+            writer.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            log.error("Error compressing css", e);
+        }
+        return new byte[0];
+    }
+
 
     public void compressJavaScript(Path input, Path output) throws IOException {
         // yui compressor chokes on empty files

@@ -16,12 +16,20 @@ public class PathsModule {
     public static final String WORKING_DIR = "workingDir";
     public static final String SOURCES_DIR = "source";
     public static final String CONFIG_FILE = "configFile";
+    public static final String BUILD_DIR = "build";
 
     @Singleton
     @Named(SOURCES_DIR)
     @Provides
     public Path sourceDir() {
         return Paths.get(".").resolve("source").toAbsolutePath().normalize();
+    }
+
+    @Singleton
+    @Named(BUILD_DIR)
+    @Provides
+    public Path buildDir() {
+        return Paths.get(".").resolve("build").toAbsolutePath().normalize();
     }
 
     @Singleton

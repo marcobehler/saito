@@ -19,27 +19,21 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 @Getter
-public class RenderingModel {
+public class Model extends ConcurrentHashMap<String, Object>{
 
     public static final String BUILD_TIME_PARAMETER = "saito_build_time";
     public static final String TEMPLATE_OUTPUT_PATH = "saito_output_path";
 
-    private final SaitoConfig saitoConfig;
-    private final ConcurrentHashMap<String,Object> parameters = new ConcurrentHashMap<>();
-
     @Inject
-    public RenderingModel(SaitoConfig saitoConfig) {
-        this.saitoConfig = saitoConfig;
-
-        this.parameters.put(TEMPLATE_OUTPUT_PATH, new ThreadLocal<Path>());
-        this.parameters.put(BUILD_TIME_PARAMETER, new Date());
-        this.parameters.put("paginator", new Paginator());
+    public Model() {
+        put(TEMPLATE_OUTPUT_PATH, new ThreadLocal<Path>());
+        put(BUILD_TIME_PARAMETER, new Date());
+        put("paginator", new Paginator());
     }
 
-
-    public RenderingModel clone() {
-        RenderingModel clone = new RenderingModel(saitoConfig);
-        clone.parameters.putAll(this.parameters);
+    public Model clone() {
+        Model clone = new Model();
+        putAll(this);
         return clone;
     }
 }

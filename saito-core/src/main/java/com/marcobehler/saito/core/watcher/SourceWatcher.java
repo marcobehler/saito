@@ -65,7 +65,7 @@ public class SourceWatcher {
      * Creates a WatchService and registers the given directory
      */
     public SourceWatcher(Path dir, boolean recursive) throws IOException {
-        this.watcher = FileSystems.getDefault().newWatchService();
+        this.watcher = dir.getFileSystem().newWatchService();
         this.keys = new HashMap<>();
         this.recursive = recursive;
 
@@ -122,6 +122,11 @@ public class SourceWatcher {
                     }
                 }
 
+
+                if (kind == ENTRY_CREATE) {
+                    onEntryCreate(dir.resolve(child));
+                }
+
                 // if directory is created, and watching recursively, then
                 // register it and its sub-directories
                 if (recursive && (kind == ENTRY_CREATE)) {
@@ -146,6 +151,10 @@ public class SourceWatcher {
                 }
             }
         }
+    }
+
+    protected void onEntryCreate(Path createdFile) {
+        log.info("File created {}", createdFile);
     }
 
     /**

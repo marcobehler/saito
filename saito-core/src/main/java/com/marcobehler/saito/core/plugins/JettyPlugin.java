@@ -2,7 +2,7 @@ package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.files.Sources;
+import com.marcobehler.saito.core.files.SaitoFile;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
@@ -27,17 +28,20 @@ public class JettyPlugin implements Plugin {
 
     private Server server;
 
+    private final SaitoConfig cfg;
+
     @Inject
-    public JettyPlugin() {
+    public JettyPlugin(SaitoConfig saitoConfig) {
+        this.cfg = saitoConfig;
     }
+
 
     /**
      * Run Jetty web server serving out supplied path on the supplied port on SaitoConfig
      *
      */
     @Override
-    public void start(Saito saito, Sources sources) {
-        SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
+    public void start(Saito saito, List<? extends SaitoFile> sources) {
         String dir = saito.getWorkingDir().resolve("build").toString();
 
         server = new Server();

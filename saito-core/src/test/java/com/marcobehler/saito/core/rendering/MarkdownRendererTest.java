@@ -36,7 +36,7 @@ public class MarkdownRendererTest extends BaseInMemoryFSTest {
         final FreemarkerRenderer freemarkerRenderer = new FreemarkerRenderer(
                 new FreemarkerTemplateLoader(freemarkerConfig()));
         String rendered = new MarkdownRenderer(
-                freemarkerRenderer).render(saitoTemplate, new RenderingModel(mock(SaitoConfig.class)));
+                freemarkerRenderer).render(saitoTemplate, new Model());
         assertThat(rendered).isEqualTo("<p><h2>Dada Pegdown</h2></p>");
     }
 

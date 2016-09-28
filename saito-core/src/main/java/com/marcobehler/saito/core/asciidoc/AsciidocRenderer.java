@@ -12,7 +12,7 @@ import org.asciidoctor.Asciidoctor;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerRenderer;
 import com.marcobehler.saito.core.rendering.Renderer;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,10 +36,10 @@ public class AsciidocRenderer implements Renderer {
     }
 
     @Override
-    public String render(final Template template, final RenderingModel renderingModel) {
+    public String render(final Template template, final Model model) {
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         final String asciidoc = template.getContent().getText();
         final String html = asciidoctor.convert(asciidoc, new HashMap<>());
-        return freemarkerRenderer.renderLayout(template, html, renderingModel);
+        return freemarkerRenderer.renderLayout(template, html, model);
     }
 }

@@ -1,8 +1,7 @@
 package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.files.Sources;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -36,9 +36,8 @@ public class JettyPluginTest {
         when(saito.getWorkingDir()).thenReturn(Paths.get(folder.getRoot().toString()));
 
         SaitoConfig saitoConfig = mock(SaitoConfig.class);
-        RenderingModel renderingModel = mock(RenderingModel.class);
-        when(saito.getRenderingModel()).thenReturn(renderingModel);
-        when(renderingModel.getSaitoConfig()).thenReturn(saitoConfig);
+        Model model = mock(Model.class);
+        when(saito.getModel()).thenReturn(model);
         when(saitoConfig.getPort()).thenReturn(1111);
 
         File buildFolder = folder.newFolder("build");
@@ -47,7 +46,7 @@ public class JettyPluginTest {
         Files.write(new File(buildFolder, "index.html").toPath(), htmlContent.getBytes());
 
         new Thread(() -> {
-            new JettyPlugin().start(saito, mock(Sources.class));
+            new JettyPlugin(saitoConfig).start(saito, Collections.emptyList());
         }).start();
 
         String inputLine = httpGet(saitoConfig.getPort());

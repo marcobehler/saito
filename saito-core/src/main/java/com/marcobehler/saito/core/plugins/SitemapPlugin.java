@@ -2,10 +2,9 @@ package com.marcobehler.saito.core.plugins;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.files.BlogPost;
-import com.marcobehler.saito.core.files.Sources;
+import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.rendering.RenderingModel;
+import com.marcobehler.saito.core.rendering.Model;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,13 +22,16 @@ import java.util.List;
 @Slf4j
 public class SitemapPlugin  implements Plugin {
 
+    private final SaitoConfig cfg;
+
     @Inject
-    public SitemapPlugin() {    }
+    public SitemapPlugin(SaitoConfig saitoConfig) {
+        this.cfg = saitoConfig;
+    }
+
 
     @Override
-    public void start(Saito saito, Sources sources) {
-        SaitoConfig cfg = saito.getRenderingModel().getSaitoConfig();
-
+    public void start(Saito saito, List<? extends SaitoFile> sources) {
         if (!cfg.isGenerateSitemap()) {
             log.info("Sitemaps are turned off.");
             return;
@@ -42,26 +44,17 @@ public class SitemapPlugin  implements Plugin {
                     .autoValidate(true)
                     .build();
 
-            // add all "normal" pages
-            List<Template> templates = sources.getTemplates();
-            templates.forEach(t -> {
+            // add all normal pages & blog posts
+            sources.stream()
+                    .filter(s -> s instanceof Template)
+                    .map(s -> (Template) s)
+                    .forEach(t -> {
                 try {
                     wsg.addUrl(join(cfg, t));
                 } catch (MalformedURLException e) {
                     log.error("Error", e);
                 }
             });
-
-            // add all "blogposts" pages
-            List<BlogPost> blogPosts = sources.getBlogPosts();
-            blogPosts.forEach(b -> {
-                try {
-                    wsg.addUrl(join(cfg, b));
-                } catch (MalformedURLException e) {
-                    log.error("Error", e);
-                }
-            });
-
 
             // write to String as otherwise we can only write to "File", not "Path". Messes up JimFS
             List<String> strings = wsg.writeAsStrings();
@@ -84,7 +77,7 @@ public class SitemapPlugin  implements Plugin {
             host = host + "/";
         }
 
-        String outputPath = t.getTargetFile(new RenderingModel(cfg)).toString();
+        /*String outputPath = t.getTargetFile(new Model(cfg)).toString();
         outputPath = outputPath.replaceAll("\\\\", "/");
 
         if (outputPath.startsWith("/")) {
@@ -95,9 +88,9 @@ public class SitemapPlugin  implements Plugin {
 
         if (url.endsWith("/index.html")) {
             url = url.substring(0, url.length() -11);
-        }
+        }*/
 
-        return url;
+        return null;
     }
 
     @Override

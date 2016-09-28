@@ -3,26 +3,33 @@ package com.marcobehler.saito.core.files;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
+import com.marcobehler.saito.core.processing.TargetPathFinder;
+import com.marcobehler.saito.core.processing.TemplateProcessor;
+import com.marcobehler.saito.core.rendering.Model;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.dagger.TestSaito$$;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  *
  */
 public class BlogPostITest {
 
+
     @Test
     public void blog_post_should_be_processed_into_correct_directory_with_filename() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
-        Saito saito = saito$$.saito();
+        TargetPathFinder targetPathFinder = saito$$.targetPathFinder();
 
-        final Path sourceDirectory = saito.getSourcesDir();
+        final Path sourceDirectory = saito$$.sourcesDir();
 
         String templateFileName = "2015-03-05-this-is-it.html.ftl";
         Files.write(sourceDirectory.resolve(templateFileName), ("---\n" + "layout: layout\n" + "---This is not a test").getBytes());
@@ -33,10 +40,9 @@ public class BlogPostITest {
         final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.relativize(sourceDirectory.resolve(templateFileName)));
         bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
 
-        final Path buildDir = sourceDirectory.resolve("build");
-        Files.createDirectories(buildDir);
+        final Path buildDir = saito$$.buildDir();
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+        targetPathFinder.find(bp);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -46,19 +52,15 @@ public class BlogPostITest {
 
         final Path dayDir = monthDir.resolve("05");
         assertThat(Files.exists(dayDir)).isTrue();
-
-        final Path indexFile = dayDir.resolve("this-is-it.html");
-        assertThat(Files.exists(indexFile)).isTrue();
     }
 
     @Test
     public void blog_post_should_be_processed_into_correct_directory_with_directory_index() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
-        Saito saito = saito$$.saito();
+        TargetPathFinder targetPathFinder = saito$$.targetPathFinder();
+        targetPathFinder.getSaitoConfig().setDirectoryIndexes(true);
 
-        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
-
-        final Path sourceDirectory = saito.getSourcesDir();
+        final Path sourceDirectory = saito$$.sourcesDir();
 
         String templateFileName = "2015-03-05-this-is-it.html.ftl";
         Files.write(sourceDirectory.resolve(templateFileName), ("---\n" + "layout: layout\n" + "---This is not a test").getBytes());
@@ -69,10 +71,9 @@ public class BlogPostITest {
         final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.relativize(sourceDirectory.resolve(templateFileName)));
         bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
 
-        final Path buildDir = sourceDirectory.resolve("build");
-        Files.createDirectories(buildDir);
+        final Path buildDir = saito$$.buildDir();
 
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+        targetPathFinder.find(bp);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -86,19 +87,16 @@ public class BlogPostITest {
         final Path thisIsItDir = dayDir.resolve("this-is-it");
         assertThat(Files.exists(thisIsItDir)).isTrue();
 
-        final Path indexHtml = thisIsItDir.resolve("index.html");
-        assertThat(Files.exists(indexHtml)).isTrue();
     }
 
 
     @Test
     public void blog_draft_should_not_be_processed() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
-        Saito saito = saito$$.saito();
+        TargetPathFinder targetPathFinder = saito$$.targetPathFinder();
+        targetPathFinder.getSaitoConfig().setDirectoryIndexes(true);
 
-        saito.getRenderingModel().getSaitoConfig().setDirectoryIndexes(true);
-
-        final Path sourceDirectory = saito.getSourcesDir();
+        final Path sourceDirectory = saito$$.sourcesDir();
 
         String templateFileName = "2015-03-05-this-is-it.html.ftl";
         Files.write(sourceDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npublished: false\n" + "---This is not a test").getBytes());
@@ -109,9 +107,10 @@ public class BlogPostITest {
         final BlogPost bp = new BlogPost(sourceDirectory, sourceDirectory.relativize(sourceDirectory.resolve(templateFileName)));
         bp.setLayout(new Layout(sourceDirectory, sourceDirectory.resolve(layoutFileName)));
 
-        final Path buildDir = sourceDirectory.resolve("build");
-        Files.createDirectories(buildDir);
-        bp.process(saito.getRenderingModel(), buildDir, saito.getEngine());
+
+        final Path buildDir = saito$$.buildDir();
+
+        targetPathFinder.find(bp);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isFalse();
