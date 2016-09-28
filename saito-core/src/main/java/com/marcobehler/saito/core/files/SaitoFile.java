@@ -50,51 +50,5 @@ public class SaitoFile {
         return new String(data, Charset.forName("UTF-8"));
     }
 
-    public Path getOutputPath() {throw new UnsupportedOperationException();}
 
-    // todo enable pagination again
-    /*   if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
-        relativePath = relativePath.replaceAll("(.*)(\\.html.*)", "$1-page" + pagination.get().getCurrentPage() + "$2");
-    }*/
-
-    public Path getTargetFile(final Model model) {
-        Path targetFile = getOutputPath();
-        if (isDirectoryIndexEnabled(model.getSaitoConfig())) {
-            targetFile = toDirectoryIndex(targetFile);
-        }
-        return targetFile;
-    }
-
-    @SneakyThrows
-    private Path toDirectoryIndex(Path targetFile){
-        // todo enable pagination again
-      /*  if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
-            directoryIndexDir = directoryIndexDir.resolve("pages/" + pagination.get().getCurrentPage());
-        }*/
-        String directoryName = PathUtils.stripExtension(targetFile, ".html");
-        Path directoryIndexPath = targetFile.getFileSystem().getPath(directoryName, "index.html");
-        return directoryIndexPath;
-    }
-
-    public Path getTargetFile(Path buildDir, Model model) {
-        Path relativePath = getTargetFile(model);
-        Path absolutePath = buildDir.resolve(relativePath);
-        if (!Files.exists(absolutePath.getParent())) {
-            try {
-                Files.createDirectories(absolutePath.getParent());
-            } catch (IOException e) {
-                log.error("Error creating directory", e);
-            }
-        }
-        return absolutePath;
-    }
-
-
-    private boolean isDirectoryIndexEnabled(SaitoConfig config) {
-        if (getRelativePath().toString().contains("index.html")) {
-            return false;
-        }
-        // todo enable pagination again
-        return config.isDirectoryIndexes();
-    }
 }

@@ -38,11 +38,7 @@ public class Template extends SaitoFile {
 
     private Template() {}
 
-    @Override
-    public Path getOutputPath() {
-        final String blogPath = PathUtils.stripExtension(getRelativePath(), ".ftl");
-        return relativePath.getFileSystem().getPath(blogPath);
-    }
+
 
 
     public Template clone(String content) {

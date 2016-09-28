@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.processing;
 
+import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -25,7 +26,7 @@ public class TemplateProcessor implements Processor<Template> {
     private final Set<Renderer> renderers;
 
     @Inject
-    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
+    public TemplateProcessor( TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
         this.targetPathFinder = targetPathFinder;
         this.renderers = rendererers;
     }

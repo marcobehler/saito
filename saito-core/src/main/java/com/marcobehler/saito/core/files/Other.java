@@ -16,10 +16,6 @@ public class Other extends SaitoFile {
         super(sourceDirectory, relativePath);
     }
 
-    @Override
-    public Path getOutputPath() {
-        return getRelativePath();
-    }
 
     /**
      * Other files get copied as is, without any processing done to them.

@@ -26,11 +26,6 @@ public class DataFile extends SaitoFile {
         super(sourceDirectory, relativePath);
     }
 
-    @Override
-    public Path getOutputPath() {
-        return getRelativePath();
-    }
-
     /**
      * Parses the .json file and return its content as a map.
      * <p>

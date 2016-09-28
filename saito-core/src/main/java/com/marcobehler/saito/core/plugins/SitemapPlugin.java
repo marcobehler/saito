@@ -73,7 +73,7 @@ public class SitemapPlugin  implements Plugin {
             host = host + "/";
         }
 
-        String outputPath = t.getTargetFile(new Model(cfg)).toString();
+        /*String outputPath = t.getTargetFile(new Model(cfg)).toString();
         outputPath = outputPath.replaceAll("\\\\", "/");
 
         if (outputPath.startsWith("/")) {
@@ -84,9 +84,9 @@ public class SitemapPlugin  implements Plugin {
 
         if (url.endsWith("/index.html")) {
             url = url.substring(0, url.length() -11);
-        }
+        }*/
 
-        return url;
+        return null;
     }
 
     @Override
