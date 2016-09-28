@@ -44,11 +44,22 @@ public class TargetPathFinder {
         if (isDirectoryIndexEnabled(file)) {
             targetFile = toDirectoryIndex(targetFile);
         }
-        return toAbsolutePath(buildDir, targetFile);
+        Path absolutePath = buildDir.resolve(targetFile);
+
+        if (shouldCreateDirectories(file)){
+            createDirectoriesIfNecessary(absolutePath);
+        }
+        return absolutePath;
     }
 
-    private Path toAbsolutePath(Path buildDir, Path relativePath) {
-        Path absolutePath = buildDir.resolve(relativePath);
+    private <T extends SaitoFile> boolean shouldCreateDirectories(T file) {
+        if (file instanceof Template && !((Template) file).shouldProcess()) {
+            return false;
+        }
+        return true;
+    }
+
+    private <T extends SaitoFile> void createDirectoriesIfNecessary(Path absolutePath) {
         if (!Files.exists(absolutePath.getParent())) {
             try {
                 Files.createDirectories(absolutePath.getParent());
@@ -56,7 +67,6 @@ public class TargetPathFinder {
                 log.error("Error creating directory", e);
             }
         }
-        return absolutePath;
     }
 
 
