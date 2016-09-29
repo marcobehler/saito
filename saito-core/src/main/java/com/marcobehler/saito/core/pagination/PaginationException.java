@@ -1,12 +1,10 @@
 package com.marcobehler.saito.core.pagination;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>

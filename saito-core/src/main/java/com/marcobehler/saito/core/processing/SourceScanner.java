@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class SourceScanner {
 
     private static final Pattern layoutPattern = Pattern.compile("(?i)layouts[\\\\|/][^_].+\\.ftl");
-    private static final Pattern templatePattern = Pattern.compile("(?i).+\\.html\\.(ftl|asciidoc|adoc|asc|markdown|mdown|mkdn|mkd|md)");  // asciidoc und markdown TODO
+    private static final Pattern templatePattern = Pattern.compile("(?i).+\\.html\\.(ftl|asciidoc|adoc|asc|markdown|mdown|mkdn|mkd|md)");
     private static final Pattern filePattern = Pattern.compile("(?i).+\\..+");
     private static final Pattern dataPattern = Pattern.compile("(?i).+\\.json");
 

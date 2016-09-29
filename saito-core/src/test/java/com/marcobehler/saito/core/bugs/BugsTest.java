@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 public class BugsTest {
 
     @Test
-    @Ignore // comment in again once pagination is working
     public void pagination_wrong_dirs_are_created() throws IOException, BlogPost.BlogPostFormattingException {
         final TestSaito$$ saito$$ = DaggerTestSaito$$.builder().build();
         Saito saito = saito$$.saito();

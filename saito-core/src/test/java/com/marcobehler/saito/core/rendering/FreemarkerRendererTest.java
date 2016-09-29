@@ -3,19 +3,17 @@ package com.marcobehler.saito.core.rendering;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.marcobehler.saito.core.pagination.PaginationException;
 import lombok.Getter;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
 import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.freemarker.FreemarkerModule;
@@ -28,6 +26,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import org.junit.rules.ExpectedException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -110,7 +110,6 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
 
     @Test
-    @Ignore
     public void pagination_none_needed() throws IOException {
         String templateFileName = "index.ftl";
         Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 2---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
@@ -123,11 +122,16 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
         Model model = new Model();
         model.put("users", Arrays.asList(new User("Hans"), new User("Franz")));
+
         String rendered = new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
-        assertThat(rendered).isEqualTo("<p>Hans</p><p>Franz</p>");
+        assertThat(rendered).isEqualToIgnoringWhitespace("<p>Hans</p><p>Franz</p>");
     }
 
-    @Test(expected = PaginationException.class)
+    @Rule
+    public final ExpectedException thrown = ExpectedException.none();
+
+
+    @Test
     public void pagination_throws_exception_when_needed() throws IOException {
         String templateFileName = "index.ftl";
         Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u.name}</p>[/@saito.paginate]").getBytes());
@@ -140,28 +144,15 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
 
         Model model = new Model();
         model.put("users", Arrays.asList(new User("Hans"), new User("Franz")));
-        new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
-    }
-
-
-
-    @Test
-    @Ignore
-    public void pagination_get_correct_data_path() {
-
-        String s = "---\n" + "layout: layout\n" + "pagination:\n" + "  per_page: 1\n" + "---\n" + "\n" + "Jajajajajaj\n"
-                + "\n" + "[@saito.paginate data.dummy.friends; d]<p>${d}</p>[/@saito.paginate]\n" + "\n";
-
-        final Pattern p = Pattern.compile("\\[@saito\\.paginate\\s+(.+);.+\\]");
-        final Matcher matcher = p.matcher(s);
-        if (matcher.find()) {
-            System.out.println(matcher.group(1));
+        try {
+            new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
+            fail("Expected a PaginationException to be thrown");
+        } catch (PaginationException e) {
+            assertThat(e.getPages()).isEqualTo(2);
         }
-
     }
 
     @Test
-    @Ignore
     public void pagination_executed_twice_throws_no_exception() throws IOException {
         String templateFileName = "index.ftl";
         Files.write(workingDirectory.resolve(templateFileName), ("---\n" + "layout: layout\npagination:\n  per_page: 1---\n[@saito.paginate users; u]<p>${u}</p>[/@saito.paginate]").getBytes());
@@ -189,12 +180,21 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         return () -> FreemarkerModule.configuration(mock(LinkHelper.class), new MultiTemplateLoader(new TemplateLoader[]{new ClassTemplateLoader(Saito.class.getClassLoader(), "/")}));
     }
 
-    @Getter
+
     public static class User {
-        private final String name;
+        private String name;
 
 
         public User(String name) {
+            this.name = name;
+        }
+
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
             this.name = name;
         }
     }
