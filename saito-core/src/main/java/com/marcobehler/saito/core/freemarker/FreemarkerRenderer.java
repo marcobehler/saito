@@ -73,7 +73,7 @@ public class FreemarkerRenderer implements Renderer {
             template.process(dataModel, w);
         } catch (Exception e) {
             Throwable cause = e.getCause();
-            if (cause instanceof PaginationException) {
+            if (cause instanceof PaginationException) { // PaginationException gets wrapped, we have to unwrap it ehre
                throw cause;
             } else {
                 throw e;

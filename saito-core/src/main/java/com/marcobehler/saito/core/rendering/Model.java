@@ -2,6 +2,7 @@ package com.marcobehler.saito.core.rendering;
 
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
@@ -35,5 +36,10 @@ public class Model extends ConcurrentHashMap<String, Object>{
         Model clone = new Model();
         putAll(this);
         return clone;
+    }
+
+
+    public void setPaginationContent(List<Object> data) {
+        put("_saito_pagination_content_", data);
     }
 }

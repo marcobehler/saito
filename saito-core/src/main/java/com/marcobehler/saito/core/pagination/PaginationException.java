@@ -1,9 +1,10 @@
 package com.marcobehler.saito.core.pagination;
 
 import com.google.common.collect.Lists;
+import javafx.scene.control.Pagination;
 import lombok.Getter;
-import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,9 +14,6 @@ import java.util.List;
 public class PaginationException extends RuntimeException{
 
     private final int pages;
-
-    @Setter
-    private int currentPage;
 
     private final int pageSize;
 
@@ -32,5 +30,23 @@ public class PaginationException extends RuntimeException{
         return Lists.partition(data, pageSize);
     }
 
+
+    public Page toPage(int page) {
+     return new Page(getPartitions().get(page - 1), page);
+    }
+
+
+
+    @Getter
+    public static class Page {
+        private final List<Object> data;
+
+        private final int pageNumber;
+
+        public Page(List<Object> data, int pageNumber) {
+            this.data = data;
+            this.pageNumber = pageNumber;
+        }
+    }
 
 }

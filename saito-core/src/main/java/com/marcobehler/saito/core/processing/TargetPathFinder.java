@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.Getter;
@@ -105,6 +106,11 @@ public class TargetPathFinder {
         }
         // todo enable pagination again
         return saitoConfig.isDirectoryIndexes();
+    }
+
+
+    public Path find(Template template, PaginationException.Page page) {
+        return null;
     }
 
 
