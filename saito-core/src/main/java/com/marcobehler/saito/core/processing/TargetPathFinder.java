@@ -46,18 +46,33 @@ public class TargetPathFinder {
         if (isDirectoryIndexEnabled(file)) {
             targetFile = toDirectoryIndex(targetFile);
         }
-
-        Path absolutePath = buildDir.resolve(targetFile);
-
-        if (shouldCreateDirectories(file)){
-            createDirectoriesIfNecessary(absolutePath);
-        }
-        return absolutePath;
+        return toAbsolutePath(file, targetFile);
     }
 
 
     public Path find(Template template, Page page) {
-        return null;
+        if (page == null) {
+            throw new NullPointerException("Page is missing for pagination");
+        }
+
+        if (page.getPageNumber() == 1) {
+            return find(template);
+        }
+
+        Path targetFile;
+
+        if (isDirectoryIndexEnabled(template)) {
+            Path directoryIndexDir = toDirectoryIndex(getOutputPath(template)); // BE BUGGUNG
+            targetFile = directoryIndexDir.resolve("pages/" + page.getPageNumber());
+        }
+        else { // plain file naming
+            Path relativePath = template.getRelativePath();
+            Path parent = relativePath.getParent();
+            String fileName = relativePath.getFileName().toString().replaceAll("(.*)(\\.html)\\.ftl", "$1-page" + page.getPageNumber() + "$2");
+            targetFile = parent == null ? relativePath.getFileSystem().getPath(fileName) : parent.resolve(fileName);
+        }
+
+        return toAbsolutePath(template, targetFile);
     }
 
 
@@ -88,11 +103,14 @@ public class TargetPathFinder {
             final FileSystem fs = relativePath.getFileSystem();
             final String blogPath = BlogPost.BLOG_POST_PATTERN.matcher(asString).replaceAll("$1/$2/$3/$4$5");
             return fs.getPath(blogPath);
+        }
 
-        } else if (file instanceof Template) {
-            final String pathWithoutExtension = PathUtils.stripExtension(file.getRelativePath(), ".ftl");
-            return file.getRelativePath().getFileSystem().getPath(pathWithoutExtension);
-        } else if (file instanceof Other) {
+        if (file instanceof Template) {
+            String dotHtml = PathUtils.stripExtension(file.getRelativePath(), ".ftl");
+            return file.getRelativePath().getFileSystem().getPath(dotHtml);
+        }
+
+        if (file instanceof Other) {
             return file.getRelativePath();
         }
         throw new IllegalStateException("Trying to get path for unsupported file type");
@@ -100,43 +118,38 @@ public class TargetPathFinder {
 
     @SneakyThrows
     private Path toDirectoryIndex(Path targetFile) {
-        // todo enable pagination again
-      /*  if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
-            directoryIndexDir = directoryIndexDir.resolve("pages/" + pagination.get().getCurrentPage());
-        }*/
         String directoryName = PathUtils.stripExtension(targetFile, ".html");
-        Path directoryIndexPath = targetFile.getFileSystem().getPath(directoryName, "index.html");
-        return directoryIndexPath;
+        return targetFile.getFileSystem().getPath(directoryName, "index.html");
     }
 
+
+    private <T extends SaitoFile> Path toAbsolutePath(T saitoFile, Path targetFile) {
+        Path absolutePath = buildDir.resolve(targetFile);
+        if (shouldCreateDirectories(saitoFile)){
+            createDirectoriesIfNecessary(absolutePath);
+        }
+        return absolutePath;
+    }
 
     private boolean isDirectoryIndexEnabled(SaitoFile file) {
         if (file.getRelativePath().toString().contains("index.html")) {
             return false;
         }
-        // todo enable pagination again
         return saitoConfig.isDirectoryIndexes();
     }
 
 
-
-
       /*  getdirectory
-
         isindex  ----. currentdir vs cyrentdur/name
         isproxy name = pattern...
         ispaginate = currentdir ] page
                 getfilename
-
     /d.html
                 /d.html
                 /d/{pattern}.html
-
                 /d.html -> indexing on
         /d/index.html
-                /d/{pattern}/index.html
-*/
-
+                /d/{pattern}/index.html*/
        /* ThreadLocal<Path> tl = (ThreadLocal<Path>) model.getParameters().get(Model.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
         return null;*/
@@ -144,6 +157,6 @@ public class TargetPathFinder {
 
     // todo enable pagination again
     /*   if (pagination.isPresent() && pagination.get().getCurrentPage() > 1) {
-        relativePath = relativePath.replaceAll("(.*)(\\.html.*)", "$1-page" + pagination.get().getCurrentPage() + "$2");
+
     }*/
 }
