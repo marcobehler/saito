@@ -15,10 +15,17 @@ public class Paginator {
 
     public void restartIfNecessary(List<Object> collection, Integer pageSize) {
         log.info("{} {}", collection, pageSize);
-        if (!paginationInProgress) {
-            int pages = collection.size() / pageSize;
-            paginationInProgress = true;
-            throw new PaginationException(pages, pageSize, collection);
+
+        if (paginationInProgress) {
+            return;
         }
+
+        if (collection.size() <= pageSize) {
+            return;
+        }
+
+        int pages = collection.size() / pageSize;
+        paginationInProgress = true;
+        throw new PaginationException(pages, pageSize, collection);
     }
 }

@@ -1,23 +1,17 @@
 package com.marcobehler.saito.core.pagination;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Getter
-public class PaginationException extends RuntimeException{
+public class PaginationException extends RuntimeException {
 
     private final int pages;
-
-    @Setter
-    private int currentPage;
 
     private final int pageSize;
 
@@ -34,5 +28,10 @@ public class PaginationException extends RuntimeException{
         return Lists.partition(data, pageSize);
     }
 
+
+    public Page toPage(int page) {
+        List<Object> data = getPartitions().get(page - 1);
+        return new Page(data, page);
+    }
 
 }

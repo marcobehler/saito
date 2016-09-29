@@ -1,7 +1,8 @@
 package com.marcobehler.saito.core.processing;
 
-import com.marcobehler.saito.core.configuration.SaitoConfig;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.pagination.Page;
+import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,9 @@ public class TemplateProcessor implements Processor<Template> {
 
     private final Set<Renderer> renderers;
 
+
     @Inject
-    public TemplateProcessor( TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
+    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
         this.targetPathFinder = targetPathFinder;
         this.renderers = rendererers;
     }
@@ -49,36 +51,37 @@ public class TemplateProcessor implements Processor<Template> {
         try {
             String rendered = renderer.render(template, model);
             Files.write(targetFile, rendered.getBytes("UTF-8"));
+        } catch (PaginationException e) {
+            paginate(e, model, template);
         } catch (IOException e) {
             log.error("Error writing file", e);
         }
     }
 
 
+    private void paginate(PaginationException paginationException, Model currentModel, Template template) {
+        log.info("Starting to paginate ", paginationException);
 
-  /*  private void paginate(Model model, Path targetDir, Processors engine, PaginationException e) {
-        log.info("Starting to paginate ", e);
+        for (int i = 1; i <= paginationException.getPages(); i++ ) {
+            Page page = paginationException.toPage(i);
 
-        int pages = e.getPages();
-        final List<List<Object>> partitions = e.getPartitions();
+            Model clonedModel = currentModel.clone();
+            clonedModel.setPaginationContent(page.getData());
 
-        for (int i = 0; i < pages; i++ ) {
-            // TODO fix
-            Model clonedModel = model.clone();
-            clonedModel.getParameters().put("_saito_pagination_content_", partitions.get(i));
-            e.setCurrentPage(i + 1);
+            Path targetFile = targetPathFinder.find(template, page);
 
-            Path targetFile = getTargetFile(targetDir, model);
+            Template clonedTemplate = template.replaceAndClone("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
 
-            String paginatedTemplate = content.getText().replaceFirst("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
-            Template clonedTemplate = this.clone(paginatedTemplate);
-            String renderedString = engine.render(clonedTemplate, clonedModel);
+            Renderer renderer = renderers.stream()
+                    .filter(r -> r.canRender(clonedTemplate))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
             try {
-                Files.write(targetFile, renderedString.getBytes("UTF-8"));
-            } catch (IOException e1) {
-                log.error("Error writing file", e1);
+                String rendered = renderer.render(clonedTemplate, clonedModel);
+                Files.write(targetFile, rendered.getBytes("UTF-8"));
+            } catch (IOException e) {
+                log.error("Error writing file", e);
             }
         }
-    }*/
-
+    }
 }

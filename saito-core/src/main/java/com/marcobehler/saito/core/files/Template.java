@@ -39,17 +39,17 @@ public class Template extends SaitoFile {
     private Template() {}
 
 
+    public Template replaceAndClone(String regex, String replacement) {
+        String replacedContent = getContent().getText().replaceFirst(regex, replacement);
 
-
-    public Template clone(String content) {
         Template clone = new Template();
         clone.relativePath = getRelativePath();
         clone.sourceDirectory = getSourceDirectory();
         clone.frontmatter = frontmatter;
         clone.layout = layout;
-        clone.content = new TemplateContent(content);
+        clone.content = new TemplateContent(replacedContent);
         try {
-            clone.data = content.getBytes("UTF-8");
+            clone.data = replacedContent.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {}
         return clone;
     }

@@ -115,7 +115,6 @@ public class LinkHelper {
 
     private String directory(String directoryName) {
         if (saitoConfig.isRelativeLinks()) {
-            // TODO cast and error check
             ThreadLocal<Path> outputPathTL = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
             Path outputPath = outputPathTL.get();
 

@@ -23,9 +23,9 @@ ${saitoLinkHelper.favicon(icon)}
 ${saitoLinkHelper.imageTag(name, width, height, class, data, alt)}
 [/#macro]
 
-[#macro paginate data]
-${paginator.restartIfNecessary(data, current_page.pagination.per_page)}
-    [#list data as d]
-        [#nested d]
-    [/#list]
-[/#macro]
+
+[#macro paginate data]${paginator.restartIfNecessary(data, current_page.pagination.per_page)}[#list data as d][#nested d][/#list][/#macro]
+
+
+
+
