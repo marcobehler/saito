@@ -62,8 +62,9 @@ public class TargetPathFinder {
         Path targetFile;
 
         if (isDirectoryIndexEnabled(template)) {
-            Path directoryIndexDir = toDirectoryIndex(getOutputPath(template)); // BE BUGGUNG
-            targetFile = directoryIndexDir.resolve("pages/" + page.getPageNumber());
+            Path directoryIndexFile = toDirectoryIndex(getOutputPath(template)); // BE BUGGUNG
+            Path parent = directoryIndexFile.getParent();
+            targetFile = parent.resolve("pages/" + page.getPageNumber()).resolve("index.html");
         }
         else { // plain file naming
             Path relativePath = template.getRelativePath();
