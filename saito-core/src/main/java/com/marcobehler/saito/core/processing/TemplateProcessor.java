@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.processing;
 
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.pagination.Page;
 import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
@@ -62,7 +63,7 @@ public class TemplateProcessor implements Processor<Template> {
         log.info("Starting to paginate ", paginationException);
 
         for (int i = 1; i <= paginationException.getPages(); i++ ) {
-            PaginationException.Page page = paginationException.toPage(i);
+            Page page = paginationException.toPage(i);
 
             Model clonedModel = currentModel.clone();
             clonedModel.setPaginationContent(page.getData());

@@ -1,17 +1,15 @@
 package com.marcobehler.saito.core.pagination;
 
 import com.google.common.collect.Lists;
-import javafx.scene.control.Pagination;
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Marco Behler <marco@marcobehler.com>
  */
 @Getter
-public class PaginationException extends RuntimeException{
+public class PaginationException extends RuntimeException {
 
     private final int pages;
 
@@ -32,21 +30,8 @@ public class PaginationException extends RuntimeException{
 
 
     public Page toPage(int page) {
-     return new Page(getPartitions().get(page - 1), page);
-    }
-
-
-
-    @Getter
-    public static class Page {
-        private final List<Object> data;
-
-        private final int pageNumber;
-
-        public Page(List<Object> data, int pageNumber) {
-            this.data = data;
-            this.pageNumber = pageNumber;
-        }
+        List<Object> data = getPartitions().get(page - 1);
+        return new Page(data, page);
     }
 
 }

@@ -5,8 +5,7 @@ import com.marcobehler.saito.core.files.BlogPost;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
-import com.marcobehler.saito.core.pagination.PaginationException;
-import com.marcobehler.saito.core.rendering.Model;
+import com.marcobehler.saito.core.pagination.Page;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -40,11 +39,14 @@ public class TargetPathFinder {
         this.buildDir = buildDir;
     }
 
+    // ============= PUBLIC API ====================
+
     public <T extends SaitoFile> Path find(T file) {
         Path targetFile = getOutputPath(file);
         if (isDirectoryIndexEnabled(file)) {
             targetFile = toDirectoryIndex(targetFile);
         }
+
         Path absolutePath = buildDir.resolve(targetFile);
 
         if (shouldCreateDirectories(file)){
@@ -52,6 +54,14 @@ public class TargetPathFinder {
         }
         return absolutePath;
     }
+
+
+    public Path find(Template template, Page page) {
+        return null;
+    }
+
+
+    // ============= PRIVATE API ====================
 
     private <T extends SaitoFile> boolean shouldCreateDirectories(T file) {
         if (file instanceof Template && !((Template) file).shouldProcess()) {
@@ -108,10 +118,6 @@ public class TargetPathFinder {
         return saitoConfig.isDirectoryIndexes();
     }
 
-
-    public Path find(Template template, PaginationException.Page page) {
-        return null;
-    }
 
 
 
