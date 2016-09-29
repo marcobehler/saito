@@ -1,22 +1,15 @@
 package com.marcobehler.saito.core.files;
 
+import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
+import com.marcobehler.saito.core.dagger.TestSaito$$;
+import com.marcobehler.saito.core.processing.TargetPathFinder;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-
-import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
-import com.marcobehler.saito.core.processing.TargetPathFinder;
-import com.marcobehler.saito.core.processing.TemplateProcessor;
-import com.marcobehler.saito.core.rendering.Model;
-import org.junit.Test;
-
-import com.marcobehler.saito.core.Saito;
-import com.marcobehler.saito.core.dagger.TestSaito$$;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  *
