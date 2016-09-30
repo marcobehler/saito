@@ -64,16 +64,65 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
 
     @Test
-    public void pagination_creates_correct_dirs_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
+    public void pagination_creates_correct_files_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
         saito.getConfig().setDirectoryIndexes(false);
         saito.build();
 
         Path buildDir = saito.getWorkingDir().resolve("build");
+
         assertThat(buildDir.resolve("friends/tom.html")).exists();
         assertThat(buildDir.resolve("friends/dick.html")).exists();
         assertThat(buildDir.resolve("friends/harry.html")).exists();
+
+        assertThat(buildDir.resolve("friends/tom/index.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/dick/index.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/harry/index.html")).doesNotExist();
+
     }
 
+    @Test
+    public void pagination_creates_correct_content_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(false);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/tom.html")).hasContent("<p>My friend Tom is of age 15</p>");
+        assertThat(buildDir.resolve("friends/dick.html")).hasContent("<p>My friend Dick is of age 20</p>");
+        assertThat(buildDir.resolve("friends/harry.html")).hasContent("<p>My friend Harry is of age 22</p>");
+    }
+
+
+
+    @Test
+    public void pagination_creates_correct_files_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(true);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/tom/index.html")).exists();
+        assertThat(buildDir.resolve("friends/dick/index.html")).exists();
+        assertThat(buildDir.resolve("friends/harry/index.html")).exists();
+
+        assertThat(buildDir.resolve("friends/tom.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/dick.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/harry.html")).doesNotExist();
+    }
+
+
+
+    @Test
+    public void pagination_creates_correct_content_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(true);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/tom/index.html")).hasContent("<p>My friend Tom is of age 15</p>");
+        assertThat(buildDir.resolve("friends/dick/index.html")).hasContent("<p>My friend Dick is of age 20</p>");
+        assertThat(buildDir.resolve("friends/harry/index.html")).hasContent("<p>My friend Harry is of age 22</p>");
+    }
 
 }
 

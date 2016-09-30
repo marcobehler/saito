@@ -1,5 +1,6 @@
 package com.marcobehler.saito.core.processing;
 
+import com.github.slugify.Slugify;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.pagination.Page;
 import com.marcobehler.saito.core.pagination.PaginationException;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -89,7 +92,10 @@ public class TemplateProcessor implements Processor<Template> {
                 Model clonedModel = model.clone();
                 clonedModel.put(template.getProxyAlias(), d);
 
-                Path targetFile = targetPathFinder.find(template, template.getProxyPattern());
+                String proxyPattern = template.getProxyPattern();
+                String replacedProxyPattern = replacePattern(proxyPattern, d);
+
+                Path targetFile = targetPathFinder.find(template, replacedProxyPattern);
 
                 Renderer renderer = renderers.stream()
                         .filter(r -> r.canRender(template))
@@ -107,16 +113,35 @@ public class TemplateProcessor implements Processor<Template> {
                     log.error("Error writing file", e);
                 }
             }
-
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace(); // TODO proper handling
         }
-
-
-
-
     }
 
+    private String replacePattern(String proxyPattern, Object data) {
+        String result = proxyPattern;
+
+        // 1. replace placeholders
+        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+        Matcher matcher = pattern.matcher(proxyPattern);
+        while (matcher.find()) {
+            try {
+                Object dataValue = new PropertyUtilsBean().getProperty(data, matcher.group(1));
+                if (dataValue != null) {
+                    result = result.replaceAll("\\$\\{" + matcher.group(1) + "\\}", dataValue.toString());
+                }
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        // 2. slugify
+        Slugify slg = new Slugify();
+        result = slg.slugify(result);
+
+        return result;
+    }
 
 
     private void paginate(PaginationException paginationException, Model currentModel, Template template) {

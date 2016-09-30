@@ -51,8 +51,13 @@ public class TargetPathFinder {
 
 
     public Path find(Template template, String pattern) {
-        return find(template);
+        Path targetFile = getOutputPath(template, pattern);
+        if (isDirectoryIndexEnabled(template)) {
+            targetFile = toDirectoryIndex(targetFile);
+        }
+        return toAbsolutePath(template, targetFile);
     }
+
 
     public Path find(Template template, Page page) {
         if (page == null) {
@@ -100,6 +105,20 @@ public class TargetPathFinder {
         }
     }
 
+    private Path getOutputPath(Template template, String pattern) {
+        Path relativePath = template.getRelativePath();
+        String fileNameWithExtension = relativePath.getFileName().toString();
+
+        String extensions = fileNameWithExtension.substring(fileNameWithExtension.indexOf("."), fileNameWithExtension.length());
+        extensions = extensions.substring(0, extensions.toLowerCase().indexOf(".ftl"));
+
+        String fileName = fileNameWithExtension.substring(0, fileNameWithExtension.indexOf("."));
+        fileName = fileName + "/" + pattern;
+
+        Path parent = relativePath.getParent();
+
+        return parent != null ? parent.resolve(fileName + extensions) : relativePath.getFileSystem().getPath(fileName + extensions);
+    }
 
     public Path getOutputPath(SaitoFile file) {
         if (file instanceof BlogPost) {
