@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Created by BEHLEMA on 30.09.2016.
