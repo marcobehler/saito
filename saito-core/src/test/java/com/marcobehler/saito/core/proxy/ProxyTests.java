@@ -6,6 +6,7 @@ import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
 import com.marcobehler.saito.core.dagger.TestSaito$$;
 import com.marcobehler.saito.core.files.BlogPost;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class ProxyTests extends BaseInMemoryFSTest {
                 "  local: \n" +
                 "    name: Darth\n" +
                 "    age: 99\n" +
+                "    kids: []\n" +
                 "---\n" +
                 "\n" +
                 "\n" +
@@ -161,6 +163,49 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
         assertThat(buildDir.resolve("friends/index.html")).exists();
         assertThat(buildDir.resolve("friends/index.html")).hasContent("<p>My friend Darth is of age 99</p>");
+    }
+
+
+    @Test
+    @Ignore
+    public void proxying_and_pagination() throws IOException, BlogPost.BlogPostFormattingException {
+        final Path sourceDirectory = saito.getSourcesDir();
+
+        String templateFileName = "friends.html.ftl";
+        Files.write(sourceDirectory.resolve(templateFileName), ("---\n" +
+                "layout: layout\n" +
+                "pagination: \n" +
+                "  per_page: 1\n" +
+                "proxy:\n" +
+                "  data: data.dummy.friends\n" +
+                "  pattern: ${name}\n" +
+                "  alias: friend\n" +
+                "  local: \n" +
+                "    name: Darth\n" +
+                "    age: 99\n" +
+                "    kids: []\n" +
+                "---\n" +
+                "\n" +
+                "\n" +
+                "My friend ${friend.name} is of age ${friend.age} and has kid: [@saito.paginate friend.kids; k]<p>${k}</p>[/@saito.paginate] \n"
+        ).getBytes());
+
+        saito.getConfig().setDirectoryIndexes(true);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/tom/index.html")).exists();
+        assertThat(buildDir.resolve("friends/tom/pages/2/index.html")).exists();
+        assertThat(buildDir.resolve("friends/tom/pages/3/index.html")).exists();
+
+        assertThat(buildDir.resolve("friends/dick/index.html")).exists();
+        assertThat(buildDir.resolve("friends/dick/pages/2/index.html")).exists();
+        assertThat(buildDir.resolve("friends/dick/pages/3/index.html")).doesNotExist();
+
+        assertThat(buildDir.resolve("friends/harry/index.html")).exists();
+        assertThat(buildDir.resolve("friends/harry/pages/2/index.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/harry/pages/3/index.html")).doesNotExist();
     }
 }
 
