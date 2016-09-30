@@ -35,7 +35,8 @@ public class ProxyTests extends BaseInMemoryFSTest {
                 "  \"friends\": [\n" +
                 "   { \"name\" : \"Tom\", \"age\": 15}, \n" +
                 "   { \"name\" : \"Dick\", \"age\": 20}, \n" +
-                "   { \"name\":  \"Harry\", \"age\": 22}\n" +
+                "   { \"name\":  \"Harry\", \"age\": 22},\n" +
+                "   { \"name\":  \"Dörpär ist Ne Muddi\", \"age\": 25}\n" +
                 "  ]\n" +
                 "}").getBytes());
 
@@ -64,7 +65,7 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
 
     @Test
-    public void pagination_creates_correct_files_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
+    public void proxying_creates_correct_files_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
         saito.getConfig().setDirectoryIndexes(false);
         saito.build();
 
@@ -81,7 +82,18 @@ public class ProxyTests extends BaseInMemoryFSTest {
     }
 
     @Test
-    public void pagination_creates_correct_content_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
+    public void proxying_slugifys_data() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(false);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/doerpaer-ist-ne-muddi.html")).exists();
+    }
+    
+
+    @Test
+    public void proxying_creates_correct_content_with_indexing_off() throws IOException, BlogPost.BlogPostFormattingException {
         saito.getConfig().setDirectoryIndexes(false);
         saito.build();
 
@@ -95,7 +107,7 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
 
     @Test
-    public void pagination_creates_correct_files_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
+    public void proxying_creates_correct_files_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
         saito.getConfig().setDirectoryIndexes(true);
         saito.build();
 
@@ -113,7 +125,7 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
 
     @Test
-    public void pagination_creates_correct_content_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
+    public void proxying_creates_correct_content_with_indexing_on() throws IOException, BlogPost.BlogPostFormattingException {
         saito.getConfig().setDirectoryIndexes(true);
         saito.build();
 
