@@ -12,6 +12,7 @@ import org.springframework.boot.devtools.livereload.LiveReloadServer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber, TemplatePo
     }
 
     @Override
-    public String postProcess(String rendered) {
+    public String onBeforeWrite(Path targetFile, String rendered) {
         if (isEnabled) {
             return rendered.replaceFirst("</head>", LIVE_RELOAD_TAG + "</head>");
         }

@@ -5,6 +5,7 @@ import com.marcobehler.saito.core.files.DataFile;
 import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
+import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Renderer;
 import dagger.Module;
 import dagger.Provides;
@@ -36,8 +37,8 @@ public class ProcessingModule {
     @Provides
     @IntoMap
     @ProcessorClassKey(Template.class)
-    static Processor<? extends SaitoFile> templateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> renderers) {
-        return new TemplateProcessor(targetPathFinder, renderers);
+    static Processor<? extends SaitoFile> templateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> renderers, Set<TemplatePostProcessor> templatePostProcessors) {
+        return new TemplateProcessor(targetPathFinder, renderers, templatePostProcessors);
     }
 
 }
