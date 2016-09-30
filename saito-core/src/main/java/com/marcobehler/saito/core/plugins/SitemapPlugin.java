@@ -9,26 +9,39 @@ import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.marcobehler.saito.core.dagger.PathsModule.BUILD_DIR;
 
 /**
  * Created by BEHLEMA on 22.08.2016.
  */
 @Singleton
 @Slf4j
-public class SitemapPlugin  implements Plugin {
+public class SitemapPlugin  implements Plugin, TemplatePostProcessor {
 
     private final SaitoConfig cfg;
+    private final Path buildDir;
+
+    private List<Path> renderedPaths = new ArrayList<>();
 
     @Inject
-    public SitemapPlugin(SaitoConfig saitoConfig) {
-        this.cfg = saitoConfig;
+    public SitemapPlugin(SaitoConfig saitoConfig, @Named(BUILD_DIR) Path buildDir) {
+        this.cfg = saitoConfig; this.buildDir = buildDir;
     }
 
+
+    @Override
+    public String onBeforeWrite(Path targetFile, String rendered) {
+        renderedPaths.add(targetFile);
+        return rendered;
+    }
 
     @Override
     public void start(Saito saito, List<? extends SaitoFile> sources) {
@@ -43,13 +56,9 @@ public class SitemapPlugin  implements Plugin {
                     .autoValidate(true)
                     .build();
 
-            // add all normal pages & blog posts
-            sources.stream()
-                    .filter(s -> s instanceof Template)
-                    .map(s -> (Template) s)
-                    .forEach(t -> {
+            renderedPaths.forEach(path -> {
                 try {
-                    wsg.addUrl(join(cfg, t));
+                    wsg.addUrl(join(cfg, path));
                 } catch (MalformedURLException e) {
                     log.error("Error", e);
                 }
@@ -70,13 +79,14 @@ public class SitemapPlugin  implements Plugin {
         }
     }
 
-    private String join(SaitoConfig cfg, Template t) {
+    private String join(SaitoConfig cfg, Path absolutePath) {
         String host = cfg.getHost();
         if (!host.endsWith("/")) {
             host = host + "/";
         }
 
-        /*String outputPath = t.getTargetFile(new Model(cfg)).toString();
+
+        String outputPath = buildDir.relativize(absolutePath).toString();
         outputPath = outputPath.replaceAll("\\\\", "/");
 
         if (outputPath.startsWith("/")) {
@@ -87,13 +97,14 @@ public class SitemapPlugin  implements Plugin {
 
         if (url.endsWith("/index.html")) {
             url = url.substring(0, url.length() -11);
-        }*/
+        }
 
-        return null;
+        return url;
     }
 
     @Override
     public Integer getOrder() {
         return 9;
     }
+
 }

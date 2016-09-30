@@ -3,6 +3,7 @@ package com.marcobehler.saito.core.processing;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.pagination.Page;
 import com.marcobehler.saito.core.pagination.PaginationException;
+import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +27,13 @@ public class TemplateProcessor implements Processor<Template> {
 
     private final Set<Renderer> renderers;
 
+    private final Set<TemplatePostProcessor> templatePostProcessor;
 
     @Inject
-    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers) {
+    public TemplateProcessor(TargetPathFinder targetPathFinder, Set<Renderer> rendererers, Set<TemplatePostProcessor> templatePostProcessors) {
         this.targetPathFinder = targetPathFinder;
         this.renderers = rendererers;
+        this.templatePostProcessor = templatePostProcessors;
     }
 
     public void process(Template template, Model model) {
@@ -50,6 +53,11 @@ public class TemplateProcessor implements Processor<Template> {
                 .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
         try {
             String rendered = renderer.render(template, model);
+
+            for (TemplatePostProcessor each: templatePostProcessor) {
+                rendered = each.onBeforeWrite(targetFile, rendered);
+            }
+
             Files.write(targetFile, rendered.getBytes("UTF-8"));
         } catch (PaginationException e) {
             paginate(e, model, template);
@@ -78,6 +86,11 @@ public class TemplateProcessor implements Processor<Template> {
                     .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
             try {
                 String rendered = renderer.render(clonedTemplate, clonedModel);
+
+                for (TemplatePostProcessor each: templatePostProcessor) {
+                    rendered = each.onBeforeWrite(targetFile, rendered);
+                }
+
                 Files.write(targetFile, rendered.getBytes("UTF-8"));
             } catch (IOException e) {
                 log.error("Error writing file", e);
