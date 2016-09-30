@@ -54,6 +54,10 @@ public class SitemapPlugin  implements Plugin, TemplatePostProcessor {
             return;
         }
 
+        if (cfg.getHost() == null) {
+            log.warn("You did not specify a 'host' property in config.yaml. Skipping generating sitemap...");
+        }
+
         try {
             log.info("Generating Sitemap...");
             Path buildDir = saito.getWorkingDir().resolve("build");
