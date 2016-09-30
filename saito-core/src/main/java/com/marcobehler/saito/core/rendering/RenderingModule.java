@@ -1,6 +1,7 @@
 package com.marcobehler.saito.core.rendering;
 
 import com.marcobehler.saito.core.plugins.LiveReloadPlugin;
+import com.marcobehler.saito.core.plugins.SitemapPlugin;
 import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import dagger.Module;
 import dagger.Provides;
@@ -30,7 +31,7 @@ public class RenderingModule {
 
     @Provides(type = SET_VALUES)
     @Singleton
-    static Set<TemplatePostProcessor> templatePostProcessor(LiveReloadPlugin plugin) {
-        return new HashSet<>(Arrays.asList(plugin));
+    static Set<TemplatePostProcessor> templatePostProcessor(LiveReloadPlugin plugin, SitemapPlugin sitemapPlugin) {
+        return new HashSet<>(Arrays.asList(plugin, sitemapPlugin));
     }
 }

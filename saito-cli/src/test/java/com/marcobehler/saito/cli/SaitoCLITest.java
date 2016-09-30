@@ -2,6 +2,7 @@ package com.marcobehler.saito.cli;
 
 import com.marcobehler.saito.core.Saito;
 import com.marcobehler.saito.core.plugins.Plugin;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -9,10 +10,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.PrintStream;
+import java.util.HashSet;
 import java.util.Set;
 
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.startsWith;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class SaitoCLITest {
 
+
     @Mock
     private Saito saito;
 
@@ -30,6 +32,11 @@ public class SaitoCLITest {
 
     @InjectMocks
     private SaitoCLI saitoCLI;
+
+    @Before
+    public void setup() {
+        saitoCLI.cliPlugins = new HashSet<>();
+    }
 
     @Test
     public void cli_can_run_inits() {
@@ -46,13 +53,13 @@ public class SaitoCLITest {
     @Test
     public void cli_can_run_builds() {
         saitoCLI.run(new String[]{"build"});
-        verify(saito).build();
+        verify(saito).build(anySet());
     }
 
     @Test
     public void cli_can_run_server() {
         saitoCLI.run(new String[]{"server"});
-        verify(saito).build(plugins);
+        verify(saito).build(anySet());
     }
 
     @Test

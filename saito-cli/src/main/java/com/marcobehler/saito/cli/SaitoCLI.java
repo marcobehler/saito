@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,7 +36,7 @@ public class SaitoCLI {
     private boolean version;
 
     private final Saito saito;
-    private final Set<Plugin> cliPlugins;
+    Set<Plugin> cliPlugins = new HashSet<>();
 
     private SaitoCLICommands.InitCommand initCommand;
     private JCommander jc;

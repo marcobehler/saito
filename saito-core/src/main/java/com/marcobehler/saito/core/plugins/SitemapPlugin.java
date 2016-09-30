@@ -50,6 +50,10 @@ public class SitemapPlugin  implements Plugin, TemplatePostProcessor {
             return;
         }
 
+        if (renderedPaths.isEmpty()) {
+            return;
+        }
+
         try {
             log.info("Generating Sitemap...");
             Path buildDir = saito.getWorkingDir().resolve("build");
@@ -99,6 +103,8 @@ public class SitemapPlugin  implements Plugin, TemplatePostProcessor {
         if (url.endsWith("/index.html")) {
             url = url.substring(0, url.length() -11);
         }
+
+        log.trace("Added URL to Sitemap: {}", url);
 
         return url;
     }
