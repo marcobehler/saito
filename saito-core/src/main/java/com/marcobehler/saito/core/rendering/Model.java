@@ -34,7 +34,7 @@ public class Model extends ConcurrentHashMap<String, Object>{
 
     public Model clone() {
         Model clone = new Model();
-        putAll(this);
+        clone.putAll(this);
         return clone;
     }
 
