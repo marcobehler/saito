@@ -38,7 +38,7 @@ public class SitemapPlugin  implements Plugin, TemplatePostProcessor {
 
 
     @Override
-    public String onBeforeWrite(Path targetFile, String rendered) {
+    public String onBeforeTemplateWrite(Path targetFile, String rendered) {
         renderedPaths.add(targetFile);
         return rendered;
     }
