@@ -7,7 +7,7 @@ import java.nio.file.Path;
  */
 public interface TemplatePostProcessor {
 
-    default String onBeforeTemplateWrite(Path targetFile, String rendered) {
+    default String onBeforeWrite(Path targetFile, String rendered) {
         return rendered;
     }
 

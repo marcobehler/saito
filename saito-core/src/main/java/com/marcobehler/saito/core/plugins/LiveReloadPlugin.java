@@ -53,7 +53,7 @@ public class LiveReloadPlugin implements Plugin, FileEventSubscriber, TemplatePo
     }
 
     @Override
-    public String onBeforeTemplateWrite(Path targetFile, String rendered) {
+    public String onBeforeWrite(Path targetFile, String rendered) {
         if (isEnabled) {
             return rendered.replaceFirst("</head>", LIVE_RELOAD_TAG + "</head>");
         }

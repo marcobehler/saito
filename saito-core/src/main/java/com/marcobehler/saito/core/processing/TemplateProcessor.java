@@ -55,7 +55,7 @@ public class TemplateProcessor implements Processor<Template> {
             String rendered = renderer.render(template, model);
 
             for (TemplatePostProcessor each: templatePostProcessor) {
-                rendered = each.onBeforeTemplateWrite(targetFile, rendered);
+                rendered = each.onBeforeWrite(targetFile, rendered);
             }
 
             Files.write(targetFile, rendered.getBytes("UTF-8"));
@@ -88,7 +88,7 @@ public class TemplateProcessor implements Processor<Template> {
                 String rendered = renderer.render(clonedTemplate, clonedModel);
 
                 for (TemplatePostProcessor each: templatePostProcessor) {
-                    rendered = each.onBeforeTemplateWrite(targetFile, rendered);
+                    rendered = each.onBeforeWrite(targetFile, rendered);
                 }
 
                 Files.write(targetFile, rendered.getBytes("UTF-8"));
