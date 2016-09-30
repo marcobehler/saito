@@ -39,6 +39,7 @@ public class FreemarkerModule {
             freemarker.log.Logger.selectLoggerLibrary(Logger.LIBRARY_SLF4J);
             Configuration cfg = new freemarker.template.Configuration(Configuration.VERSION_2_3_25);
             cfg.setTagSyntax(freemarker.template.Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+            cfg.setLazyAutoImports(true);
             cfg.addAutoImport("saito", "saito.ftl");
             cfg.setSharedVariable("saitoLinkHelper", linkHelper);
             cfg.setDefaultEncoding("UTF-8");

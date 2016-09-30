@@ -50,6 +50,10 @@ public class TargetPathFinder {
     }
 
 
+    public Path find(Template template, String pattern) {
+        return find(template);
+    }
+
     public Path find(Template template, Page page) {
         if (page == null) {
             throw new NullPointerException("Page is missing for pagination");

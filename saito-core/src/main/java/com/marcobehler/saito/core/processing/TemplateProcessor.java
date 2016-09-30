@@ -7,12 +7,15 @@ import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Set;
 
 
@@ -45,6 +48,15 @@ public class TemplateProcessor implements Processor<Template> {
             return;
         }
 
+        if (template.isProxyPage()) {
+            renderProxyPages(template, model);
+        }
+        else {
+            renderNormalPage(template, model);
+        }
+    }
+
+    private void renderNormalPage(Template template, Model model) {
         Path targetFile = targetPathFinder.find(template);
 
         Renderer renderer = renderers.stream()
@@ -65,6 +77,46 @@ public class TemplateProcessor implements Processor<Template> {
             log.error("Error writing file", e);
         }
     }
+
+
+    private void renderProxyPages(Template template, Model model) {
+        log.info("Starting to render proxy pages for {}", template);
+        String expression = template.getProxyDataKey() ;
+        try {
+            Collection<Object> data = (Collection<Object>) new PropertyUtilsBean().getProperty(model, expression);
+
+            for (Object d: data) {
+                Model clonedModel = model.clone();
+                clonedModel.put(template.getProxyAlias(), d);
+
+                Path targetFile = targetPathFinder.find(template, template.getProxyPattern());
+
+                Renderer renderer = renderers.stream()
+                        .filter(r -> r.canRender(template))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
+                try {
+                    String rendered = renderer.render(template, clonedModel);
+
+                    for (TemplatePostProcessor each: templatePostProcessor) {
+                        rendered = each.onBeforeWrite(targetFile, rendered);
+                    }
+
+                    Files.write(targetFile, rendered.getBytes("UTF-8"));
+                } catch (IOException e) {
+                    log.error("Error writing file", e);
+                }
+            }
+
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace(); // TODO proper handling
+        }
+
+
+
+
+    }
+
 
 
     private void paginate(PaginationException paginationException, Model currentModel, Template template) {
