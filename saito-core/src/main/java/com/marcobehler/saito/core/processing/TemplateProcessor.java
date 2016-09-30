@@ -83,7 +83,7 @@ public class TemplateProcessor implements Processor<Template> {
 
 
     private void renderProxyPages(Template template, Model model) {
-        log.info("Starting to render proxy pages for {}", template);
+        log.trace("Starting to render proxy pages for {}", template);
         String expression = template.getProxyDataKey() ;
         try {
             Collection<Object> data = (Collection<Object>) new PropertyUtilsBean().getProperty(model, expression);
@@ -145,7 +145,7 @@ public class TemplateProcessor implements Processor<Template> {
 
 
     private void paginate(PaginationException paginationException, Model currentModel, Template template) {
-        log.info("Starting to paginate ", paginationException);
+        log.trace("Starting to paginate ", paginationException);
 
         for (int i = 1; i <= paginationException.getPages(); i++ ) {
             Page page = paginationException.toPage(i);
