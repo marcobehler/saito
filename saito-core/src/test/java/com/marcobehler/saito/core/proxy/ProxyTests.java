@@ -33,9 +33,9 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
         Files.write(dataDir.resolve("dummy.json"), ("{\n" +
                 "  \"friends\": [\n" +
-                "   { \"name\" : \"Tom\", \"age:\": 15}, \n" +
-                "   { \"name\" : \"Dick\", \"age:\": 20}, \n" +
-                "   { \"name\":  \"Harry\", \"age:\": 22}\n" +
+                "   { \"name\" : \"Tom\", \"age\": 15}, \n" +
+                "   { \"name\" : \"Dick\", \"age\": 20}, \n" +
+                "   { \"name\":  \"Harry\", \"age\": 22}\n" +
                 "  ]\n" +
                 "}").getBytes());
 
