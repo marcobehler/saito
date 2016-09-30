@@ -53,8 +53,7 @@ public class TemplateProcessor implements Processor<Template> {
 
         if (template.isProxyPage()) {
             renderProxyPages(template, model);
-        }
-        else {
+        } else {
             renderNormalPage(template, model);
         }
     }
@@ -66,34 +65,23 @@ public class TemplateProcessor implements Processor<Template> {
                 .filter(r -> r.canRender(template))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
-        try {
-            String rendered = renderer.render(template, model);
 
-            for (TemplatePostProcessor each: templatePostProcessor) {
-                rendered = each.onBeforeWrite(targetFile, rendered);
-            }
-
-            Files.write(targetFile, rendered.getBytes("UTF-8"));
-        } catch (PaginationException e) {
-            paginate(e, model, template);
-        } catch (IOException e) {
-            log.error("Error writing file", e);
-        }
+        doRender(renderer, template, model, targetFile);
     }
 
 
     private void renderProxyPages(Template template, Model model) {
         log.trace("Starting to render proxy pages for {}", template);
-        String expression = template.getProxyDataKey() ;
+        String expression = template.getProxyDataKey();
         try {
             Collection<Object> data = (Collection<Object>) new PropertyUtilsBean().getProperty(model, expression);
 
-            for (Object d: data) {
+            for (Object d : data) {
                 Model clonedModel = model.clone();
                 clonedModel.put(template.getProxyAlias(), d);
 
                 String proxyPattern = template.getProxyPattern();
-                String replacedProxyPattern = replacePattern(proxyPattern, d);
+                String replacedProxyPattern = replaceProxyPattern(proxyPattern, d);
 
                 Path targetFile = targetPathFinder.find(template, replacedProxyPattern);
 
@@ -101,24 +89,54 @@ public class TemplateProcessor implements Processor<Template> {
                         .filter(r -> r.canRender(template))
                         .findFirst()
                         .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
-                try {
-                    String rendered = renderer.render(template, clonedModel);
-
-                    for (TemplatePostProcessor each: templatePostProcessor) {
-                        rendered = each.onBeforeWrite(targetFile, rendered);
-                    }
-
-                    Files.write(targetFile, rendered.getBytes("UTF-8"));
-                } catch (IOException e) {
-                    log.error("Error writing file", e);
-                }
+                doRender(renderer, template, clonedModel, targetFile);
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace(); // TODO proper handling
         }
     }
 
-    private String replacePattern(String proxyPattern, Object data) {
+
+    private void paginate(PaginationException paginationException, Model currentModel, Template template) {
+        log.trace("Starting to paginate ", paginationException);
+
+        for (int i = 1; i <= paginationException.getPages(); i++) {
+            Page page = paginationException.toPage(i);
+
+            Model clonedModel = currentModel.clone();
+            clonedModel.setPaginationContent(page.getData());
+
+            Path targetFile = targetPathFinder.find(template, page);
+
+            Template clonedTemplate = template.replaceAndClone("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
+
+            Renderer renderer = renderers.stream()
+                    .filter(r -> r.canRender(clonedTemplate))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
+            doRender(renderer, clonedTemplate, clonedModel, targetFile);
+        }
+    }
+
+
+    private void doRender(Renderer renderer, Template template, Model clonedModel, Path targetFile) {
+        try {
+            String rendered = renderer.render(template, clonedModel);
+
+            for (TemplatePostProcessor each : templatePostProcessor) {
+                rendered = each.onBeforeWrite(targetFile, rendered);
+            }
+
+            Files.write(targetFile, rendered.getBytes("UTF-8"));
+        } catch (PaginationException e) {
+            paginate(e, clonedModel, template);
+        } catch (IOException e) {
+            log.error("Error writing file", e);
+        }
+    }
+
+
+    private String replaceProxyPattern(String proxyPattern, Object data) {
         String result = proxyPattern;
 
         // 1. replace placeholders
@@ -126,9 +144,11 @@ public class TemplateProcessor implements Processor<Template> {
         Matcher matcher = pattern.matcher(proxyPattern);
         while (matcher.find()) {
             try {
-                Object dataValue = new PropertyUtilsBean().getProperty(data, matcher.group(1));
+                String variableName = matcher.group(1);
+                Object dataValue = new PropertyUtilsBean().getProperty(data, variableName);
+                log.warn("Could not find data value for proxy variable {}", variableName);
                 if (dataValue != null) {
-                    result = result.replaceAll("\\$\\{" + matcher.group(1) + "\\}", dataValue.toString());
+                    result = result.replaceAll("\\$\\{" + variableName + "\\}", dataValue.toString());
                 }
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
@@ -143,35 +163,4 @@ public class TemplateProcessor implements Processor<Template> {
         return result;
     }
 
-
-    private void paginate(PaginationException paginationException, Model currentModel, Template template) {
-        log.trace("Starting to paginate ", paginationException);
-
-        for (int i = 1; i <= paginationException.getPages(); i++ ) {
-            Page page = paginationException.toPage(i);
-
-            Model clonedModel = currentModel.clone();
-            clonedModel.setPaginationContent(page.getData());
-
-            Path targetFile = targetPathFinder.find(template, page);
-
-            Template clonedTemplate = template.replaceAndClone("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
-
-            Renderer renderer = renderers.stream()
-                    .filter(r -> r.canRender(clonedTemplate))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
-            try {
-                String rendered = renderer.render(clonedTemplate, clonedModel);
-
-                for (TemplatePostProcessor each: templatePostProcessor) {
-                    rendered = each.onBeforeWrite(targetFile, rendered);
-                }
-
-                Files.write(targetFile, rendered.getBytes("UTF-8"));
-            } catch (IOException e) {
-                log.error("Error writing file", e);
-            }
-        }
-    }
 }
