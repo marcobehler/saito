@@ -61,10 +61,7 @@ public class TemplateProcessor implements Processor<Template> {
     private void renderNormalPage(Template template, Model model) {
         Path targetFile = targetPathFinder.find(template);
 
-        Renderer renderer = renderers.stream()
-                .filter(r -> r.canRender(template))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
+        Renderer renderer = getRenderer(template);
 
         doRender(renderer, template, model, targetFile);
     }
@@ -85,16 +82,26 @@ public class TemplateProcessor implements Processor<Template> {
 
                 Path targetFile = targetPathFinder.find(template, replacedProxyPattern);
 
-                Renderer renderer = renderers.stream()
-                        .filter(r -> r.canRender(template))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
+                Renderer renderer = getRenderer(template);
                 doRender(renderer, template, clonedModel, targetFile);
             }
+
+
+            if (template.hasLocalProxyData()) {
+                Model clonedModel = model.clone();
+                clonedModel.put(template.getProxyAlias(), template.getLocalProxyData());
+
+                Path targetFile = targetPathFinder.find(template);
+                Renderer renderer = getRenderer(template);
+                doRender(renderer, template, clonedModel, targetFile);
+            }
+
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace(); // TODO proper handling
         }
     }
+
+
 
 
     private void paginate(PaginationException paginationException, Model currentModel, Template template) {
@@ -161,6 +168,13 @@ public class TemplateProcessor implements Processor<Template> {
         result = slg.slugify(result);
 
         return result;
+    }
+
+    private Renderer getRenderer(Template template) {
+        return renderers.stream()
+                .filter(r -> r.canRender(template))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
     }
 
 }

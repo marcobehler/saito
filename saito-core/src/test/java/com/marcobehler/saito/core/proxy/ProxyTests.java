@@ -50,6 +50,9 @@ public class ProxyTests extends BaseInMemoryFSTest {
                 "  data: data.dummy.friends\n" +
                 "  pattern: ${name}\n" +
                 "  alias: friend\n" +
+                "  local: \n" +
+                "    name: Darth\n" +
+                "    age: 99\n" +
                 "---\n" +
                 "\n" +
                 "\n" +
@@ -136,5 +139,29 @@ public class ProxyTests extends BaseInMemoryFSTest {
         assertThat(buildDir.resolve("friends/harry/index.html")).hasContent("<p>My friend Harry is of age 22</p>");
     }
 
+
+
+    @Test
+    public void proxying_creates_correct_files_for_local_data() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(false);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends.html")).exists();
+        assertThat(buildDir.resolve("friends.html")).hasContent("<p>My friend Darth is of age 99</p>");
+    }
+
+
+    @Test
+    public void proxying_creates_correct_files_for_local_data_with_directoryIndeces() throws IOException, BlogPost.BlogPostFormattingException {
+        saito.getConfig().setDirectoryIndexes(true);
+        saito.build();
+
+        Path buildDir = saito.getWorkingDir().resolve("build");
+
+        assertThat(buildDir.resolve("friends/index.html")).exists();
+        assertThat(buildDir.resolve("friends/index.html")).hasContent("<p>My friend Darth is of age 99</p>");
+    }
 }
 

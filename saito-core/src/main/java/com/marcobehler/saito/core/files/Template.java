@@ -68,6 +68,14 @@ public class Template extends SaitoFile {
         return frontmatter.containsKey("current_page") && frontmatter.get("current_page").containsKey("proxy");
     }
 
+    public boolean hasLocalProxyData() {
+        return ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).containsKey("local");
+    }
+
+    public Object getLocalProxyData() {
+        return ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("local");
+    }
+
     public String getProxyDataKey() {
         return (String) ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("data");
     }
