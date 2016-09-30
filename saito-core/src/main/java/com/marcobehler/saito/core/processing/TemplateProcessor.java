@@ -97,7 +97,7 @@ public class TemplateProcessor implements Processor<Template> {
             }
 
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace(); // TODO proper handling
+            log.error("Error rendering proxy pages", e);
         }
     }
 
