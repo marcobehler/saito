@@ -64,6 +64,24 @@ public class Template extends SaitoFile {
         return (String) frontMatter.getOrDefault("layout", "layout");
     }
 
+
+
+    public String getFileNameWithoutExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(0, fullFilename.indexOf("."));
+    }
+
+    public String getExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.length());
+    }
+
+    // todo potentially buggy
+    public String getSecondLastExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.lastIndexOf("."));
+    }
+
     public boolean isProxyPage() {
         return frontmatter.containsKey("current_page") && frontmatter.get("current_page").containsKey("proxy");
     }

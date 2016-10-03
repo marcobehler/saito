@@ -13,7 +13,7 @@ public class Paginator {
 
     private boolean paginationInProgress = false;
 
-    public void restartIfNecessary(List<Object> collection, Integer pageSize) {
+    public void restartIfNecessary(List<Object> collection, Integer pageSize){
         log.info("{} {}", collection, pageSize);
 
         if (collection.isEmpty()) {

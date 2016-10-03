@@ -7,16 +7,19 @@ import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
+import javafx.scene.control.Pagination;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,8 +65,11 @@ public class TemplateProcessor implements Processor<Template> {
         Path targetFile = targetPathFinder.find(template);
 
         Renderer renderer = getRenderer(template);
-
-        doRender(renderer, template, model, targetFile);
+        try {
+            doRender(renderer, template, model, targetFile);
+        } catch (PaginationException e) {
+            paginate(e, model, template, Optional.empty());
+        }
     }
 
 
@@ -80,10 +86,14 @@ public class TemplateProcessor implements Processor<Template> {
                 String proxyPattern = template.getProxyPattern();
                 String replacedProxyPattern = replaceProxyPattern(proxyPattern, d);
 
-                Path targetFile = targetPathFinder.find(template, replacedProxyPattern);
+                Path targetFile = targetPathFinder.find(template, Optional.empty(), Optional.of(replacedProxyPattern));
 
                 Renderer renderer = getRenderer(template);
-                doRender(renderer, template, clonedModel, targetFile);
+                try {
+                    doRender(renderer, template, clonedModel, targetFile);
+                } catch (PaginationException e) {
+                    paginate(e, clonedModel, template, Optional.of(replacedProxyPattern));
+                }
             }
 
 
@@ -93,7 +103,11 @@ public class TemplateProcessor implements Processor<Template> {
 
                 Path targetFile = targetPathFinder.find(template);
                 Renderer renderer = getRenderer(template);
-                doRender(renderer, template, clonedModel, targetFile);
+                try {
+                    doRender(renderer, template, clonedModel, targetFile);
+                } catch (PaginationException e) {
+                    paginate(e, clonedModel, template, Optional.empty());
+                }
             }
 
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -104,7 +118,7 @@ public class TemplateProcessor implements Processor<Template> {
 
 
 
-    private void paginate(PaginationException paginationException, Model currentModel, Template template) {
+    private void paginate(PaginationException paginationException, Model currentModel, Template template, Optional<String> templatePattern) {
         log.trace("Starting to paginate ", paginationException);
 
         for (int i = 1; i <= paginationException.getPages(); i++) {
@@ -113,7 +127,7 @@ public class TemplateProcessor implements Processor<Template> {
             Model clonedModel = currentModel.clone();
             clonedModel.setPaginationContent(page.getData());
 
-            Path targetFile = targetPathFinder.find(template, page);
+            Path targetFile = targetPathFinder.find(template, Optional.of(page), templatePattern);
 
             Template clonedTemplate = template.replaceAndClone("(\\[@saito\\.paginate\\s+)(.+\\s?)(;.+\\])", "$1_saito_pagination_content_$3");
 
@@ -121,12 +135,17 @@ public class TemplateProcessor implements Processor<Template> {
                     .filter(r -> r.canRender(clonedTemplate))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Could not find renderer for template " + template));
-            doRender(renderer, clonedTemplate, clonedModel, targetFile);
+
+            try {
+                doRender(renderer, clonedTemplate, clonedModel, targetFile);
+            } catch (PaginationException e) {
+                throw new IllegalStateException("Pagination exception thrown during pagination");
+            }
         }
     }
 
 
-    private void doRender(Renderer renderer, Template template, Model clonedModel, Path targetFile) {
+    private void doRender(Renderer renderer, Template template, Model clonedModel, Path targetFile) throws PaginationException {
         try {
             String rendered = renderer.render(template, clonedModel);
 
@@ -135,9 +154,7 @@ public class TemplateProcessor implements Processor<Template> {
             }
 
             Files.write(targetFile, rendered.getBytes("UTF-8"));
-        } catch (PaginationException e) {
-            paginate(e, clonedModel, template);
-        } catch (IOException e) {
+        }  catch (IOException e) {
             log.error("Error writing file", e);
         }
     }

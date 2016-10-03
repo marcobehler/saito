@@ -147,8 +147,9 @@ public class FreemarkerRendererTest extends BaseInMemoryFSTest {
         try {
             new FreemarkerRenderer(new FreemarkerTemplateLoader(freemarkerConfig())).render(saitoTemplate, model);
             fail("Expected a PaginationException to be thrown");
-        } catch (PaginationException e) {
-            assertThat(e.getPages()).isEqualTo(2);
+        } catch (Exception e) {
+            PaginationException cause = (PaginationException) e.getCause();
+            assertThat(cause.getPages()).isEqualTo(2);
         }
     }
 

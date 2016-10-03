@@ -145,8 +145,7 @@ public class Saito {
             });
 
             if (plugins != null) {
-                plugins.stream()
-                        .forEach(plugin -> plugin.start(this, files));
+                plugins.forEach(plugin -> plugin.start(this, files));
             }
 
         } catch (IOException e) {
