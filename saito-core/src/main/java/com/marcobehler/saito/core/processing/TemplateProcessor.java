@@ -4,16 +4,15 @@ import com.github.slugify.Slugify;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.pagination.Page;
 import com.marcobehler.saito.core.pagination.PaginationException;
+import com.marcobehler.saito.core.pagination.Paginator;
 import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
-import javafx.scene.control.Pagination;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -140,6 +139,10 @@ public class TemplateProcessor implements Processor<Template> {
                 doRender(renderer, clonedTemplate, clonedModel, targetFile);
             } catch (PaginationException e) {
                 throw new IllegalStateException("Pagination exception thrown during pagination");
+            }
+
+            if (i == paginationException.getPages()) {
+                Paginator.INSTANCE.reset();
             }
         }
     }

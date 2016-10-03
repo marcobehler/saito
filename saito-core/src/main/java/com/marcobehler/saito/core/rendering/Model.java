@@ -8,8 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.marcobehler.saito.core.configuration.SaitoConfig;
-
 import com.marcobehler.saito.core.pagination.Paginator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,7 @@ public class Model extends ConcurrentHashMap<String, Object>{
     public Model() {
         put(TEMPLATE_OUTPUT_PATH, new ThreadLocal<Path>());
         put(BUILD_TIME_PARAMETER, new Date());
-        put("paginator", new Paginator());
+        put("paginator", Paginator.INSTANCE);
     }
 
     public Model clone() {
