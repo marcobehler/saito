@@ -167,7 +167,6 @@ public class ProxyTests extends BaseInMemoryFSTest {
 
 
     @Test
-    @Ignore
     public void proxying_and_pagination() throws IOException, BlogPost.BlogPostFormattingException {
         final Path sourceDirectory = saito.getSourcesDir();
 

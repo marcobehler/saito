@@ -16,6 +16,10 @@ public class Paginator {
     public void restartIfNecessary(List<Object> collection, Integer pageSize) {
         log.info("{} {}", collection, pageSize);
 
+        if (collection.isEmpty()) {
+            return;
+        }
+
         if (paginationInProgress) {
             return;
         }
