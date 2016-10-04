@@ -8,20 +8,21 @@ import com.marcobehler.saito.core.pagination.Paginator;
 import com.marcobehler.saito.core.plugins.TemplatePostProcessor;
 import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.rendering.Renderer;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -115,8 +116,6 @@ public class TemplateProcessor implements Processor<Template> {
     }
 
 
-
-
     private void paginate(PaginationException paginationException, Model currentModel, Template template, Optional<String> templatePattern) {
         log.trace("Starting to paginate ", paginationException);
 
@@ -157,31 +156,24 @@ public class TemplateProcessor implements Processor<Template> {
             }
 
             Files.write(targetFile, rendered.getBytes("UTF-8"));
-        }  catch (IOException e) {
+        } catch (IOException e) {
             log.error("Error writing file", e);
         }
     }
 
 
     private String replaceProxyPattern(String proxyPattern, Object data) {
-        String result = proxyPattern;
+        String result;
 
-        // 1. replace placeholders
-        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
-        Matcher matcher = pattern.matcher(proxyPattern);
-        while (matcher.find()) {
-            try {
-                String variableName = matcher.group(1);
-                Object dataValue = new PropertyUtilsBean().getProperty(data, variableName);
-                log.warn("Could not find data value for proxy variable {}", variableName);
-                if (dataValue != null) {
-                    result = result.replaceAll("\\$\\{" + variableName + "\\}", dataValue.toString());
-                }
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+        // 1. process proxy
+        StringWriter writer = new StringWriter();
+        try {
+            freemarker.template.Template t = new freemarker.template.Template(proxyPattern, proxyPattern, new Configuration(Configuration.VERSION_2_3_25));
+            t.process(data, writer);
+        } catch (TemplateException | IOException e) {
+            log.error("Could not replace proxy pattern");
         }
-
+        result = writer.toString();
 
         // 2. slugify
         Slugify slg = new Slugify();

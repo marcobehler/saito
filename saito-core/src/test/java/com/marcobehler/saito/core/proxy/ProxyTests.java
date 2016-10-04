@@ -6,7 +6,6 @@ import com.marcobehler.saito.core.dagger.DaggerTestSaito$$;
 import com.marcobehler.saito.core.dagger.TestSaito$$;
 import com.marcobehler.saito.core.files.BlogPost;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
