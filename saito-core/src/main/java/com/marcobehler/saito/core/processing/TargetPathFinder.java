@@ -100,7 +100,7 @@ public class TargetPathFinder {
             builder.append(page.get().getPageNumber());
         }
 
-        if (isDirectoryIndexEnabled(builder.toString())) {
+        if (isDirectoryIndexEnabled(builder.toString()) && !template.getFileNameWithoutExtension().equals("index")) {
             builder.append("/");
             builder.append("index");
         }
