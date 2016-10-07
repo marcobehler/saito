@@ -64,6 +64,9 @@ public class TemplateProcessor implements Processor<Template> {
     private void renderNormalPage(Template template, Model model) {
         Path targetFile = targetPathFinder.find(template);
 
+        ThreadLocal<Path> tl = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
+        tl.set(targetFile);
+
         Renderer renderer = getRenderer(template);
         try {
             doRender(renderer, template, model, targetFile);
@@ -87,6 +90,8 @@ public class TemplateProcessor implements Processor<Template> {
                 String replacedProxyPattern = replaceProxyPattern(proxyPattern, d);
 
                 Path targetFile = targetPathFinder.find(template, Optional.empty(), Optional.of(replacedProxyPattern));
+                ThreadLocal<Path> tl = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
+                tl.set(targetFile);
 
                 Renderer renderer = getRenderer(template);
                 try {

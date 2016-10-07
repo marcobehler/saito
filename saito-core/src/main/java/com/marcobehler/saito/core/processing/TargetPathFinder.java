@@ -44,7 +44,7 @@ public class TargetPathFinder {
 
     public <T extends SaitoFile> Path find(T file) {
         Path targetFile = getOutputPath(file);
-        if (isDirectoryIndexEnabled(targetFile.toString())) {
+        if (isDirectoryIndexEnabled(targetFile.toString()) && targetFile instanceof Template) {
             targetFile = toDirectoryIndex(targetFile);
         }
         return toAbsolutePath(file, targetFile);
