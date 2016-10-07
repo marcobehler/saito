@@ -54,4 +54,18 @@ public class TargetPathFinderTest extends BaseInMemoryFSTest {
         Path path = targetPathFinder.find(new Template(sourcesDir, fs.getPath("index.html.ftl")), Optional.empty(), Optional.empty());
         assertThat(path).isEqualTo(fs.getPath("/build/index.html"));
     }
+
+
+    @Test
+    public void indexFile_with_directory_indeces_subdir() throws IOException {
+        config.setDirectoryIndexes(true);
+        Path sou = Files.createDirectories(fs.getPath("/sources/hallo"));
+
+        Files.createFile(sou.resolve("index.html.ftl"));
+
+        TargetPathFinder targetPathFinder = new TargetPathFinder(config, buildDir);
+
+        Path path = targetPathFinder.find(new Template(fs.getPath("/sources"), fs.getPath("hallo/index.html.ftl")), Optional.empty(), Optional.empty());
+        assertThat(path).isEqualTo(fs.getPath("/build/hallo/index.html"));
+    }
 }

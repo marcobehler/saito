@@ -84,6 +84,10 @@ public class TargetPathFinder {
         String parent = template.getRelativePath().getParent() != null ? template.getRelativePath().getParent().toString() : null;
         if (parent != null) {
             builder.append(parent);
+
+            if (!parent.endsWith("/")) {
+                builder.append("/");
+            }
         }
 
         builder.append(template.getFileNameWithoutExtension());
