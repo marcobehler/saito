@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
  */
 public class PaginationTests extends BaseInMemoryFSTest {
 
-
     private Saito saito;
 
     @Before
@@ -95,9 +94,9 @@ public class PaginationTests extends BaseInMemoryFSTest {
 
         Path buildDir = saito.getWorkingDir().resolve("build");
         assertThat(buildDir.resolve("friends.html")).exists();
-        assertThat(buildDir.resolve("friends-page2.html")).exists();
-        assertThat(buildDir.resolve("friends-page3.html")).exists();
-        assertThat(buildDir.resolve("friends-page4.html")).doesNotExist();
+        assertThat(buildDir.resolve("friends/pages/2.html")).exists();
+        assertThat(buildDir.resolve("friends/pages/3.html")).exists();
+        assertThat(buildDir.resolve("friends/pages/4.html")).doesNotExist();
     }
 
     @Test

@@ -64,4 +64,46 @@ public class Template extends SaitoFile {
         return (String) frontMatter.getOrDefault("layout", "layout");
     }
 
+
+
+    public String getFileNameWithoutExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(0, fullFilename.indexOf("."));
+    }
+
+    public String getExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.length());
+    }
+
+    // todo potentially buggy
+    public String getSecondLastExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.lastIndexOf("."));
+    }
+
+    public boolean isProxyPage() {
+        return frontmatter.containsKey("current_page") && frontmatter.get("current_page").containsKey("proxy");
+    }
+
+    public boolean hasLocalProxyData() {
+        return ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).containsKey("local");
+    }
+
+    public Object getLocalProxyData() {
+        return ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("local");
+    }
+
+    public String getProxyDataKey() {
+        return (String) ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("data");
+    }
+
+    public String getProxyPattern() {
+        return (String) ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("pattern");
+    }
+
+    public String getProxyAlias() {
+        return (String) ((Map<String,Object>)frontmatter.get("current_page").get("proxy")).get("alias");
+    }
+
 }
