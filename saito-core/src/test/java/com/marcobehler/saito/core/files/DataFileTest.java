@@ -1,8 +1,6 @@
 package com.marcobehler.saito.core.files;
 
 import com.marcobehler.saito.core.BaseInMemoryFSTest;
-import com.marcobehler.saito.core.configuration.SaitoConfig;
-import com.marcobehler.saito.core.rendering.Model;
 
 import org.junit.Test;
 
@@ -13,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -23,7 +20,7 @@ import static org.mockito.Mockito.mock;
  */
 public class DataFileTest extends BaseInMemoryFSTest {
 
-    private String json = "{\n" +
+    private String jsonObject = "{\n" +
             "  \"friends\": [\n" +
             "    \"Tom\",\n" +
             "    \"Hänsel\",\n" +
@@ -31,10 +28,13 @@ public class DataFileTest extends BaseInMemoryFSTest {
             "  ]\n" +
             "}";
 
+
+    private String jsonArray = "[\"hans\", \"meier\", \"geht\"]";
+
     @Test
     public void dataFile_can_return_json_data_as_map() throws IOException {
         Path peopleJson = fs.getPath("/dummy.json");
-        Files.write(peopleJson, json.getBytes("UTF-8"));
+        Files.write(peopleJson, jsonObject.getBytes("UTF-8"));
 
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("dummy.json"));
 
@@ -50,12 +50,27 @@ public class DataFileTest extends BaseInMemoryFSTest {
     public void dataFile_can_return_json_data_as_map_with_deeper_filename() throws IOException {
         Path peopleJson = fs.getPath("/usa/texas/people.json");
         Files.createDirectories(peopleJson.getParent());
-        Files.write(peopleJson, json.getBytes("UTF-8"));
+        Files.write(peopleJson, jsonObject.getBytes("UTF-8"));
 
         DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("usa/texas/people.json"));
 
         Map<String, Object> expected = new HashMap<>();
         expected.put("usa", Collections.singletonMap("texas", Collections.singletonMap("people", Collections.singletonMap("friends", Arrays.asList("Tom", "Hänsel", "Harry")))));
+
+        Map<String,Object> data = dataFile.parse();
+        assertThat(data).isEqualTo(expected);
+    }
+
+    @Test
+    public void dataFile_can_return_array() throws IOException {
+        Path peopleJson = fs.getPath("/array.json");
+        Files.createDirectories(peopleJson.getParent());
+        Files.write(peopleJson, jsonArray.getBytes("UTF-8"));
+
+        DataFile dataFile = new DataFile(fs.getPath("/"), fs.getPath("array.json"));
+
+        Map<String, Object> expected = new HashMap<>();
+        expected.put("array", Arrays.asList("hans", "meier", "geht"));
 
         Map<String,Object> data = dataFile.parse();
         assertThat(data).isEqualTo(expected);

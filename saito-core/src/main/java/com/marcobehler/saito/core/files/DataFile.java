@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,8 +46,17 @@ public class DataFile extends SaitoFile {
                     currentMap.put(key, currentMap = new HashMap<>());
                 } else {
                     ObjectMapper mapper = new ObjectMapper();
-                    Map<? extends String, ?> dataAsMap = mapper.readValue(getData(), new TypeReference<HashMap<String, Object>>() {});
-                    currentMap.put(key, dataAsMap);
+
+                    String json = getDataAsString().trim();
+                    if (json.startsWith("[")) {
+                        List<Object> myObjects = mapper.readValue(json, new TypeReference<List<Object>>(){});
+                        currentMap.put(key, myObjects);
+                    } else if (json.startsWith("{")) {
+                        Map<? extends String, ?> dataAsMap = mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {});
+                        currentMap.put(key, dataAsMap);
+                    } else {
+                        throw new IllegalStateException("Illegal State");
+                    }
                 }
             }
         } catch (IOException e) {
