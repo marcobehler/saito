@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -158,9 +159,15 @@ public class TemplateProcessor implements Processor<Template> {
 
             // TODO frontmatter replacements
             // =====================
-            String variableString = model.containsKey("title") ? model.get("title").toString() : null;
-            String replacedTitle = replace(variableString, model);
-            model.put("title", replacedTitle);
+
+            new HashSet<>(model.keySet()).forEach(key -> {
+                String variableString = model.containsKey(key) ? model.get(key).toString() : null;
+                if (variableString != null && variableString.contains("${")){
+                    String replacedTitle = replace(variableString, model);
+                    model.put(key, replacedTitle);
+                }
+            });
+
             // =====================
 
 
