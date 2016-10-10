@@ -87,7 +87,7 @@ public class TemplateProcessor implements Processor<Template> {
                 clonedModel.put(template.getProxyAlias(), d);
 
                 String proxyPattern = template.getProxyPattern();
-                String replacedProxyPattern = replaceProxyPattern(proxyPattern, d);
+                String replacedProxyPattern = replace(proxyPattern, d);
 
                 Path targetFile = targetPathFinder.find(template, Optional.empty(), Optional.of(replacedProxyPattern));
                 ThreadLocal<Path> tl = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
@@ -152,9 +152,17 @@ public class TemplateProcessor implements Processor<Template> {
     }
 
 
-    private void doRender(Renderer renderer, Template template, Model clonedModel, Path targetFile) throws PaginationException {
+    private void doRender(Renderer renderer, Template template, Model model, Path targetFile) throws PaginationException {
         try {
-            String rendered = renderer.render(template, clonedModel);
+            String rendered = renderer.render(template, model);
+
+            // TODO frontmatter replacements
+            // =====================
+            String variableString = model.containsKey("title") ? model.get("title").toString() : null;
+            String replacedTitle = replace(variableString, model);
+            model.put("title", replacedTitle);
+            // =====================
+
 
             for (TemplatePostProcessor each : templatePostProcessor) {
                 rendered = each.onBeforeWrite(targetFile, rendered);
@@ -167,13 +175,13 @@ public class TemplateProcessor implements Processor<Template> {
     }
 
 
-    private String replaceProxyPattern(String proxyPattern, Object data) {
+    private String replace(String variableString, Object data) {
         String result;
 
         // 1. process proxy
         StringWriter writer = new StringWriter();
         try {
-            freemarker.template.Template t = new freemarker.template.Template(proxyPattern, proxyPattern, new Configuration(Configuration.VERSION_2_3_25));
+            freemarker.template.Template t = new freemarker.template.Template(variableString, variableString, new Configuration(Configuration.VERSION_2_3_25));
             t.process(data, writer);
         } catch (TemplateException | IOException e) {
             log.error("Could not replace proxy pattern");
