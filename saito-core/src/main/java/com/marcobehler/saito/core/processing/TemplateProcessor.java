@@ -155,18 +155,8 @@ public class TemplateProcessor implements Processor<Template> {
 
     private void doRender(Renderer renderer, Template template, Model model, Path targetFile) throws PaginationException {
         try {
+
             String rendered = renderer.render(template, model);
-
-            // TODO frontmatter replacements
-            // =====================
-
-            new HashSet<>(model.keySet()).forEach(key -> {
-                String variableString = model.containsKey(key) ? model.get(key).toString() : null;
-                if (variableString != null && variableString.contains("${")){
-                    String replacedTitle = replace(variableString, model);
-                    model.put(key, replacedTitle);
-                }
-            });
 
             // =====================
 

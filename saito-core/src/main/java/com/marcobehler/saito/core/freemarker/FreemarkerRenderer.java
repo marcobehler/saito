@@ -1,22 +1,19 @@
 package com.marcobehler.saito.core.freemarker;
 
+import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.marcobehler.saito.core.pagination.PaginationException;
 import com.marcobehler.saito.core.rendering.Model;
-import com.marcobehler.saito.core.files.Layout;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.rendering.Renderer;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,12 +50,16 @@ public class FreemarkerRenderer implements Renderer {
 
         Map<String,Object> dataModel = new HashMap<>();
         dataModel.putAll(model);
-        dataModel.putAll(template.getFrontmatter());
+        dataModel.putAll(template.getFrontmatter().replace(model));
+
+
         dataModel.put("_saito_content_", renderedTemplate);
         freemarkerTemplate.process(dataModel, w);
 
         return w.toString();
     }
+
+
 
     @SneakyThrows
     private String renderTemplate(Template t, Model model) {
@@ -69,7 +70,8 @@ public class FreemarkerRenderer implements Renderer {
         try {
             Map<String,Object> dataModel = new HashMap<>();
             dataModel.putAll(model);
-            dataModel.putAll(t.getFrontmatter());
+            dataModel.putAll(t.getFrontmatter().replace(model));
+
             template.process(dataModel, w);
         } catch (Exception e) {
             Throwable cause = e.getCause();

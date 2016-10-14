@@ -14,7 +14,8 @@ public class SaitoApiTest {
 
     @Test
     public void newInstance() {
-        Saito saito = SaitoApi.newInstance(Paths.get("/tmp"));
+        Saito saito = SaitoApi.newInstance(Paths.get("c:\\Users\\marco\\Code\\Progenica\\progenica-website\\src\\site\\"));
+    saito.build();
         assertNotNull(saito);
     }
 }
