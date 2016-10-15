@@ -55,7 +55,7 @@ public class DataFile extends SaitoFile {
                         Map<? extends String, ?> dataAsMap = mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {});
                         currentMap.put(key, dataAsMap);
                     } else {
-                        throw new IllegalStateException("Illegal State");
+                        throw new IllegalStateException("Json does not start with [ or { =>" + json.substring(0, 20) + "...");
                     }
                 }
             }
