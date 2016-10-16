@@ -32,7 +32,7 @@ public class OtherFileProcessor implements Processor<Other> {
     @Override
     public void process(Other otherFile, Model model) {
         try {
-            Path targetPath = targetPathFinder.find(otherFile);
+            Path targetPath = targetPathFinder.find(otherFile, model);
             byte[] targetData = compressIfWanted(otherFile);
             Files.write(targetPath, targetData);
             log.info("created {}", targetPath);

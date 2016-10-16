@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,7 +62,7 @@ public class TemplateProcessor implements Processor<Template> {
     }
 
     private void renderNormalPage(Template template, Model model) {
-        Path targetFile = targetPathFinder.find(template);
+        Path targetFile = targetPathFinder.find(template, model);
 
         ThreadLocal<Path> tl = (ThreadLocal<Path>) model.get(Model.TEMPLATE_OUTPUT_PATH);
         tl.set(targetFile);
@@ -107,7 +106,7 @@ public class TemplateProcessor implements Processor<Template> {
                 Model clonedModel = model.clone();
                 clonedModel.put(template.getProxyAlias(), template.getLocalProxyData());
 
-                Path targetFile = targetPathFinder.find(template);
+                Path targetFile = targetPathFinder.find(template, model);
                 Renderer renderer = getRenderer(template);
                 try {
                     doRender(renderer, template, clonedModel, targetFile);

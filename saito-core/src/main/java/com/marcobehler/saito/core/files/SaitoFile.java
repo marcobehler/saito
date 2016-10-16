@@ -50,5 +50,15 @@ public class SaitoFile {
         return new String(data, Charset.forName("UTF-8"));
     }
 
+    public String getFileNameWithoutExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(0, fullFilename.indexOf("."));
+    }
+
+    public String getExtension() {
+        String fullFilename = getRelativePath().getFileName().toString();
+        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.length());
+    }
+
 
 }

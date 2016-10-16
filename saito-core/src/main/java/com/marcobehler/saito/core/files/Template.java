@@ -66,15 +66,7 @@ public class Template extends SaitoFile {
 
 
 
-    public String getFileNameWithoutExtension() {
-        String fullFilename = getRelativePath().getFileName().toString();
-        return fullFilename.substring(0, fullFilename.indexOf("."));
-    }
 
-    public String getExtension() {
-        String fullFilename = getRelativePath().getFileName().toString();
-        return fullFilename.substring(fullFilename.indexOf("."), fullFilename.length());
-    }
 
     // todo potentially buggy
     public String getSecondLastExtension() {

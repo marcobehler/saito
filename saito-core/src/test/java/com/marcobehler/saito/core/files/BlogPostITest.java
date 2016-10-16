@@ -35,7 +35,7 @@ public class BlogPostITest {
 
         final Path buildDir = saito$$.buildDir();
 
-        targetPathFinder.find(bp);
+        targetPathFinder.find(bp, model);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -66,7 +66,7 @@ public class BlogPostITest {
 
         final Path buildDir = saito$$.buildDir();
 
-        targetPathFinder.find(bp);
+        targetPathFinder.find(bp, model);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isTrue();
@@ -103,7 +103,7 @@ public class BlogPostITest {
 
         final Path buildDir = saito$$.buildDir();
 
-        targetPathFinder.find(bp);
+        targetPathFinder.find(bp, model);
 
         final Path yearDir = buildDir.resolve("2015");
         assertThat(Files.exists(yearDir)).isFalse();

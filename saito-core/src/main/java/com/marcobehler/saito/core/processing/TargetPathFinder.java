@@ -6,6 +6,7 @@ import com.marcobehler.saito.core.files.Other;
 import com.marcobehler.saito.core.files.SaitoFile;
 import com.marcobehler.saito.core.files.Template;
 import com.marcobehler.saito.core.pagination.Page;
+import com.marcobehler.saito.core.rendering.Model;
 import com.marcobehler.saito.core.util.PathUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import static com.marcobehler.saito.core.dagger.PathsModule.BUILD_DIR;
@@ -42,8 +44,8 @@ public class TargetPathFinder {
 
     // ============= PUBLIC API ====================
 
-    public <T extends SaitoFile> Path find(T file) {
-        Path targetFile = getOutputPath(file);
+    public <T extends SaitoFile> Path find(T file, Model model) {
+        Path targetFile = getOutputPath(file, model);
         if (isDirectoryIndexEnabled(targetFile.toString()) && targetFile instanceof Template) {
             targetFile = toDirectoryIndex(targetFile);
         }
@@ -136,7 +138,7 @@ public class TargetPathFinder {
     }
 
 
-    public Path getOutputPath(SaitoFile file) {
+    public Path getOutputPath(SaitoFile file, Model model) {
         if (file instanceof BlogPost) {
             final Path relativePath = file.getRelativePath();
             final String asString = relativePath.toString();
@@ -150,11 +152,35 @@ public class TargetPathFinder {
         }
 
         if (file instanceof Other) {
-            return file.getRelativePath();
+            if (((Other) file).isCss()) {
+                String path = file.getRelativePath().toString();
+                path = path.replaceAll("\\.css", getCompressedCssSuffix(model) + ".css");
+                return file.getRelativePath().getFileSystem().getPath(path);
+            } else if (((Other) file).isJs()) {
+                String path = file.getRelativePath().toString();
+                path = path.replaceAll("\\.js", getCompressedJSSuffix(model) + ".js");
+                return file.getRelativePath().getFileSystem().getPath(path);
+            } else {
+                return file.getRelativePath();
+            }
         }
         throw new IllegalStateException("Trying to get path for unsupported file type");
     }
 
+
+    private String getCompressedSuffix(Model model) {
+        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(
+                model.get(Model.BUILD_TIME_PARAMETER));
+        return "-" + datePart + ".min";
+    }
+
+    private String getCompressedJSSuffix(Model model) {
+        return saitoConfig.isCompressJs() ? getCompressedSuffix(model) : "";
+    }
+
+    private String getCompressedCssSuffix(Model model) {
+        return saitoConfig.isCompressCss() ? getCompressedSuffix(model) : "";
+    }
 
     @SneakyThrows
     private Path toDirectoryIndex(Path targetFile) {
